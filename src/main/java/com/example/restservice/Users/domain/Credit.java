@@ -4,6 +4,10 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
 
+import com.example.restservice.Users.exeptions.CreditCannotBeNegativeException;
+import com.example.restservice.Users.exeptions.InsufficientCreditException;
+import com.example.restservice.Users.exeptions.InvalidCreditAmountException;
+
 public final class Credit {
 
   private static final int SCALE = 2;
@@ -14,7 +18,7 @@ public final class Credit {
     Objects.requireNonNull(value, "Credit cannot be null");
 
     if (value.compareTo(BigDecimal.ZERO) < 0) {
-      throw new IllegalArgumentException("Credit cannot be negative");
+      throw new CreditCannotBeNegativeException();
     }
 
     this.value = normalize(value);
@@ -39,7 +43,7 @@ public final class Credit {
     BigDecimal result = this.value.subtract(amount);
 
     if (result.compareTo(BigDecimal.ZERO) < 0) {
-      throw new IllegalStateException("Insufficient credit");
+      throw new InsufficientCreditException();
     }
 
     return new Credit(result);
@@ -53,7 +57,7 @@ public final class Credit {
     Objects.requireNonNull(amount);
 
     if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-      throw new IllegalArgumentException("Amount must be positive");
+      throw new InvalidCreditAmountException();
     }
   }
 
