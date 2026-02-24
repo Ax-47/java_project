@@ -1,0 +1,9 @@
+package com.example.restservice.Users.infrastructure;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.example.restservice.Users.models.UserModel;
+
+public interface JpaUserRepository
+    extends JpaRepository<UserModel, String> {
+  boolean existsByName(String name);
+}
