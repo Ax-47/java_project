@@ -23,7 +23,7 @@ public class DatabaseUserRepositoryImpl implements DatabaseUserRepository {
   }
 
   @Override
-  public boolean existsByName(String name) {
-    return jpaUserRepository.existsByName(name);
+  public boolean existsByUsername(String name) {
+    return jpaUserRepository.existsByUsername(name);
   }
 }

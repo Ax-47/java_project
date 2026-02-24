@@ -18,7 +18,7 @@ public class CreateUserUsecase {
 
   public CreateUserResponseDTO execute(CreateUserRequestDTO request) {
 
-    if (databaseUserRepository.existsByName(request.name())) {
+    if (databaseUserRepository.existsByUsername(request.name())) {
       return new CreateUserResponseDTO("username has been used");
     }
 

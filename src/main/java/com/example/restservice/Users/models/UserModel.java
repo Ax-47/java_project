@@ -1,8 +1,10 @@
 package com.example.restservice.Users.models;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import jakarta.persistence.*;
 import java.util.UUID;
+
+import jakarta.persistence.*;
 
 import com.example.restservice.Users.domain.User;
 
@@ -14,10 +16,16 @@ public class UserModel {
   private UUID id;
 
   @Column(nullable = false, unique = true)
-  private String name;
+  private String username;
 
   @Column(nullable = false)
   private String password;
+
+  @Column(nullable = false, precision = 19, scale = 2)
+  private BigDecimal credit;
+
+  @Column(nullable = false)
+  private boolean isAdmin;
 
   @Column(nullable = false, updatable = false)
   private LocalDateTime createdAt;
@@ -28,17 +36,14 @@ public class UserModel {
   protected UserModel() {
   }
 
-  public UserModel(String name, String password) {
-    this.name = name;
-    this.password = password;
-  }
-
   public static UserModel fromDomain(User user) {
     UserModel model = new UserModel();
 
     model.id = user.getId();
-    model.name = user.getName();
+    model.username = user.getUsername();
     model.password = user.getPassword();
+    model.credit = user.getCredit().getValue();
+    model.isAdmin = user.isAdmin();
     model.createdAt = user.getCreatedAt();
     model.updatedAt = user.getUpdatedAt();
 
@@ -48,8 +53,10 @@ public class UserModel {
   public User toDomain() {
     return User.rehydrate(
         id,
-        name,
+        username,
         password,
+        credit,
+        isAdmin,
         createdAt,
         updatedAt);
   }
@@ -58,6 +65,10 @@ public class UserModel {
   public void onCreate() {
     this.createdAt = LocalDateTime.now();
     this.updatedAt = LocalDateTime.now();
+
+    if (this.credit == null) {
+      this.credit = BigDecimal.ZERO;
+    }
   }
 
   @PreUpdate
@@ -69,12 +80,20 @@ public class UserModel {
     return id;
   }
 
-  public String getName() {
-    return name;
+  public String getUsername() {
+    return username;
   }
 
   public String getPassword() {
     return password;
+  }
+
+  public BigDecimal getCredit() {
+    return credit;
+  }
+
+  public boolean isAdmin() {
+    return isAdmin;
   }
 
   public LocalDateTime getCreatedAt() {

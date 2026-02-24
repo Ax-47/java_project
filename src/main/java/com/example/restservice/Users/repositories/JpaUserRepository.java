@@ -5,5 +5,5 @@ import com.example.restservice.Users.models.UserModel;
 
 public interface JpaUserRepository
     extends JpaRepository<UserModel, String> {
-  boolean existsByName(String name);
+  boolean existsByUsername(String username);
 }
