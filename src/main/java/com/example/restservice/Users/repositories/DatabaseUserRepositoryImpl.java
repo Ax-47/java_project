@@ -1,6 +1,4 @@
-package com.example.restservice.Users.infrastructure;
-
-import java.util.Optional;
+package com.example.restservice.Users.repositories;
 
 import org.springframework.stereotype.Repository;
 

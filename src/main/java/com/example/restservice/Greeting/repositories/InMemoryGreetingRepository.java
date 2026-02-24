@@ -1,4 +1,4 @@
-package com.example.restservice.Greeting.infrastructure;
+package com.example.restservice.Greeting.repositories;
 
 import com.example.restservice.Greeting.domain.Greeting;
 import com.example.restservice.Greeting.domain.GreetingRepository;
