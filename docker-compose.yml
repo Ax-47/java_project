@@ -1,0 +1,17 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: rest-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: restdb
+      POSTGRES_USER: restuser
+      POSTGRES_PASSWORD: restpass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+
+volumes:
+  postgres_data:
