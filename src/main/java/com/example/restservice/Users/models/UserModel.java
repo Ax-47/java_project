@@ -26,7 +26,9 @@ public class UserModel {
 
   @Column(nullable = false)
   private boolean isAdmin;
-
+  @Version
+  @Column(nullable = false)
+  private Long version;
   @Column(nullable = false, updatable = false)
   private LocalDateTime createdAt;
 
