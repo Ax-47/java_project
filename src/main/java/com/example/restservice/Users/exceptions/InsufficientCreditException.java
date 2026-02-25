@@ -1,4 +1,4 @@
-package com.example.restservice.Users.exeptions;
+package com.example.restservice.Users.exceptions;
 
 public class InsufficientCreditException extends RuntimeException {
   public InsufficientCreditException() {

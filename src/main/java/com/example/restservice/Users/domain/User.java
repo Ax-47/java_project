@@ -5,8 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-import com.example.restservice.Users.exeptions.InvalidPasswordException;
-import com.example.restservice.Users.exeptions.InvalidUserNameException;
+import com.example.restservice.Users.exceptions.*;
 
 public class User {
   private final UUID id;

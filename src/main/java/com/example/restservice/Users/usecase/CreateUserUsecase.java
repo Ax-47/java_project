@@ -5,6 +5,7 @@ import com.example.restservice.Users.domain.HashRepository;
 import com.example.restservice.Users.domain.User;
 import com.example.restservice.Users.dto.CreateUserRequestDTO;
 import com.example.restservice.Users.dto.CreateUserResponseDTO;
+import com.example.restservice.Users.exceptions.UsernameAlreadyExistsException;
 
 import org.springframework.stereotype.Service;
 
@@ -21,11 +22,13 @@ public class CreateUserUsecase {
 
   public CreateUserResponseDTO execute(CreateUserRequestDTO request) {
 
-    if (databaseUserRepository.existsByUsername(request.name())) {
-      return new CreateUserResponseDTO("username has been used");
+    String username = request.name();
+    String password = request.password();
+    if (databaseUserRepository.existsByUsername(username)) {
+      throw new UsernameAlreadyExistsException(username);
     }
-    String hashedPassword = hashRepository.hash(request.password());
-    User user = User.create(request.name(), hashedPassword);
+    String hashedPassword = hashRepository.hash(password);
+    User user = User.create(username, hashedPassword);
     databaseUserRepository.save(user);
     return new CreateUserResponseDTO("User has been created");
   }

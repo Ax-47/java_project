@@ -1,4 +1,4 @@
-package com.example.restservice.Users.exeptions;
+package com.example.restservice.Users.exceptions;
 
 public class CreditCannotBeNegativeException extends RuntimeException {
   public CreditCannotBeNegativeException() {

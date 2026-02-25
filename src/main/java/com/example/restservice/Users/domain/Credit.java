@@ -4,9 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
 
-import com.example.restservice.Users.exeptions.CreditCannotBeNegativeException;
-import com.example.restservice.Users.exeptions.InsufficientCreditException;
-import com.example.restservice.Users.exeptions.InvalidCreditAmountException;
+import com.example.restservice.Users.exceptions.*;
 
 public final class Credit {
 
