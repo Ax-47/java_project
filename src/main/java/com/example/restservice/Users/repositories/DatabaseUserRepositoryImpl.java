@@ -1,12 +1,9 @@
 package com.example.restservice.Users.repositories;
 
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
-
-import com.example.restservice.Users.domain.DatabaseUserRepository;
-import com.example.restservice.Users.domain.User;
-import com.example.restservice.Users.exceptions.UserNotFoundException;
-import com.example.restservice.Users.models.UserModel;
+import com.example.restservice.Users.domain.*;
+import com.example.restservice.Users.exceptions.*;
+import com.example.restservice.Users.models.*;
 
 @Repository
 public class DatabaseUserRepositoryImpl implements DatabaseUserRepository {
