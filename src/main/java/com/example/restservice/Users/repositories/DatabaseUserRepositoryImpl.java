@@ -1,5 +1,6 @@
 package com.example.restservice.Users.repositories;
 
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import com.example.restservice.Users.domain.DatabaseUserRepository;
@@ -25,5 +26,20 @@ public class DatabaseUserRepositoryImpl implements DatabaseUserRepository {
   @Override
   public boolean existsByUsername(String name) {
     return jpaUserRepository.existsByUsername(name);
+  }
+
+  @Override
+  public User findUserByUsername(String username) {
+    UserModel user = jpaUserRepository
+        .findByUsername(username)
+        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    return User.rehydrate(
+        user.getId(),
+        user.getUsername(),
+        user.getPassword(),
+        user.getCredit(),
+        user.isAdmin(),
+        user.getCreatedAt(),
+        user.getUpdatedAt());
   }
 }
