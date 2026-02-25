@@ -7,7 +7,6 @@ import java.util.UUID;
 import com.example.restservice.Users.domain.User;
 
 public record FindUserResponseDTO(
-    String message,
     UUID id,
     String username,
     BigDecimal credit,
@@ -16,7 +15,6 @@ public record FindUserResponseDTO(
     LocalDateTime updatedAt) {
   public static FindUserResponseDTO from(User user) {
     return new FindUserResponseDTO(
-        "User found",
         user.getId(),
         user.getUsername(),
         user.getCredit().getValue(),

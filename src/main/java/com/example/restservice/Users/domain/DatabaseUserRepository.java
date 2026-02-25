@@ -6,4 +6,6 @@ public interface DatabaseUserRepository {
   public boolean existsByUsername(String username);
 
   public User findUserByUsername(String username);
+
+  Page<User> findAllUsers(PageQuery pageable);
 }
