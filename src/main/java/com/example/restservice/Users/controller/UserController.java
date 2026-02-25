@@ -4,7 +4,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.restservice.Users.dto.CreateUserRequestDTO;
 import com.example.restservice.Users.dto.CreateUserResponseDTO;
-import com.example.restservice.Users.dto.FindUserRequestDTO;
 import com.example.restservice.Users.dto.FindUserResponseDTO;
 import com.example.restservice.Users.usecase.CreateUserUsecase;
 import com.example.restservice.Users.usecase.FindUserUsecase;
@@ -23,21 +22,20 @@ public class UserController {
     this.findUserUsecase = findUserUsecase;
   }
 
-  // @PostMapping
-  // public ResponseEntity<CreateUserResponseDTO> create(
-  //     @Valid @RequestBody CreateUserRequestDTO requestModel) {
-  //
-  //   CreateUserResponseDTO response = createUserUsecase.execute(requestModel);
-  //
-  //   return ResponseEntity.ok(response);
-  // }
-
   @PostMapping
-  public ResponseEntity<FindUserResponseDTO> create(
-      @Valid @RequestBody FindUserRequestDTO requestModel) {
+  public ResponseEntity<CreateUserResponseDTO> create(
+      @Valid @RequestBody CreateUserRequestDTO requestModel) {
 
-    FindUserResponseDTO response = findUserUsecase.execute(requestModel);
+    CreateUserResponseDTO response = createUserUsecase.execute(requestModel);
 
+    return ResponseEntity.ok(response);
+  }
+
+ @GetMapping("/{username}")
+  public ResponseEntity<FindUserResponseDTO> findByUsername(
+      @PathVariable String username) {
+    FindUserResponseDTO response =
+        findUserUsecase.execute(username);
     return ResponseEntity.ok(response);
   }
 }

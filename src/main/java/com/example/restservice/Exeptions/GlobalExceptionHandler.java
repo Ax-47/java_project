@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import com.example.restservice.Exeptions.dto.ErrorResponse;
+import com.example.restservice.Users.exceptions.UserNotFoundException;
 import com.example.restservice.Users.exceptions.UsernameAlreadyExistsException;
 
 @RestControllerAdvice
@@ -35,6 +36,18 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
+                .body(response);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotFound(
+            UserNotFoundException ex) {
+        ErrorResponse response = new ErrorResponse(
+                "USER_NOT_FOUND",
+                ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
                 .body(response);
     }
 }

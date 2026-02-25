@@ -23,39 +23,10 @@ public class SecurityConfig {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
         .csrf(csrf -> csrf.disable())
-        .authorizeHttpRequests((authorize) -> authorize
-            .requestMatchers("/**").permitAll()
-            .anyRequest().authenticated())
-        .httpBasic(Customizer.withDefaults())
-        .formLogin(Customizer.withDefaults());
+        .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+        .httpBasic(httpBasic -> httpBasic.disable())
+        .formLogin(form -> form.disable());
 
     return http.build();
   }
-
-  @Bean
-  public AuthenticationManager authenticationManager(
-      UserDetailsService userDetailsService,
-      PasswordEncoder passwordEncoder) {
-    DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider(userDetailsService);
-    authenticationProvider.setPasswordEncoder(passwordEncoder);
-
-    return new ProviderManager(authenticationProvider);
-  }
-
-  @Bean
-  public UserDetailsService userDetailsService() {
-    UserDetails userDetails = User.builder()
-        .username("user")
-        .password("password")
-        .roles("USER")
-        .build();
-
-    return new InMemoryUserDetailsManager(userDetails);
-  }
-
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-  }
-
 }

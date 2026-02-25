@@ -1,12 +1,8 @@
 package com.example.restservice.Users.usecase;
 
 import com.example.restservice.Users.domain.DatabaseUserRepository;
-import com.example.restservice.Users.domain.HashRepository;
 import com.example.restservice.Users.domain.User;
-import com.example.restservice.Users.dto.CreateUserResponseDTO;
-import com.example.restservice.Users.dto.FindUserRequestDTO;
 import com.example.restservice.Users.dto.FindUserResponseDTO;
-import com.example.restservice.Users.exceptions.UsernameAlreadyExistsException;
 
 import org.springframework.stereotype.Service;
 
@@ -19,8 +15,7 @@ public class FindUserUsecase {
     this.databaseUserRepository = databaseUserRepository;
   }
 
-  public FindUserResponseDTO execute(FindUserRequestDTO request) {
-    String username = request.name();
+  public FindUserResponseDTO execute(String username) {
     User user = this.databaseUserRepository.findUserByUsername(username);
     return FindUserResponseDTO.from(user);
   }

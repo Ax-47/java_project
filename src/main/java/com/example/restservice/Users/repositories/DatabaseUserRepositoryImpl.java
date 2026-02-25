@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import com.example.restservice.Users.domain.DatabaseUserRepository;
 import com.example.restservice.Users.domain.User;
+import com.example.restservice.Users.exceptions.UserNotFoundException;
 import com.example.restservice.Users.models.UserModel;
 
 @Repository
@@ -32,7 +33,7 @@ public class DatabaseUserRepositoryImpl implements DatabaseUserRepository {
   public User findUserByUsername(String username) {
     UserModel user = jpaUserRepository
         .findByUsername(username)
-        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        .orElseThrow(() -> new UserNotFoundException("User not found"));
     return User.rehydrate(
         user.getId(),
         user.getUsername(),
