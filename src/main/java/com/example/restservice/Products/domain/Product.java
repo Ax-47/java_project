@@ -1,13 +1,16 @@
 package com.example.restservice.Products.domain;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
+
+import com.example.restservice.Products.exceptions.*;
 
 public class Product {
 
   private final Long id;
   private String name;
-  private double price;
+  private Price price;
   private String description;
   private final Long createdBy;
   private final LocalDateTime createdAt;
@@ -16,18 +19,18 @@ public class Product {
   private Product(
       Long id,
       String name,
-      double price,
+      Price price,
       String description,
       Long createdBy,
       LocalDateTime createdAt,
       LocalDateTime updatedAt) {
+
     validateName(name);
-    validatePrice(price);
     validateDescription(description);
 
     this.id = Objects.requireNonNull(id);
     this.name = name;
-    this.price = price;
+    this.price = Objects.requireNonNull(price);
     this.description = description;
     this.createdBy = Objects.requireNonNull(createdBy);
     this.createdAt = Objects.requireNonNull(createdAt);
@@ -37,13 +40,14 @@ public class Product {
   public static Product create(
       Long id,
       String name,
-      double price,
+      BigDecimal price,
       String description,
       Long createdBy) {
+
     return new Product(
         id,
         name,
-        price,
+        Price.of(price),
         description,
         createdBy,
         LocalDateTime.now(),
@@ -53,50 +57,45 @@ public class Product {
   public static Product rehydrate(
       Long id,
       String name,
-      double price,
+      BigDecimal price,
       String description,
       Long createdBy,
       LocalDateTime createdAt,
       LocalDateTime updatedAt) {
+
     return new Product(
         id,
         name,
-        price,
+        Price.of(price),
         description,
         createdBy,
         createdAt,
         updatedAt);
   }
 
-  public void update(String name, double price, String description) {
+  public void update(String name,
+      BigDecimal price, String description) {
     validateName(name);
-    validatePrice(price);
     validateDescription(description);
 
     this.name = name;
-    this.price = price;
+    this.price = Price.of(price);
     this.description = description;
     this.updatedAt = LocalDateTime.now();
   }
 
   private void validateName(String name) {
     if (name == null || name.isBlank()) {
-      throw new IllegalArgumentException("Product name is required");
+      throw new InvalidProductNameException("Product name is required");
     }
     if (name.length() > 255) {
-      throw new IllegalArgumentException("Product name too long");
-    }
-  }
-
-  private void validatePrice(double price) {
-    if (price <= 0) {
-      throw new IllegalArgumentException("Price must be greater than zero");
+      throw new InvalidProductNameException("Product name too long");
     }
   }
 
   private void validateDescription(String description) {
     if (description != null && description.length() > 511) {
-      throw new IllegalArgumentException("Description too long");
+      throw new InvalidProductDescriptionException("Description too long");
     }
   }
 
@@ -108,7 +107,7 @@ public class Product {
     return name;
   }
 
-  public double getPrice() {
+  public Price getPrice() {
     return price;
   }
 
