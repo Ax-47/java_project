@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.restservice.Users.dto.*;
-import com.example.restservice.Users.usecase.*;
+import com.example.restservice.Users.usecases.*;
 import com.example.restservice.Users.domain.PageQuery;
 
 import jakarta.validation.Valid;

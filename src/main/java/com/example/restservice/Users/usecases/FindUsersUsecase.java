@@ -1,9 +1,6 @@
-package com.example.restservice.Users.usecase;
+package com.example.restservice.Users.usecases;
 
-import com.example.restservice.Users.domain.DatabaseUserRepository;
-import com.example.restservice.Users.domain.Page;
-import com.example.restservice.Users.domain.PageQuery;
-import com.example.restservice.Users.domain.User;
+import com.example.restservice.Users.domain.*;
 import com.example.restservice.Users.dto.FindUserResponseDTO;
 
 import java.util.List;
