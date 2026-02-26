@@ -1,11 +1,8 @@
-package com.example.restservice.Users.usecase;
+package com.example.restservice.Users.usecases;
 
-import com.example.restservice.Users.domain.DatabaseUserRepository;
-import com.example.restservice.Users.domain.HashRepository;
-import com.example.restservice.Users.domain.User;
-import com.example.restservice.Users.dto.CreateUserRequestDTO;
-import com.example.restservice.Users.dto.CreateUserResponseDTO;
-import com.example.restservice.Users.exceptions.UsernameAlreadyExistsException;
+import com.example.restservice.Users.domain.*;
+import com.example.restservice.Users.dto.*;
+import com.example.restservice.Users.exceptions.*;
 
 import org.springframework.stereotype.Service;
 

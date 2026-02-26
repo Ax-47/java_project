@@ -1,4 +1,4 @@
-package com.example.restservice.Users.usecase;
+package com.example.restservice.Users.usecases;
 
 import com.example.restservice.Users.domain.DatabaseUserRepository;
 import com.example.restservice.Users.domain.User;
