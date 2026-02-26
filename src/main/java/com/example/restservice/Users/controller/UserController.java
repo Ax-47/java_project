@@ -3,14 +3,9 @@ package com.example.restservice.Users.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.restservice.Users.dto.*;
+import com.example.restservice.Users.usecase.*;
 import com.example.restservice.Users.domain.PageQuery;
-import com.example.restservice.Users.dto.CreateUserRequestDTO;
-import com.example.restservice.Users.dto.CreateUserResponseDTO;
-import com.example.restservice.Users.dto.FindUserResponseDTO;
-import com.example.restservice.Users.dto.PageResponse;
-import com.example.restservice.Users.usecase.CreateUserUsecase;
-import com.example.restservice.Users.usecase.FindUserUsecase;
-import com.example.restservice.Users.usecase.FindUsersUsecase;
 
 import jakarta.validation.Valid;
 
