@@ -22,11 +22,11 @@ public class UserController {
   private final FindUserUsecase findUserUsecase;
   private final FindUsersUsecase findAllUsersUsecase;
 
-  public UserController(CreateUserUsecase createUserUsecase
-    ,FindUserUsecase findUserUsecase,FindUsersUsecase findAllUsersUsecase) {
+  public UserController(CreateUserUsecase createUserUsecase, FindUserUsecase findUserUsecase,
+      FindUsersUsecase findAllUsersUsecase) {
     this.createUserUsecase = createUserUsecase;
     this.findUserUsecase = findUserUsecase;
-    this.findAllUsersUsecase =findAllUsersUsecase;
+    this.findAllUsersUsecase = findAllUsersUsecase;
   }
 
   @PostMapping
@@ -38,28 +38,25 @@ public class UserController {
     return ResponseEntity.ok(response);
   }
 
- @GetMapping("/{username}")
+  @GetMapping("/{username}")
   public ResponseEntity<FindUserResponseDTO> findByUsername(
       @PathVariable String username) {
-    FindUserResponseDTO response =
-        findUserUsecase.execute(username);
+    FindUserResponseDTO response = findUserUsecase.execute(username);
     return ResponseEntity.ok(response);
   }
 
- @GetMapping
+  // NOTE: ADMIN only
+  @GetMapping
   public ResponseEntity<PageResponse<FindUserResponseDTO>> findAllUsers(
-          @RequestParam(defaultValue = "0") int page,
-          @RequestParam(defaultValue = "10") int size,
-          @RequestParam(defaultValue = "username") String sortBy,
-          @RequestParam(defaultValue = "true") boolean asc
-  ) {
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size,
+      @RequestParam(defaultValue = "username") String sortBy,
+      @RequestParam(defaultValue = "true") boolean asc) {
 
-      PageQuery query = new PageQuery(page, size, sortBy, asc);
+    PageQuery query = new PageQuery(page, size, sortBy, asc);
 
-      return ResponseEntity.ok(
-              PageResponse.from(
-                      findAllUsersUsecase.execute(query)
-              )
-      );
+    return ResponseEntity.ok(
+        PageResponse.from(
+            findAllUsersUsecase.execute(query)));
   }
 }
