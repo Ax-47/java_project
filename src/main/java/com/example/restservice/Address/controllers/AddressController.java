@@ -23,8 +23,8 @@ public class AddressController {
   public ResponseEntity<CreateAddressResponseDTO> create(
       @Valid @RequestBody CreateAddressRequestDTO requestModel) {
 
-    CreateAddressResponseDTO response = createAddressUsecase.execute(requestModel);
+    CreateAddressResponseDTO responses = createAddressUsecase.execute(requestModel);
 
-    return ResponseEntity.ok(response);
+    return ResponseEntity.ok(responses);
   }
 }
