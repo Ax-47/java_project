@@ -1,5 +1,7 @@
 package com.example.restservice.Address.repositories;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Repository;
 
 import com.example.restservice.Address.domain.Address;
@@ -19,6 +21,16 @@ public class DatabaseAddressRepositoryImpl implements DatabaseAddressRepository 
     AddressModel model = AddressModel.fromDomain(address);
     AddressModel saved = jpaAddressRepository.save(model);
     return saved.toDomain();
+  }
+  @Override
+  public Optional<Address> findById(Long id) {
+    return jpaAddressRepository.findById(id).map(AddressModel::toDomain);
+  }
+
+  @Override
+  public Address delete(Address address) {
+    jpaAddressRepository.deleteById(address.getId());   
+    return address;
   }
 
 }

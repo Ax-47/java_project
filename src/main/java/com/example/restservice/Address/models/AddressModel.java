@@ -9,7 +9,7 @@ import com.example.restservice.Address.domain.Address;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "addresses") // กำหนดชื่อตาราง (ปรับให้ตรงกับฐานข้อมูลจริงของคุณได้)
+@Table(name = "addresses")
 public class AddressModel {
 
     @Id
@@ -34,7 +34,7 @@ public class AddressModel {
     @Column(length = 100, nullable = false)
     private String subDistrict;
 
-    @Column(length = 100, nullable = false) // ปรับ District เป็นตัวพิมพ์เล็ก
+    @Column(length = 100, nullable = false)
     private String district;
 
     @Column(length = 100, nullable = false)
