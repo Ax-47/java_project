@@ -7,17 +7,17 @@ import org.hibernate.annotations.UpdateTimestamp;
 import com.example.restservice.Address.domain.Address;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "addresses")
 public class AddressModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id;
 
     @Column(nullable = false)
-    private Long userId;
+    private UUID userId;
 
     @Column(length = 100, nullable = false)
     private String fullName;
@@ -40,10 +40,10 @@ public class AddressModel {
     @Column(length = 100, nullable = false)
     private String province;
 
-    @Column( length = 10, nullable = false)
+    @Column(length = 10, nullable = false)
     private String postalCode;
 
-    @Column( length = 100, nullable = false)
+    @Column(length = 100, nullable = false)
     private String country;
 
     @Column(length = 100)
@@ -58,23 +58,68 @@ public class AddressModel {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    protected AddressModel(){} 
-    
-    public Long getId() { return id; }
-    public Long getUserId() { return userId; }
-    public String getFullName() { return fullName; }
-    public String getPhoneNumber() { return phoneNumber; }
-    public String getAddressLine1() { return addressLine1; }
-    public String getAddressLine2() { return addressLine2; }
-    public String getSubDistrict() { return subDistrict; }
-    public String getDistrict() { return district; }
-    public String getProvince() { return province; }
-    public String getPostalCode() { return postalCode; }
-    public String getCountry() { return country; }
-    public String getLabel() { return label; }
-    public boolean isDefault() { return isDefault; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    protected AddressModel() {
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public UUID getUserId() {
+        return userId;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public String getAddressLine1() {
+        return addressLine1;
+    }
+
+    public String getAddressLine2() {
+        return addressLine2;
+    }
+
+    public String getSubDistrict() {
+        return subDistrict;
+    }
+
+    public String getDistrict() {
+        return district;
+    }
+
+    public String getProvince() {
+        return province;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public boolean isDefault() {
+        return isDefault;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
 
     public Address toDomain() {
         return Address.rehydrate(
@@ -92,8 +137,7 @@ public class AddressModel {
                 this.label,
                 this.isDefault,
                 this.createdAt,
-                this.updatedAt
-        );
+                this.updatedAt);
     }
 
     public static AddressModel fromDomain(Address address) {
@@ -102,11 +146,11 @@ public class AddressModel {
         }
 
         AddressModel entity = new AddressModel();
-        
+
         if (address.getId() != null) {
             entity.id = address.getId();
         }
-        
+
         entity.userId = address.getUserId();
         entity.fullName = address.getFullName();
         entity.phoneNumber = address.getPhoneNumber().value();
@@ -119,8 +163,7 @@ public class AddressModel {
         entity.country = address.getCountry();
         entity.label = address.getLabel();
         entity.isDefault = address.isDefault();
-        
 
         return entity;
-  }
+    }
 }
