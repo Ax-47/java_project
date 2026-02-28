@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.restservice.Address.models.AddressModel;
 
 public interface JpaAddressRepository
-    extends JpaRepository<AddressModel, String> {
+    extends JpaRepository<AddressModel, Long> {
 }
