@@ -95,27 +95,28 @@ public class SecurityConfig {
     return new InMemoryUserDetailsManager(userDetails);
   }
 
-  @Bean
-  public RegisteredClientRepository registeredClientRepository() {
-    RegisteredClient oidcClient = RegisteredClient.withId(UUID.randomUUID().toString())
-        .clientId("oidc-client")
-        .clientSecret("{noop}secret")
-        .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-        .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-        .redirectUri("http://127.0.0.1:8080/login/oauth2/code/oidc-client")
-        .tokenSettings(TokenSettings.builder()
-            .accessTokenTimeToLive(Duration.ofMinutes(15))
-            .refreshTokenTimeToLive(Duration.ofDays(30))
-            .reuseRefreshTokens(false)
-            .build())
-        .postLogoutRedirectUri("http://127.0.0.1:8080/")
-        .scope(OidcScopes.OPENID)
-        .scope(OidcScopes.PROFILE)
-        .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
-        .build();
-    return new InMemoryRegisteredClientRepository(oidcClient);
-  }
+  // @Bean
+  // public RegisteredClientRepository registeredClientRepository() {
+  // RegisteredClient oidcClient =
+  // RegisteredClient.withId(UUID.randomUUID().toString())
+  // .clientId("oidc-client")
+  // .clientSecret("{noop}secret")
+  // .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+  // .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+  // .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+  // .redirectUri("http://127.0.0.1:8080/login/oauth2/code/oidc-client")
+  // .tokenSettings(TokenSettings.builder()
+  // .accessTokenTimeToLive(Duration.ofMinutes(15))
+  // .refreshTokenTimeToLive(Duration.ofDays(30))
+  // .reuseRefreshTokens(false)
+  // .build())
+  // .postLogoutRedirectUri("http://127.0.0.1:8080/")
+  // .scope(OidcScopes.OPENID)
+  // .scope(OidcScopes.PROFILE)
+  // .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
+  // .build();
+  // return new InMemoryRegisteredClientRepository(oidcClient);
+  // }
 
   @Bean
   public JWKSource<SecurityContext> jwkSource() {
@@ -155,10 +156,11 @@ public class SecurityConfig {
         .build();
   }
 
-  @Bean
-  public OAuth2AuthorizationService authorizationService(JdbcTemplate jdbcTemplate,
-      RegisteredClientRepository clientRepository) {
-    return new JdbcOAuth2AuthorizationService(jdbcTemplate, clientRepository);
-  }
+  // @Bean
+  // public OAuth2AuthorizationService authorizationService(JdbcTemplate
+  // jdbcTemplate,
+  // RegisteredClientRepository clientRepository) {
+  // return new JdbcOAuth2AuthorizationService(jdbcTemplate, clientRepository);
+  // }
 
 }
