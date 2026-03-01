@@ -3,25 +3,26 @@ package com.example.restservice.Products.domain;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 import com.example.restservice.Products.exceptions.*;
 
 public class Product {
 
-  private final Long id;
+  private final UUID id;
   private String name;
   private Price price;
   private String description;
-  private final Long createdBy;
+  private final UUID createdBy;
   private final LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 
   private Product(
-      Long id,
+      UUID id,
       String name,
       Price price,
       String description,
-      Long createdBy,
+      UUID createdBy,
       LocalDateTime createdAt,
       LocalDateTime updatedAt) {
 
@@ -38,11 +39,11 @@ public class Product {
   }
 
   public static Product create(
-      Long id,
+      UUID id,
       String name,
       BigDecimal price,
       String description,
-      Long createdBy) {
+      UUID createdBy) {
 
     return new Product(
         id,
@@ -55,11 +56,11 @@ public class Product {
   }
 
   public static Product rehydrate(
-      Long id,
+      UUID id,
       String name,
       BigDecimal price,
       String description,
-      Long createdBy,
+      UUID createdBy,
       LocalDateTime createdAt,
       LocalDateTime updatedAt) {
 
@@ -99,7 +100,7 @@ public class Product {
     }
   }
 
-  public Long getId() {
+  public UUID getId() {
     return id;
   }
 
@@ -115,7 +116,7 @@ public class Product {
     return description;
   }
 
-  public Long getCreatedBy() {
+  public UUID getCreatedBy() {
     return createdBy;
   }
 
