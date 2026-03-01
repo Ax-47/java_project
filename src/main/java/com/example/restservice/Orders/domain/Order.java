@@ -2,13 +2,14 @@ package com.example.restservice.Orders.domain;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 import com.example.restservice.Orders.exceptions.*;
 
 public class Order {
 
-  private final Long id;
-  private final Long userId;
+  private final UUID id;
+  private final UUID userId;
 
   private final ProductSnapshot product;
   private final OrderAddress shippingAddress;
@@ -19,8 +20,8 @@ public class Order {
   private LocalDateTime updatedAt;
 
   private Order(
-      Long id,
-      Long userId,
+      UUID id,
+      UUID userId,
       ProductSnapshot product,
       OrderAddress shippingAddress,
       OrderStatus status,
@@ -37,7 +38,7 @@ public class Order {
   }
 
   public static Order create(
-      Long userId,
+      UUID userId,
       ProductSnapshot product,
       OrderAddress shippingAddress) {
     return new Order(
@@ -83,11 +84,11 @@ public class Order {
     this.updatedAt = LocalDateTime.now();
   }
 
-  public Long getId() {
+  public UUID getId() {
     return id;
   }
 
-  public Long getUserId() {
+  public UUID getUserId() {
     return userId;
   }
 
