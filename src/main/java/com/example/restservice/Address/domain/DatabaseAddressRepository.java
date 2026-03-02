@@ -9,4 +9,6 @@ public interface DatabaseAddressRepository {
   Optional<Address> findById(UUID id);
 
   public Address delete(Address address);
+
+  public void clearDefaultByUserId(UUID userId);
 }
