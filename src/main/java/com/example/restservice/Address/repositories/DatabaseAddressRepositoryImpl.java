@@ -35,4 +35,9 @@ public class DatabaseAddressRepositoryImpl implements DatabaseAddressRepository 
     return address;
   }
 
+  @Override
+  public void clearDefaultByUserId(UUID userId) {
+    jpaAddressRepository.clearDefaultAddressForUser(userId);
+  }
+
 }
