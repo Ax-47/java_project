@@ -1,3 +1,8 @@
 package com.example.restservice.Reviews.domain;
 
-public interface DatabaseReviewRepository {}
+import java.util.Optional;
+import java.util.UUID;
+
+public interface DatabaseReviewRepository {
+        Review save(Review review);
+}
