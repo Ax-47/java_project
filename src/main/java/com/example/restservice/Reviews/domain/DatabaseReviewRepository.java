@@ -4,4 +4,5 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface DatabaseReviewRepository {
+        Review save(Review review);
 }
