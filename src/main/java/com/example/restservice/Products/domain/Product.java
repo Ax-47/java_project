@@ -1,10 +1,11 @@
 package com.example.restservice.Products.domain;
 
-import com.example.restservice.Products.exceptions.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
+
+import com.example.restservice.Products.exceptions.*;
 
 public class Product {
 
@@ -17,14 +18,14 @@ public class Product {
     private LocalDateTime updatedAt;
 
     private Product(
-        UUID id,
-        String name,
-        Price price,
-        String description,
-        UUID createdBy,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt
-    ) {
+            UUID id,
+            String name,
+            Price price,
+            String description,
+            UUID createdBy,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt) {
+
         validateName(name);
         validateDescription(description);
 
@@ -38,43 +39,43 @@ public class Product {
     }
 
     public static Product create(
-        String name,
-        BigDecimal price,
-        String description,
-        UUID createdBy
-    ) {
+            UUID id,
+            String name,
+            BigDecimal price,
+            String description,
+            UUID createdBy) {
+
         return new Product(
-            UUID.randomUUID(),
-            name,
-            Price.of(price),
-            description,
-            createdBy,
-            LocalDateTime.now(),
-            LocalDateTime.now()
-        );
+                id,
+                name,
+                Price.of(price),
+                description,
+                createdBy,
+                LocalDateTime.now(),
+                LocalDateTime.now());
     }
 
     public static Product rehydrate(
-        UUID id,
-        String name,
-        BigDecimal price,
-        String description,
-        UUID createdBy,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt
-    ) {
+            UUID id,
+            String name,
+            BigDecimal price,
+            String description,
+            UUID createdBy,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt) {
+
         return new Product(
-            id,
-            name,
-            Price.of(price),
-            description,
-            createdBy,
-            createdAt,
-            updatedAt
-        );
+                id,
+                name,
+                Price.of(price),
+                description,
+                createdBy,
+                createdAt,
+                updatedAt);
     }
 
-    public void update(String name, BigDecimal price, String description) {
+    public void update(String name,
+            BigDecimal price, String description) {
         validateName(name);
         validateDescription(description);
 
@@ -95,9 +96,7 @@ public class Product {
 
     private void validateDescription(String description) {
         if (description != null && description.length() > 511) {
-            throw new InvalidProductDescriptionException(
-                "Description too long"
-            );
+            throw new InvalidProductDescriptionException("Description too long");
         }
     }
 
