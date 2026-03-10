@@ -8,6 +8,9 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 public record CreateProductRequestDTO(
+    
+    @NotNull(message = "Product ID is required") UUID id,
+
     @NotBlank(message = "Product name is required")
     @Size(max = 255, message = "Product name too long")
     String name,
