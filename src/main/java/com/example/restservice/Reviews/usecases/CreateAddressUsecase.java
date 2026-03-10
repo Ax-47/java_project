@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import com.example.restservice.Address.domain.*;
 import com.example.restservice.Address.dto.*;
 
-@Service
 public class CreateAddressUsecase {
 
         private final DatabaseAddressRepository databaseAddressRepository;
