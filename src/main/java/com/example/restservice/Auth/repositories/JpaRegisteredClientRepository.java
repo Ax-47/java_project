@@ -9,6 +9,7 @@ import com.example.restservice.Auth.models.ClientModel;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import org.springframework.security.jackson2.SecurityJackson2Modules;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -33,8 +34,10 @@ public class JpaRegisteredClientRepository implements RegisteredClientRepository
 
     ClassLoader classLoader = JpaRegisteredClientRepository.class.getClassLoader();
     List<Module> securityModules = SecurityJackson2Modules.getModules(classLoader);
+
     this.objectMapper.registerModules(securityModules);
     this.objectMapper.registerModule(new OAuth2AuthorizationServerJackson2Module());
+    this.objectMapper.registerModule(new JavaTimeModule());
   }
 
   @Override
@@ -121,7 +124,7 @@ public class JpaRegisteredClientRepository implements RegisteredClientRepository
 
   private Map<String, Object> parseMap(String data) {
     try {
-      return this.objectMapper.readValue(data, new TypeReference<Map<String, Object>>() {
+      return this.objectMapper.readValue(data, new TypeReference<>() {
       });
     } catch (Exception ex) {
       throw new IllegalArgumentException(ex.getMessage(), ex);

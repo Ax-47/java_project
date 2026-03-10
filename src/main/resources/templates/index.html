@@ -1,11 +1,24 @@
-<!-- src/main/resources/templates/index.html -->
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
-    <body>
-        <div sec:authorize="!isAuthenticated()">
-            <a th:href="@{/oauth2/authorization/okta}">Log In</a>
-        </div>
-        <div sec:authorize="isAuthenticated()">
-            <p>You are logged in!</p>
-        </div>
-    </body>
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>My Authorization Server</title>
+</head>
+<body>
+    <h1>Welcome to My Auth Server (Port 9000)</h1>
+
+    <div sec:authorize="!isAuthenticated()">
+        <p>You are not logged in.</p>
+        <a th:href="@{/login}">Log In Here</a>
+    </div>
+
+    <div sec:authorize="isAuthenticated()">
+        <p style="color: green;">🎉 You are logged in successfully!</p>
+        <p>Hello, <strong th:text="${username}">User</strong></p>
+        
+        <form th:action="@{/logout}" method="post">
+            <button type="submit">Log Out</button>
+        </form>
+    </div>
+</body>
 </html>
