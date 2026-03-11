@@ -11,13 +11,13 @@ import com.example.restservice.Auth.domain.RefreshToken;
 public class RefreshTokenModel {
   @Id
   private UUID id;
-  @Column(nullable = false)
+  @Column(nullable = false, unique = false)
   private UUID userId;
   @Column(nullable = false)
   private Instant issuedDate;
   @Column(nullable = false)
   private boolean isExpired;
-  @Column(nullable = false)
+  @Column(nullable = false, unique = true)
   private String token;
 
   public RefreshToken toDomain() {
