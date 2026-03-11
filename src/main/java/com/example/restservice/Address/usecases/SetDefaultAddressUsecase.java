@@ -1,14 +1,13 @@
 package com.example.restservice.Address.usecases;
 
+import java.util.UUID;
+
+import org.springframework.stereotype.Service;
+
 import com.example.restservice.Address.domain.Address;
 import com.example.restservice.Address.domain.DatabaseAddressRepository;
 import com.example.restservice.Address.dto.SetDefaultAddressRequestDTO;
 import com.example.restservice.Address.dto.SetDefaultAddressResponseDTO;
-import com.example.restservice.Address.exceptions.AddressNotFoundException;
-import com.example.restservice.Address.exceptions.UnauthorizedAddressActionException;
-import java.util.UUID;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class SetDefaultAddressUsecase {
