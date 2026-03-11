@@ -1,6 +1,7 @@
 package com.example.restservice.Address.usecases;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.restservice.Address.domain.*;
 import com.example.restservice.Address.dto.*;
@@ -14,8 +15,14 @@ public class CreateAddressUsecase {
         this.databaseAddressRepository = databaseAddressRepository;
     }
 
+    @Transactional
     public CreateAddressResponseDTO execute(CreateAddressRequestDTO request) {
         boolean defaultStatus = request.isDefault() != null ? request.isDefault() : false;
+
+        if (defaultStatus) {
+            this.databaseAddressRepository.clearDefaultByUserId(request.userId());
+        }
+
         Address newAddress = Address.create(
                 request.userId(),
                 request.fullName(),

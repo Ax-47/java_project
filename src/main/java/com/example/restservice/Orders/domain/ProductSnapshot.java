@@ -1,16 +1,17 @@
 package com.example.restservice.Orders.domain;
 
 import java.util.Objects;
+import java.util.UUID;
 
 import com.example.restservice.Products.domain.Price;
 
 public class ProductSnapshot {
 
-  private final Long productId;
+  private final UUID productId;
   private final String productName;
   private final Price price;
 
-  public ProductSnapshot(Long productId, String productName, Price price) {
+  public ProductSnapshot(UUID productId, String productName, Price price) {
 
     this.productId = Objects.requireNonNull(productId);
 
@@ -21,7 +22,7 @@ public class ProductSnapshot {
     this.price = Objects.requireNonNull(price);
   }
 
-  public Long getProductId() {
+  public UUID getProductId() {
     return productId;
   }
 

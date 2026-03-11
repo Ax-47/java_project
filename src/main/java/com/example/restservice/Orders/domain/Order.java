@@ -1,10 +1,10 @@
 package com.example.restservice.Orders.domain;
 
+import com.example.restservice.Orders.exceptions.*;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
-
-import com.example.restservice.Orders.exceptions.*;
 
 public class Order {
 
@@ -49,6 +49,26 @@ public class Order {
         OrderStatus.PENDING,
         LocalDateTime.now(),
         LocalDateTime.now());
+  }
+
+  public static Order rehydrate(
+      UUID id,
+      UUID userId,
+      ProductSnapshot snap_product,
+      OrderAddress shippingAddress,
+      OrderStatus status,
+      LocalDateTime createdAt,
+      LocalDateTime updatedAt
+
+  ) {
+    return new Order(
+        id,
+        userId,
+        snap_product,
+        shippingAddress,
+        status,
+        createdAt,
+        updatedAt);
   }
 
   public void ship() {
