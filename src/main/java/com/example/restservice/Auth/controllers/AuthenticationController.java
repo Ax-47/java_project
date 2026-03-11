@@ -1,14 +1,18 @@
 package com.example.restservice.Auth.controllers;
 
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.restservice.Auth.dto.AuthenticatedUser;
 import com.example.restservice.Auth.dto.SignInRequestDTO;
 import com.example.restservice.Auth.dto.SignInResponseDTO;
 import com.example.restservice.Auth.usecases.SignInUsecase;
+
+import jakarta.annotation.security.RolesAllowed;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -21,8 +25,14 @@ public class AuthenticationController {
   }
 
   @GetMapping("/me")
-  public AuthenticatedUser me(@AuthenticationPrincipal AuthenticatedUser user) {
-    return user;
+  public Map<String, Object> me(@AuthenticationPrincipal Jwt jwt) {
+    return jwt.getClaims();
+  }
+
+  @GetMapping("/admin")
+  @RolesAllowed("ADMIN")
+  public Map<String, Object> admin(@AuthenticationPrincipal Jwt jwt) {
+    return jwt.getClaims();
   }
 
   @PostMapping("/signin")
