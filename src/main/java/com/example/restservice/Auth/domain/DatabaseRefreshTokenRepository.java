@@ -9,4 +9,6 @@ public interface DatabaseRefreshTokenRepository {
   public Optional<RefreshToken> findByTokenId(UUID tokenId);
 
   public void revokeRefreshToken(UUID tokenId, UUID userId);
+
+  public void revokeRefreshToken(UUID tokenId);
 }
