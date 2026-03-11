@@ -10,7 +10,7 @@ import com.example.restservice.Auth.domain.DatabaseRefreshTokenRepository;
 import com.example.restservice.Auth.domain.RefreshToken;
 import com.example.restservice.Auth.domain.TokenRepository;
 import com.example.restservice.Auth.dto.SignInRequestDTO;
-import com.example.restservice.Auth.dto.SignInResponseDTO;
+import com.example.restservice.Auth.dto.TokenResponseDTO;
 import com.example.restservice.Users.domain.DatabaseUserRepository;
 import com.example.restservice.Users.domain.HashRepository;
 import com.example.restservice.Users.domain.User;
@@ -32,7 +32,7 @@ public class SignInUsecase {
   }
 
   @Transactional
-  public SignInResponseDTO execute(SignInRequestDTO request) {
+  public TokenResponseDTO execute(SignInRequestDTO request) {
 
     String username = request.name();
     User user = databaseUserRepository.findUserByUsername(username);
@@ -45,6 +45,6 @@ public class SignInUsecase {
     String hashedToken = hashRepository.hash(refreshToken);
     databaseRefreshTokenRepository
         .save(RefreshToken.create(user.getId(), hashedToken));
-    return new SignInResponseDTO(accessToken, refreshToken);
+    return new TokenResponseDTO(accessToken, refreshToken);
   }
 }
