@@ -8,8 +8,10 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.restservice.Auth.dto.RefreshTokenRequestDTO;
 import com.example.restservice.Auth.dto.SignInRequestDTO;
 import com.example.restservice.Auth.dto.TokenResponseDTO;
+import com.example.restservice.Auth.usecases.RefreshTokenUsecase;
 import com.example.restservice.Auth.usecases.SignInUsecase;
 
 import jakarta.annotation.security.RolesAllowed;
@@ -19,9 +21,11 @@ import jakarta.annotation.security.RolesAllowed;
 public class AuthenticationController {
 
   private final SignInUsecase signInUsecase;
+  private final RefreshTokenUsecase refreshTokenUsecase;
 
-  public AuthenticationController(SignInUsecase signInUsecase) {
+  public AuthenticationController(SignInUsecase signInUsecase, RefreshTokenUsecase refreshTokenUsecase) {
     this.signInUsecase = signInUsecase;
+    this.refreshTokenUsecase = refreshTokenUsecase;
   }
 
   @GetMapping("/me")
@@ -41,7 +45,8 @@ public class AuthenticationController {
   }
 
   @PostMapping("/refresh")
-  public ResponseEntity<TokenResponseDTO> refresh(@RequestBody @Validated SignInRequestDTO request) {
-    return ResponseEntity.ok(signInUsecase.execute(request));
+  public ResponseEntity<TokenResponseDTO> refresh(@RequestHeader("Authorization") String bearer) {
+    String refreshToken = bearer.substring(7);
+    return ResponseEntity.ok(refreshTokenUsecase.execute(refreshToken));
   }
 }
