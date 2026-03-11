@@ -1,0 +1,42 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Dashboard</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body class="bg-gray-100">
+    <!-- Navbar -->
+    <nav class="bg-gray-900 text-white p-4 flex justify-between">
+      <h1 class="text-xl font-bold">Dashboard</h1>
+
+      <button
+        onclick="logout()"
+        class="bg-red-500 px-3 py-1 rounded hover:bg-red-600"
+      >
+        Logout
+      </button>
+    </nav>
+
+    <!-- Content -->
+    <div class="max-w-3xl mx-auto mt-10 space-y-6">
+      <!-- User Card -->
+      <div class="bg-white shadow rounded p-6">
+        <h2 class="text-xl font-bold mb-4">User Information</h2>
+
+        <pre id="userData" class="bg-gray-100 p-4 rounded text-sm"></pre>
+      </div>
+
+      <!-- Admin Card -->
+      <div id="adminSection" class="bg-white shadow rounded p-6 hidden">
+        <h2 class="text-xl font-bold mb-4">Admin Data</h2>
+
+        <pre id="adminData" class="bg-gray-100 p-4 rounded text-sm"></pre>
+      </div>
+    </div>
+
+    <script src="/js/auth.js"></script>
+    <script src="/js/dashboard.js"></script>
+  </body>
+</html>
