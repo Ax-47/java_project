@@ -14,10 +14,16 @@ import com.example.restservice.Auth.usecases.RefreshTokenUsecase;
 import com.example.restservice.Auth.usecases.SignInUsecase;
 import com.example.restservice.Auth.usecases.SignOutUsecase;
 
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.security.RolesAllowed;
 
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Authentication", description = "Authentication APIs")
 public class AuthenticationController {
 
   private final SignInUsecase signInUsecase;
@@ -34,11 +40,15 @@ public class AuthenticationController {
 
   }
 
+  @Operation(summary = "Get current user")
+  @SecurityRequirement(name = "bearerAuth")
   @GetMapping("/me")
   public Map<String, Object> me(@AuthenticationPrincipal Jwt jwt) {
     return jwt.getClaims();
   }
 
+  @Operation(summary = "Admin only endpoint")
+  @SecurityRequirement(name = "bearerAuth")
   @GetMapping("/admin")
   @RolesAllowed("ADMIN")
   public Map<String, Object> admin(@AuthenticationPrincipal Jwt jwt) {
@@ -46,16 +56,24 @@ public class AuthenticationController {
   }
 
   @PostMapping("/signin")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Login success"),
+      @ApiResponse(responseCode = "401", description = "Invalid credentials")
+  })
   public ResponseEntity<TokenResponseDTO> signin(@RequestBody @Validated SignInRequestDTO request) {
     return ResponseEntity.ok(signInUsecase.execute(request));
   }
 
   @PostMapping("/refresh")
+  @Operation(summary = "Refresh access token")
+  @SecurityRequirement(name = "bearerAuth")
   public ResponseEntity<TokenResponseDTO> refresh(@RequestHeader("Authorization") String bearer) {
     String refreshToken = bearer.substring(7);
     return ResponseEntity.ok(refreshTokenUsecase.execute(refreshToken));
   }
 
+  @Operation(summary = "Sign out")
+  @SecurityRequirement(name = "bearerAuth")
   @PostMapping("/signout")
   public ResponseEntity<Void> logout(
       @RequestHeader("Authorization") String bearer) {
