@@ -13,13 +13,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class FrontendController {
 
-  // @GetMapping("/")
-  // public String home(Model model, Principal principal) {
-  // if (principal != null) {
-  // model.addAttribute("username", principal.getName());
-  // }
-  // return "index";
-  // }
+  @GetMapping("/dashboard")
+  public String dashboard() {
+    return "dashboard";
+  }
 
   @GetMapping("/signin")
   public String signin() {
