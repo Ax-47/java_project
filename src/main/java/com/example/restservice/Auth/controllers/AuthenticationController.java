@@ -9,7 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.restservice.Auth.dto.SignInRequestDTO;
-import com.example.restservice.Auth.dto.SignInResponseDTO;
+import com.example.restservice.Auth.dto.TokenResponseDTO;
 import com.example.restservice.Auth.usecases.SignInUsecase;
 
 import jakarta.annotation.security.RolesAllowed;
@@ -36,8 +36,12 @@ public class AuthenticationController {
   }
 
   @PostMapping("/signin")
-  public ResponseEntity<SignInResponseDTO> signin(@RequestBody @Validated SignInRequestDTO request) {
+  public ResponseEntity<TokenResponseDTO> signin(@RequestBody @Validated SignInRequestDTO request) {
     return ResponseEntity.ok(signInUsecase.execute(request));
   }
 
+  @PostMapping("/refresh")
+  public ResponseEntity<TokenResponseDTO> refresh(@RequestBody @Validated SignInRequestDTO request) {
+    return ResponseEntity.ok(signInUsecase.execute(request));
+  }
 }
