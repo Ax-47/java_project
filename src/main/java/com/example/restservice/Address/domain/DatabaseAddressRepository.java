@@ -11,4 +11,6 @@ public interface DatabaseAddressRepository {
   public Address delete(Address address);
 
   public void clearDefaultByUserId(UUID userId);
+
+  public void setDefaultAddress(UUID addressId, UUID userId);
 }
