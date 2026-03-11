@@ -1,9 +1,13 @@
 package com.example.restservice.Products.usecases;
 
-import com.example.restservice.Products.domain.*;
-import org.springframework.stereotype.Service;
+import com.example.restservice.Products.domain.DatabaseProductRepository;
+import com.example.restservice.Products.domain.Product;
 import com.example.restservice.Products.dto.DeleteProductRequestDTO;
 import com.example.restservice.Products.dto.DeleteProductResponseDTO;
+import com.example.restservice.Products.exceptions.ProductNotFoundException;
+import com.example.restservice.Products.exceptions.UnauthorizedProductActionException;
+
+import org.springframework.stereotype.Service;
 
 @Service
 public class DeleteProductUsecase {
@@ -11,16 +15,18 @@ public class DeleteProductUsecase {
     private final DatabaseProductRepository databaseProductRepository;
 
     public DeleteProductUsecase(
-            DatabaseProductRepository databaseProductRepository) {
+        DatabaseProductRepository databaseProductRepository
+    ) {
         this.databaseProductRepository = databaseProductRepository;
     }
 
     public DeleteProductResponseDTO execute(DeleteProductRequestDTO request) {
         Product existingProduct = this.databaseProductRepository.findById(
-                request.productId()).orElseThrow(() -> new RuntimeException("Product not found"));
+            request.productId()
+        ).orElseThrow(() -> new ProductNotFoundException("Product not found"));
 
         if (!existingProduct.getCreatedBy().equals(request.userId())) {
-            throw new RuntimeException("Unauthorized to delete this product");
+            throw new UnauthorizedProductActionException("Unauthorized to delete this product");
         }
         this.databaseProductRepository.delete(existingProduct);
 
