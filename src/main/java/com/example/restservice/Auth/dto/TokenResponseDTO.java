@@ -1,6 +1,6 @@
 package com.example.restservice.Auth.dto;
 
 public record TokenResponseDTO(
-                                String accessToken,
-                                String refreshToken) {
+                                                                String access_token,
+                                                                String refresh_token) {
 }

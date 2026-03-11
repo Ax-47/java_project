@@ -1,5 +1,8 @@
 package com.example.restservice.Auth.repositories;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.stereotype.Repository;
 import com.example.restservice.Auth.domain.DatabaseRefreshTokenRepository;
 import com.example.restservice.Auth.domain.RefreshToken;
@@ -20,4 +23,14 @@ public class DatabaseRefreshTokenRepositoryImpl implements DatabaseRefreshTokenR
     return saved.toDomain();
   }
 
+  @Override
+  public Optional<RefreshToken> findByTokenId(UUID tokenId) {
+    return jpaRefreshTokenRepository.findById(tokenId)
+        .map(RefreshTokenModel::toDomain);
+  }
+
+  @Override
+  public void revokeRefreshToken(UUID tokenId, UUID userId) {
+    jpaRefreshTokenRepository.revokeRefreshToken(tokenId, userId);
+  }
 }
