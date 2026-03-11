@@ -1,0 +1,75 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sign In</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body class="bg-slate-900 flex items-center justify-center h-screen">
+    <div class="bg-slate-800 p-8 rounded-xl shadow-lg w-80">
+      <h2 class="text-2xl font-bold text-white mb-6 text-center">Sign In</h2>
+
+      <form id="loginForm" class="space-y-4">
+        <input
+          id="name"
+          type="text"
+          placeholder="Name"
+          required
+          class="w-full px-4 py-2 rounded-lg bg-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+
+        <input
+          id="password"
+          type="password"
+          placeholder="Password"
+          required
+          class="w-full px-4 py-2 rounded-lg bg-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+
+        <button
+          type="submit"
+          class="w-full bg-blue-600 hover:bg-blue-700 transition py-2 rounded-lg text-white font-semibold"
+        >
+          Login
+        </button>
+
+        <p id="error" class="text-red-400 text-sm text-center"></p>
+      </form>
+    </div>
+
+    <script>
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const name = document.getElementById("name").value;
+          const password = document.getElementById("password").value;
+
+          const res = await fetch("/api/auth/signin", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name,
+              password,
+            }),
+          });
+
+          if (!res.ok) {
+            document.getElementById("error").innerText = "Login failed";
+            return;
+          }
+
+          const data = await res.json();
+
+          localStorage.setItem("accessToken", data.access_token);
+          localStorage.setItem("refreshToken", data.refresh_token);
+
+        });
+    </script>
+  </body>
+</html>
