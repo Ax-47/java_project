@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.restservice.Address.domain.*;
 import com.example.restservice.Address.dto.*;
+import com.example.restservice.Address.exceptions.*;
 
 @Service
 public class DeleteAddressUsecase {
@@ -16,10 +17,10 @@ public class DeleteAddressUsecase {
 
     public DeleteAddressResponseDTO execute(DeleteAddressRequestDTO request) {
         Address existingAddress = this.databaseAddressRepository.findById(request.addressId())
-                .orElseThrow(() -> new RuntimeException("Address not found"));
+                .orElseThrow(() -> new AddressNotFoundException("Address not found"));
 
         if (!existingAddress.getUserId().equals(request.userId())) {
-            throw new RuntimeException("Unauthorized to delete this address");
+            throw new UnauthorizedAddressActionException("Unauthorized to delete this address");
         }
         this.databaseAddressRepository.delete(existingAddress);
 
