@@ -36,7 +36,7 @@ public class OrderController {
 
     @PatchMapping("/{orderId}/cancel")
     public ResponseEntity<CancelOrderResponseDTO> cancelOrder(
-            @PathVariable Long orderId,
+            @PathVariable UUID orderId,
             Authentication authentication) {
         UUID userId = UUID.fromString(authentication.getName());
         CancelOrderRequestDTO request = new CancelOrderRequestDTO(orderId, userId);

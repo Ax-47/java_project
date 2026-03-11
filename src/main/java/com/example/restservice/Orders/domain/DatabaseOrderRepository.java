@@ -6,7 +6,7 @@ import java.util.UUID;
 public interface DatabaseOrderRepository {
     public Order save(Order product);
 
-    Optional<Order> findById(Long id);
+    Optional<Order> findById(UUID id);
 
     public Order delete(Order product);
 }
