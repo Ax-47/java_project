@@ -9,22 +9,26 @@ public class RefreshToken {
   private final UUID userId;
   private final Instant issuedDate;
   private boolean isExpired;
+  private final String token;
 
   private RefreshToken(
       UUID id,
       UUID userId,
+      String token,
       Instant issuedDate,
       boolean isExpired) {
     this.id = id;
     this.userId = userId;
+    this.token = token;
     this.issuedDate = issuedDate;
     this.isExpired = isExpired;
   }
 
-  public static RefreshToken create(UUID userId) {
+  public static RefreshToken create(UUID userId, String token) {
     return new RefreshToken(
         UUID.randomUUID(),
         userId,
+        token,
         Instant.now(),
         false);
   }
@@ -32,11 +36,13 @@ public class RefreshToken {
   public static RefreshToken rehydrate(
       UUID id,
       UUID userId,
+      String token,
       Instant issuedDate,
       boolean isExpired) {
     return new RefreshToken(
         id,
         userId,
+        token,
         issuedDate,
         isExpired);
   }
@@ -55,6 +61,10 @@ public class RefreshToken {
 
   public UUID getUserId() {
     return userId;
+  }
+
+  public String getToken() {
+    return token;
   }
 
   public Instant getIssuedDate() {
