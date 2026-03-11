@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.example.restservice.Address.domain.Address;
 import com.example.restservice.Address.domain.DatabaseAddressRepository;
 import com.example.restservice.Address.dto.SetDefaultAddressRequestDTO;
