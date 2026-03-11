@@ -1,11 +1,14 @@
 package com.example.restservice.Auth.usecases;
 
+import java.time.Instant;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.restservice.Address.exceptions.UnauthorizedAddressActionException;
 import com.example.restservice.Auth.domain.DatabaseRefreshTokenRepository;
 import com.example.restservice.Auth.domain.RefreshToken;
+import com.example.restservice.Auth.domain.TokenRepository;
 import com.example.restservice.Auth.dto.SignInRequestDTO;
 import com.example.restservice.Auth.dto.SignInResponseDTO;
 import com.example.restservice.Users.domain.DatabaseUserRepository;
@@ -18,12 +21,14 @@ public class SignInUsecase {
   private final DatabaseRefreshTokenRepository databaseRefreshTokenRepository;
   private final DatabaseUserRepository databaseUserRepository;
   private final HashRepository hashRepository;
+  private final TokenRepository tokenRepository;
 
   public SignInUsecase(DatabaseRefreshTokenRepository databaseRefreshTokenRepository,
-      DatabaseUserRepository databaseUserRepository, HashRepository hashRepository) {
+      DatabaseUserRepository databaseUserRepository, HashRepository hashRepository, TokenRepository tokenRepository) {
     this.databaseRefreshTokenRepository = databaseRefreshTokenRepository;
     this.databaseUserRepository = databaseUserRepository;
     this.hashRepository = hashRepository;
+    this.tokenRepository = tokenRepository;
   }
 
   @Transactional
@@ -34,8 +39,12 @@ public class SignInUsecase {
     if (!hashRepository.matches(request.password(), user.getPassword())) {
       throw new UnauthorizedAddressActionException("Unauthorized");
     }
-    RefreshToken savedRefreshToken = databaseRefreshTokenRepository.save(RefreshToken.create(user.getId()));
-    // jwt token
-    return new SignInResponseDTO("ac token", savedRefreshToken.getId().toString());
+    var now = Instant.now();
+    String refreshToken = tokenRepository.issueRefreshToken(user, now);
+    String accessToken = tokenRepository.issueAccessToken(user, now);
+    String hashedToken = hashRepository.hash(refreshToken);
+    databaseRefreshTokenRepository
+        .save(RefreshToken.create(user.getId(), hashedToken));
+    return new SignInResponseDTO(accessToken, refreshToken);
   }
 }
