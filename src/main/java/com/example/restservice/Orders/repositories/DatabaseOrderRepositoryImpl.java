@@ -6,6 +6,7 @@ import com.example.restservice.Orders.models.OrderModel;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public class DatabaseOrderRepositoryImpl implements DatabaseOrderRepository {
@@ -24,7 +25,7 @@ public class DatabaseOrderRepositoryImpl implements DatabaseOrderRepository {
     }
 
     @Override
-    public Optional<Order> findById(Long id) {
+    public Optional<Order> findById(UUID id) {
         return jpaOrderRepository.findById(id).map(OrderModel::toDomain);
     }
 
