@@ -1,6 +1,8 @@
 package com.example.restservice.Users.repositories;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,69 +15,76 @@ import com.example.restservice.Users.models.*;
 @Repository
 public class DatabaseUserRepositoryImpl implements DatabaseUserRepository {
 
-  private final JpaUserRepository jpaUserRepository;
+    private final JpaUserRepository jpaUserRepository;
 
-  public DatabaseUserRepositoryImpl(JpaUserRepository jpaUserRepository) {
-    this.jpaUserRepository = jpaUserRepository;
-  }
+    public DatabaseUserRepositoryImpl(JpaUserRepository jpaUserRepository) {
+        this.jpaUserRepository = jpaUserRepository;
+    }
 
-  @Override
-  public User save(User user) {
-    UserModel model = UserModel.fromDomain(user);
-    UserModel saved = jpaUserRepository.save(model);
-    return saved.toDomain();
-  }
+    @Override
+    public User save(User user) {
+        UserModel model = UserModel.fromDomain(user);
+        UserModel saved = jpaUserRepository.save(model);
+        return saved.toDomain();
+    }
 
-  @Override
-  public boolean existsByUsername(String name) {
-    return jpaUserRepository.existsByUsername(name);
-  }
+    @Override
+    public boolean existsByUsername(String name) {
+        return jpaUserRepository.existsByUsername(name);
+    }
 
-  @Override
-  public User findUserByUsername(String username) {
-    UserModel user = jpaUserRepository
-        .findByUsername(username)
-        .orElseThrow(() -> new UserNotFoundException("User not found"));
-    return User.rehydrate(
-        user.getId(),
-        user.getUsername(),
-        user.getPassword(),
-        user.getCredit(),
-        user.isAdmin(),
-        user.getCreatedAt(),
-        user.getUpdatedAt());
-  }
+    @Override
+    public Optional<User> findUserByUserId(UUID userId) {
+        return jpaUserRepository
+                .findById(userId)
+                .map(UserModel::toDomain);
+    }
 
-  @Override
-  public Page<User> findAllUsers(PageQuery query) {
+    @Override
+    public User findUserByUsername(String username) {
+        UserModel user = jpaUserRepository
+                .findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        return User.rehydrate(
+                user.getId(),
+                user.getUsername(),
+                user.getPassword(),
+                user.getCredit(),
+                user.isAdmin(),
+                user.getCreatedAt(),
+                user.getUpdatedAt());
+    }
 
-    Sort sort = query.ascending()
-        ? Sort.by(query.sortBy()).ascending()
-        : Sort.by(query.sortBy()).descending();
+    @Override
+    public Page<User> findAllUsers(PageQuery query) {
 
-    Pageable pageable = PageRequest.of(
-        query.page(),
-        query.size(),
-        sort);
+        Sort sort = query.ascending()
+                ? Sort.by(query.sortBy()).ascending()
+                : Sort.by(query.sortBy()).descending();
 
-    org.springframework.data.domain.Page<UserModel> page = jpaUserRepository.findAll(pageable);
-    List<User> users = page.getContent()
-        .stream()
-        .map(user -> User.rehydrate(
-            user.getId(),
-            user.getUsername(),
-            user.getPassword(),
-            user.getCredit(),
-            user.isAdmin(),
-            user.getCreatedAt(),
-            user.getUpdatedAt()))
-        .toList();
+        Pageable pageable = PageRequest.of(
+                query.page(),
+                query.size(),
+                sort);
 
-    return new Page<>(
-        users,
-        page.getTotalElements(),
-        page.getTotalPages(),
-        page.getNumber(),
-        page.getSize());
-  }
+        org.springframework.data.domain.Page<UserModel> page = jpaUserRepository.findAll(pageable);
+        List<User> users = page.getContent()
+                .stream()
+                .map(user -> User.rehydrate(
+                        user.getId(),
+                        user.getUsername(),
+                        user.getPassword(),
+                        user.getCredit(),
+                        user.isAdmin(),
+                        user.getCreatedAt(),
+                        user.getUpdatedAt()))
+                .toList();
+
+        return new Page<>(
+                users,
+                page.getTotalElements(),
+                page.getTotalPages(),
+                page.getNumber(),
+                page.getSize());
+    }
 }

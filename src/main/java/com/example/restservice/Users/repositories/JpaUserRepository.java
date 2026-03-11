@@ -1,12 +1,13 @@
 package com.example.restservice.Users.repositories;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.restservice.Users.models.UserModel;
 
 public interface JpaUserRepository
-    extends JpaRepository<UserModel, String> {
+    extends JpaRepository<UserModel, UUID> {
   boolean existsByUsername(String username);
 
   Optional<UserModel> findByUsername(String username);
