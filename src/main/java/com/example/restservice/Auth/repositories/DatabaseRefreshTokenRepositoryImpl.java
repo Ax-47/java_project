@@ -33,4 +33,9 @@ public class DatabaseRefreshTokenRepositoryImpl implements DatabaseRefreshTokenR
   public void revokeRefreshToken(UUID tokenId, UUID userId) {
     jpaRefreshTokenRepository.revokeRefreshToken(tokenId, userId);
   }
+
+  @Override
+  public void revokeRefreshToken(UUID tokenId) {
+    jpaRefreshTokenRepository.revokeRefreshToken(tokenId);
+  }
 }
