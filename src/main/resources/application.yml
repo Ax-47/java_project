@@ -1,0 +1,24 @@
+---
+server:
+  port: 9000
+logging:
+  level:
+    org.springframework.security: trace
+# springdoc:
+#   api-docs:
+#     enabled: false
+#   swagger-ui:
+#     enabled: false
+token:
+  # Default: 1 Hour
+  access-token-expired-in-seconds: ${ACCESS_TOKEN_EXP_SEC:3600}
+  # Default: 1 Month
+  refresh-token-expired-in-seconds: ${REFRESH_TOKEN_EXP_SEC:2592000}
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/restdb}
+    username: ${DB_USER:restuser}
+    password: ${DB_PASS:restpass}
+  jpa:
+    hibernate:
+      ddl-auto: update
