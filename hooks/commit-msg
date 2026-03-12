@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+commit_regex='^(feat|fix|docs|style|refactor|test|chore)(\(.+\))?: .+'
+
+commit_msg=$(cat "$1")
+
+if ! [[ $commit_msg =~ $commit_regex ]]; then
+  echo "❌ Invalid commit message!"
+  echo ""
+  echo "Use Conventional Commits:"
+  echo "feat: add login endpoint"
+  echo "fix: resolve jwt validation"
+  echo "refactor: improve order service"
+  echo "test: add user service tests"
+  echo ""
+  exit 1
+fi
