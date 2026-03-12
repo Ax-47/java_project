@@ -19,8 +19,7 @@ public class ReviewController {
   private final CreateReviewUsecase createReviewUsecase;
   private final DeleteReviewUsecase deleteReviewUsecase;
 
-  public ReviewController(
-      CreateReviewUsecase createReviewUsecase, DeleteReviewUsecase deleteReviewUsecase) {
+  public ReviewController(CreateReviewUsecase createReviewUsecase, DeleteReviewUsecase deleteReviewUsecase) {
     this.createReviewUsecase = createReviewUsecase;
     this.deleteReviewUsecase = deleteReviewUsecase;
   }
