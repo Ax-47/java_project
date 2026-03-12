@@ -16,3 +16,9 @@ auth:
   credentials:
     token: "{{access_token}}"
 order: 2007
+
+$kind: http-request
+name: New Request
+url: ""
+method: GET
+order: 2007
