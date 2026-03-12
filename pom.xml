@@ -147,29 +147,6 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>com.rudikershaw.gitbuildhook</groupId>
-				<artifactId>git-build-hook-maven-plugin</artifactId>
-				<version>3.6.0</version>
-				<configuration>
-					<gitConfig>
-						<core.hooksPath>hooks/</core.hooksPath>
-						<custom.configuration>true</custom.configuration>
-					</gitConfig>
-
-					<installHooks>
-						<pre-commit>mvn spotless:apply</pre-commit>
-					</installHooks>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>install</goal>
-						</goals>
-						<phase>initialize</phase>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
 				<groupId>io.github.git-commit-id</groupId>
 				<artifactId>git-commit-id-maven-plugin</artifactId>
 				<version>6.0.0</version>
