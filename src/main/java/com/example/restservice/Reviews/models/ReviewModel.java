@@ -3,6 +3,8 @@ package com.example.restservice.Reviews.models;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.example.restservice.Address.domain.Address;
+import com.example.restservice.Address.models.AddressModel;
 import com.example.restservice.Reviews.domain.Review;
 
 import jakarta.persistence.*;
