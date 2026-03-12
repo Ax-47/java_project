@@ -3,8 +3,6 @@ package com.example.restservice.Reviews.models;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import com.example.restservice.Address.domain.Address;
-import com.example.restservice.Address.models.AddressModel;
 import com.example.restservice.Reviews.domain.Review;
 
 import jakarta.persistence.*;
@@ -120,24 +118,23 @@ public class ReviewModel {
   }
 
   public static ReviewModel fromDomain(Review review) {
-        if (review == null) {
-            return null;
-        }
-
-        ReviewModel entity = new ReviewModel();
-
-        if (review.getId() != null) {
-            entity.id = review.getId();
-        }
-
-        entity.userId = review.getUserId();
-        entity.productId = review.getProductId();
-        entity.rating = review.getRating();
-        entity.comment = review.getComment();
-        entity.createdAt = review.getCreatedAt();
-        entity.updatedAt = review.getUpdatedAt();
-
-        return entity;
+    if (review == null) {
+      return null;
     }
-}
 
+    ReviewModel entity = new ReviewModel();
+
+    if (review.getId() != null) {
+      entity.id = review.getId();
+    }
+
+    entity.userId = review.getUserId();
+    entity.productId = review.getProductId();
+    entity.rating = review.getRating();
+    entity.comment = review.getComment();
+    entity.createdAt = review.getCreatedAt();
+    entity.updatedAt = review.getUpdatedAt();
+
+    return entity;
+  }
+}

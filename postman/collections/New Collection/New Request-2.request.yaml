@@ -1,5 +1,18 @@
 $kind: http-request
 name: New Request
-url: ""
-method: GET
+url: http://127.0.0.1:9000/api/reviews
+method: DELETE
+body:
+  type: json
+  content: "{\r
+
+    \  \"reviewId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r
+
+    \  \"userId\": \"9b2c2d3e-8f54-4d7a-9f0a-1a2b3c4d5e6f\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
 order: 2007
