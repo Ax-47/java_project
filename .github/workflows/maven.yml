@@ -18,7 +18,20 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: restdb
+          POSTGRES_USER: restuser
+          POSTGRES_PASSWORD: restpass
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U restuser"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
