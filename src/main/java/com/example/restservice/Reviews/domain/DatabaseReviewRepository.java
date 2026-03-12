@@ -5,4 +5,7 @@ import java.util.UUID;
 
 public interface DatabaseReviewRepository {
         Review save(Review review);
+        Optional<Review> findById(UUID id);
+
+  public Review delete(Review review);
 }
