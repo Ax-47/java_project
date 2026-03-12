@@ -3,8 +3,6 @@ package com.example.restservice.Address.usecases;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import org.springframework.stereotype.Service;
-
 import com.example.restservice.Address.domain.Address;
 import com.example.restservice.Address.domain.DatabaseAddressRepository;
 import com.example.restservice.Address.dto.SetDefaultAddressRequestDTO;

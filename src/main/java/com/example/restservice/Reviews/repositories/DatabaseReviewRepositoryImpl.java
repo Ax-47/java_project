@@ -8,8 +8,6 @@ import org.springframework.stereotype.Repository;
 import com.example.restservice.Reviews.domain.DatabaseReviewRepository;
 import com.example.restservice.Reviews.domain.Review;
 import com.example.restservice.Reviews.models.ReviewModel;
-import com.example.restservice.Reviews.domain.Review;
-import com.example.restservice.Reviews.models.ReviewModel;
 
 @Repository
 public class DatabaseReviewRepositoryImpl implements DatabaseReviewRepository {
