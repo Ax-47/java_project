@@ -9,21 +9,23 @@ import com.example.restservice.Address.exceptions.*;
 @Service
 public class DeleteAddressUsecase {
 
-    private final DatabaseAddressRepository databaseAddressRepository;
+  private final DatabaseAddressRepository databaseAddressRepository;
 
-    public DeleteAddressUsecase(DatabaseAddressRepository databaseAddressRepository) {
-        this.databaseAddressRepository = databaseAddressRepository;
+  public DeleteAddressUsecase(DatabaseAddressRepository databaseAddressRepository) {
+    this.databaseAddressRepository = databaseAddressRepository;
+  }
+
+  public DeleteAddressResponseDTO execute(DeleteAddressRequestDTO request) {
+    Address existingAddress =
+        this.databaseAddressRepository
+            .findById(request.addressId())
+            .orElseThrow(() -> new AddressNotFoundException("Address not found"));
+
+    if (!existingAddress.getUserId().equals(request.userId())) {
+      throw new UnauthorizedAddressActionException("Unauthorized to delete this address");
     }
+    this.databaseAddressRepository.delete(existingAddress);
 
-    public DeleteAddressResponseDTO execute(DeleteAddressRequestDTO request) {
-        Address existingAddress = this.databaseAddressRepository.findById(request.addressId())
-                .orElseThrow(() -> new AddressNotFoundException("Address not found"));
-
-        if (!existingAddress.getUserId().equals(request.userId())) {
-            throw new UnauthorizedAddressActionException("Unauthorized to delete this address");
-        }
-        this.databaseAddressRepository.delete(existingAddress);
-
-        return new DeleteAddressResponseDTO("Address was deleted successfully");
-    }
+    return new DeleteAddressResponseDTO("Address was deleted successfully");
+  }
 }

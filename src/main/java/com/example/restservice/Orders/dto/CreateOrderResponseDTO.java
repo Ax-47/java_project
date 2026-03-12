@@ -1,4 +1,3 @@
 package com.example.restservice.Orders.dto;
 
-public record CreateOrderResponseDTO(String message) {
-}
+public record CreateOrderResponseDTO(String message) {}

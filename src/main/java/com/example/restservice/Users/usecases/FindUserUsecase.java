@@ -1,10 +1,10 @@
 package com.example.restservice.Users.usecases;
 
+import org.springframework.stereotype.Service;
+
 import com.example.restservice.Users.domain.DatabaseUserRepository;
 import com.example.restservice.Users.domain.User;
 import com.example.restservice.Users.dto.FindUserResponseDTO;
-
-import org.springframework.stereotype.Service;
 
 @Service
 public class FindUserUsecase {

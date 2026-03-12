@@ -1,8 +1,5 @@
 package com.example.restservice.Reviews.repositories;
 
-import java.util.Optional;
-import java.util.UUID;
-
 import org.springframework.stereotype.Repository;
 
 import com.example.restservice.Address.repositories.JpaAddressRepository;

@@ -16,8 +16,7 @@ public class SignOutUsecase {
   private final DatabaseRefreshTokenRepository refreshTokenRepository;
 
   public SignOutUsecase(
-      TokenRepository tokenRepository,
-      DatabaseRefreshTokenRepository refreshTokenRepository) {
+      TokenRepository tokenRepository, DatabaseRefreshTokenRepository refreshTokenRepository) {
     this.tokenRepository = tokenRepository;
     this.refreshTokenRepository = refreshTokenRepository;
   }
@@ -27,9 +26,10 @@ public class SignOutUsecase {
 
     DecodedToken jwt = tokenRepository.decode(refreshToken);
 
-    RefreshToken token = refreshTokenRepository
-        .findByTokenId(jwt.tokenId())
-        .orElseThrow(() -> new UnauthorizedException("Invalid refresh token"));
+    RefreshToken token =
+        refreshTokenRepository
+            .findByTokenId(jwt.tokenId())
+            .orElseThrow(() -> new UnauthorizedException("Invalid refresh token"));
 
     refreshTokenRepository.revokeRefreshToken(token.getId());
   }

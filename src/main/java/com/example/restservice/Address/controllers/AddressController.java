@@ -23,7 +23,10 @@ public class AddressController {
   private final DeleteAddressUsecase deleteAddressUsecase;
   private final SetDefaultAddressUsecase setDefaultAddressUsecase;
 
-  public AddressController(CreateAddressUsecase createAddressUsecase,DeleteAddressUsecase deleteAddressUsecase,SetDefaultAddressUsecase setDefaultAddressUsecase) {
+  public AddressController(
+      CreateAddressUsecase createAddressUsecase,
+      DeleteAddressUsecase deleteAddressUsecase,
+      SetDefaultAddressUsecase setDefaultAddressUsecase) {
     this.createAddressUsecase = createAddressUsecase;
     this.deleteAddressUsecase = deleteAddressUsecase;
     this.setDefaultAddressUsecase = setDefaultAddressUsecase;
@@ -37,14 +40,16 @@ public class AddressController {
 
     return ResponseEntity.ok(response);
   }
+
   @DeleteMapping
   public ResponseEntity<DeleteAddressResponseDTO> delete(
-    @Valid @RequestBody DeleteAddressRequestDTO requestModel) {
+      @Valid @RequestBody DeleteAddressRequestDTO requestModel) {
 
     DeleteAddressResponseDTO response = deleteAddressUsecase.execute(requestModel);
 
     return ResponseEntity.ok(response);
   }
+
   @PatchMapping("/default")
   public ResponseEntity<SetDefaultAddressResponseDTO> setDefault(
       @Valid @RequestBody SetDefaultAddressRequestDTO requestModel) {

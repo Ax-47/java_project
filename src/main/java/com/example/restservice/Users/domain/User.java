@@ -25,14 +25,7 @@ public class User {
       LocalDateTime createdAt,
       LocalDateTime updatedAt) {
 
-    return new User(
-        id,
-        username,
-        password,
-        Credit.of(credit),
-        isAdmin,
-        createdAt,
-        updatedAt);
+    return new User(id, username, password, Credit.of(credit), isAdmin, createdAt, updatedAt);
   }
 
   private User(

@@ -1,8 +1,9 @@
 package com.example.restservice.Greeting.repositories;
 
+import org.springframework.stereotype.Repository;
+
 import com.example.restservice.Greeting.domain.Greeting;
 import com.example.restservice.Greeting.domain.GreetingRepository;
-import org.springframework.stereotype.Repository;
 
 @Repository
 public class InMemoryGreetingRepository implements GreetingRepository {

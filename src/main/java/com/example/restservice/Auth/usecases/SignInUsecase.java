@@ -24,8 +24,11 @@ public class SignInUsecase {
   private final HashRepository hashRepository;
   private final TokenRepository tokenRepository;
 
-  public SignInUsecase(DatabaseRefreshTokenRepository databaseRefreshTokenRepository,
-      DatabaseUserRepository databaseUserRepository, HashRepository hashRepository, TokenRepository tokenRepository) {
+  public SignInUsecase(
+      DatabaseRefreshTokenRepository databaseRefreshTokenRepository,
+      DatabaseUserRepository databaseUserRepository,
+      HashRepository hashRepository,
+      TokenRepository tokenRepository) {
     this.databaseRefreshTokenRepository = databaseRefreshTokenRepository;
     this.databaseUserRepository = databaseUserRepository;
     this.hashRepository = hashRepository;
@@ -44,8 +47,8 @@ public class SignInUsecase {
     String secret = UUID.randomUUID().toString();
     String accessToken = tokenRepository.issueAccessToken(user, now);
     String hashedSecret = hashRepository.hash(secret);
-    RefreshToken rft = databaseRefreshTokenRepository
-        .save(RefreshToken.create(user.getId(), hashedSecret));
+    RefreshToken rft =
+        databaseRefreshTokenRepository.save(RefreshToken.create(user.getId(), hashedSecret));
     String refreshToken = tokenRepository.issueRefreshToken(user, rft.getId(), secret, now);
     return new TokenResponseDTO(accessToken, refreshToken);
   }

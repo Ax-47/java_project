@@ -1,31 +1,32 @@
 package com.example.restservice.Products.usecases;
 
-import com.example.restservice.Products.domain.*;
-import com.example.restservice.Products.dto.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.example.restservice.Products.domain.*;
+import com.example.restservice.Products.dto.*;
 
 @Service
 public class CreateProductUsecase {
 
-    private final DatabaseProductRepository productRepository;
+  private final DatabaseProductRepository productRepository;
 
-    public CreateProductUsecase(DatabaseProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
+  public CreateProductUsecase(DatabaseProductRepository productRepository) {
+    this.productRepository = productRepository;
+  }
 
-    @Transactional
-    public CreateProductResponseDTO execute(CreateProductRequestDTO request) {
-        Product newProduct = Product.create(
+  @Transactional
+  public CreateProductResponseDTO execute(CreateProductRequestDTO request) {
+    Product newProduct =
+        Product.create(
             request.id(),
             request.name(),
             request.price(),
             request.description(),
-            request.createdBy()
-        );
+            request.createdBy());
 
-        productRepository.save(newProduct);
+    productRepository.save(newProduct);
 
-        return new CreateProductResponseDTO("Product was created");
-    }
+    return new CreateProductResponseDTO("Product was created");
+  }
 }

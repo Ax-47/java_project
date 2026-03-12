@@ -58,11 +58,7 @@ public class Review {
     this.updatedAt = updatedAt;
   }
 
-  public static Review create(
-      UUID productId,
-      UUID userId,
-      int rating,
-      String comment) {
+  public static Review create(UUID productId, UUID userId, int rating, String comment) {
 
     if (rating < 1 || rating > 5) {
       throw new IllegalArgumentException("rating must be 1-5");
@@ -70,14 +66,7 @@ public class Review {
 
     LocalDateTime now = LocalDateTime.now();
 
-    return new Review(
-        UUID.randomUUID(),
-        productId,
-        userId,
-        rating,
-        comment,
-        now,
-        now);
+    return new Review(UUID.randomUUID(), productId, userId, rating, comment, now, now);
   }
 
   public static Review rehydrate(
@@ -88,14 +77,7 @@ public class Review {
       String comment,
       LocalDateTime createdAt,
       LocalDateTime updatedAt) {
-    return new Review(
-        id,
-        productId,
-        userId,
-        rating,
-        comment,
-        createdAt,
-        updatedAt);
+    return new Review(id, productId, userId, rating, comment, createdAt, updatedAt);
   }
 
   public void update(int rating, String comment) {
@@ -108,5 +90,4 @@ public class Review {
     this.comment = comment;
     this.updatedAt = LocalDateTime.now();
   }
-
 }

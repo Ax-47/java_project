@@ -4,9 +4,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface DatabaseOrderRepository {
-    public Order save(Order product);
+  public Order save(Order product);
 
-    Optional<Order> findById(UUID id);
+  Optional<Order> findById(UUID id);
 
-    public Order delete(Order product);
+  public Order delete(Order product);
 }

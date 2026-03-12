@@ -21,6 +21,7 @@ public class CustomUserDetailsUsecase implements UserDetailsService {
   public UserDetails loadUserByUsername(String username) {
 
     User user = databaseUserRepository.findUserByUsername(username);
-    return new AuthenticatedUser(user.getId(), user.getUsername(), user.getPassword(), user.isAdmin());
+    return new AuthenticatedUser(
+        user.getId(), user.getUsername(), user.getPassword(), user.isAdmin());
   }
 }

@@ -1,15 +1,16 @@
 package com.example.restservice.Reviews.models;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.example.restservice.Reviews.domain.Review;
 
+import jakarta.persistence.*;
+
 @Entity
-@Table(name = "reviews", uniqueConstraints = {
-    @UniqueConstraint(columnNames = { "product_id", "user_id" })
-})
+@Table(
+    name = "reviews",
+    uniqueConstraints = {@UniqueConstraint(columnNames = {"product_id", "user_id"})})
 public class ReviewModel {
 
   @Id

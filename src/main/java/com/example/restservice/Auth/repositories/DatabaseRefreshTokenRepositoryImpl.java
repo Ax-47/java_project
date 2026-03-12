@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Repository;
+
 import com.example.restservice.Auth.domain.DatabaseRefreshTokenRepository;
 import com.example.restservice.Auth.domain.RefreshToken;
 import com.example.restservice.Auth.models.RefreshTokenModel;
@@ -25,8 +26,7 @@ public class DatabaseRefreshTokenRepositoryImpl implements DatabaseRefreshTokenR
 
   @Override
   public Optional<RefreshToken> findByTokenId(UUID tokenId) {
-    return jpaRefreshTokenRepository.findById(tokenId)
-        .map(RefreshTokenModel::toDomain);
+    return jpaRefreshTokenRepository.findById(tokenId).map(RefreshTokenModel::toDomain);
   }
 
   @Override

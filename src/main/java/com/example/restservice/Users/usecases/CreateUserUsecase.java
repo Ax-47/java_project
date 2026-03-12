@@ -1,10 +1,10 @@
 package com.example.restservice.Users.usecases;
 
+import org.springframework.stereotype.Service;
+
 import com.example.restservice.Users.domain.*;
 import com.example.restservice.Users.dto.*;
 import com.example.restservice.Users.exceptions.*;
-
-import org.springframework.stereotype.Service;
 
 @Service
 public class CreateUserUsecase {
@@ -12,7 +12,8 @@ public class CreateUserUsecase {
   private final DatabaseUserRepository databaseUserRepository;
   private final HashRepository hashRepository;
 
-  public CreateUserUsecase(DatabaseUserRepository databaseUserRepository, HashRepository hashRepository) {
+  public CreateUserUsecase(
+      DatabaseUserRepository databaseUserRepository, HashRepository hashRepository) {
     this.databaseUserRepository = databaseUserRepository;
     this.hashRepository = hashRepository;
   }

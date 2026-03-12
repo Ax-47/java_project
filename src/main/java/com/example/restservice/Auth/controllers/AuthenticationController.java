@@ -14,10 +14,10 @@ import com.example.restservice.Auth.usecases.RefreshTokenUsecase;
 import com.example.restservice.Auth.usecases.SignInUsecase;
 import com.example.restservice.Auth.usecases.SignOutUsecase;
 
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.security.RolesAllowed;
 
@@ -37,7 +37,6 @@ public class AuthenticationController {
     this.signInUsecase = signInUsecase;
     this.refreshTokenUsecase = refreshTokenUsecase;
     this.signOutUsecase = signOutUsecase;
-
   }
 
   @Operation(summary = "Get current user")
@@ -56,10 +55,11 @@ public class AuthenticationController {
   }
 
   @PostMapping("/signin")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Login success"),
-      @ApiResponse(responseCode = "401", description = "Invalid credentials")
-  })
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200", description = "Login success"),
+        @ApiResponse(responseCode = "401", description = "Invalid credentials")
+      })
   public ResponseEntity<TokenResponseDTO> signin(@RequestBody @Validated SignInRequestDTO request) {
     return ResponseEntity.ok(signInUsecase.execute(request));
   }
@@ -75,8 +75,7 @@ public class AuthenticationController {
   @Operation(summary = "Sign out")
   @SecurityRequirement(name = "bearerAuth")
   @PostMapping("/signout")
-  public ResponseEntity<Void> logout(
-      @RequestHeader("Authorization") String bearer) {
+  public ResponseEntity<Void> logout(@RequestHeader("Authorization") String bearer) {
     String refreshToken = bearer.substring(7);
     signOutUsecase.execute(refreshToken);
     return ResponseEntity.noContent().build();

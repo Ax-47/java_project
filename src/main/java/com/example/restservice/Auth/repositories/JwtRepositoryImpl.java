@@ -2,11 +2,8 @@ package com.example.restservice.Auth.repositories;
 
 import java.time.Instant;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -50,32 +47,35 @@ public class JwtRepositoryImpl implements TokenRepository {
 
   public String generateToken(User user, Instant issueDate, long expiredInSeconds) {
     Instant expire = issueDate.plusSeconds(expiredInSeconds);
-    JwtClaimsSet claims = JwtClaimsSet.builder()
-        .issuer(ISSUER)
-        .issuedAt(issueDate)
-        .subject(String.valueOf(user.getId()))
-        .claim("username", user.getUsername())
-        .claim(ROLE_CLAIM, user.isAdmin() ? "ADMIN" : "USER")
-        .expiresAt(expire)
-        .build();
+    JwtClaimsSet claims =
+        JwtClaimsSet.builder()
+            .issuer(ISSUER)
+            .issuedAt(issueDate)
+            .subject(String.valueOf(user.getId()))
+            .claim("username", user.getUsername())
+            .claim(ROLE_CLAIM, user.isAdmin() ? "ADMIN" : "USER")
+            .expiresAt(expire)
+            .build();
 
     return encodeClaimToJwt(claims);
   }
 
-  public String generateToken(User user, Instant issueDate, UUID tokenId, String secret, long expiredInSeconds) {
+  public String generateToken(
+      User user, Instant issueDate, UUID tokenId, String secret, long expiredInSeconds) {
     Instant expire = issueDate.plusSeconds(expiredInSeconds);
 
-    JwtClaimsSet claims = JwtClaimsSet.builder()
-        .issuer(ISSUER)
-        .issuedAt(issueDate)
-        .subject(String.valueOf(user.getId()))
-        .claim("username", user.getUsername())
-        .claim(ROLE_CLAIM, user.isAdmin() ? "ADMIN" : "USER")
-        .claim("type", "refresh")
-        .claim("secret", secret)
-        .id(tokenId.toString())
-        .expiresAt(expire)
-        .build();
+    JwtClaimsSet claims =
+        JwtClaimsSet.builder()
+            .issuer(ISSUER)
+            .issuedAt(issueDate)
+            .subject(String.valueOf(user.getId()))
+            .claim("username", user.getUsername())
+            .claim(ROLE_CLAIM, user.isAdmin() ? "ADMIN" : "USER")
+            .claim("type", "refresh")
+            .claim("secret", secret)
+            .id(tokenId.toString())
+            .expiresAt(expire)
+            .build();
 
     return encodeClaimToJwt(claims);
   }

@@ -1,8 +1,9 @@
 package com.example.restservice.Orders.dto;
 
+import java.util.UUID;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import java.util.UUID;
 
 public record CreateOrderRequestDTO(
     @NotNull UUID productId,
@@ -14,5 +15,4 @@ public record CreateOrderRequestDTO(
     @NotBlank String district,
     @NotBlank String province,
     @NotBlank String postalCode,
-    @NotBlank String country
-) {}
+    @NotBlank String country) {}

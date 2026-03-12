@@ -4,10 +4,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+
 import com.example.restservice.Users.models.UserModel;
 
-public interface JpaUserRepository
-    extends JpaRepository<UserModel, UUID> {
+public interface JpaUserRepository extends JpaRepository<UserModel, UUID> {
   boolean existsByUsername(String username);
 
   Optional<UserModel> findByUsername(String username);

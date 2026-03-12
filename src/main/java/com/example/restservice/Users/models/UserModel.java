@@ -4,16 +4,15 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import jakarta.persistence.*;
-
 import com.example.restservice.Users.domain.User;
+
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "users")
 public class UserModel {
 
-  @Id
-  private UUID id;
+  @Id private UUID id;
 
   @Column(nullable = false, unique = true)
   private String username;
@@ -26,17 +25,18 @@ public class UserModel {
 
   @Column(nullable = false)
   private boolean isAdmin;
+
   @Version
   @Column(nullable = false)
   private Long version;
+
   @Column(nullable = false, updatable = false)
   private LocalDateTime createdAt;
 
   @Column(nullable = false)
   private LocalDateTime updatedAt;
 
-  protected UserModel() {
-  }
+  protected UserModel() {}
 
   public static UserModel fromDomain(User user) {
     UserModel model = new UserModel();
@@ -53,14 +53,7 @@ public class UserModel {
   }
 
   public User toDomain() {
-    return User.rehydrate(
-        id,
-        username,
-        password,
-        credit,
-        isAdmin,
-        createdAt,
-        updatedAt);
+    return User.rehydrate(id, username, password, credit, isAdmin, createdAt, updatedAt);
   }
 
   @PrePersist

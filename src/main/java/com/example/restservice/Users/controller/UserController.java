@@ -3,9 +3,9 @@ package com.example.restservice.Users.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.restservice.Users.domain.PageQuery;
 import com.example.restservice.Users.dto.*;
 import com.example.restservice.Users.usecases.*;
-import com.example.restservice.Users.domain.PageQuery;
 
 import jakarta.validation.Valid;
 
@@ -17,7 +17,9 @@ public class UserController {
   private final FindUserUsecase findUserUsecase;
   private final FindUsersUsecase findAllUsersUsecase;
 
-  public UserController(CreateUserUsecase createUserUsecase, FindUserUsecase findUserUsecase,
+  public UserController(
+      CreateUserUsecase createUserUsecase,
+      FindUserUsecase findUserUsecase,
       FindUsersUsecase findAllUsersUsecase) {
     this.createUserUsecase = createUserUsecase;
     this.findUserUsecase = findUserUsecase;
@@ -34,8 +36,7 @@ public class UserController {
   }
 
   @GetMapping("/{username}")
-  public ResponseEntity<FindUserResponseDTO> findByUsername(
-      @PathVariable String username) {
+  public ResponseEntity<FindUserResponseDTO> findByUsername(@PathVariable String username) {
     FindUserResponseDTO response = findUserUsecase.execute(username);
     return ResponseEntity.ok(response);
   }
@@ -50,8 +51,6 @@ public class UserController {
 
     PageQuery query = new PageQuery(page, size, sortBy, asc);
 
-    return ResponseEntity.ok(
-        PageResponse.from(
-            findAllUsersUsecase.execute(query)));
+    return ResponseEntity.ok(PageResponse.from(findAllUsersUsecase.execute(query)));
   }
 }

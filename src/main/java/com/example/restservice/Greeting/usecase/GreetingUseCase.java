@@ -1,8 +1,9 @@
 package com.example.restservice.Greeting.usecase;
 
+import org.springframework.stereotype.Service;
+
 import com.example.restservice.Greeting.domain.*;
 import com.example.restservice.Greeting.dto.*;
-import org.springframework.stereotype.Service;
 
 @Service
 public class GreetingUseCase {

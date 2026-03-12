@@ -11,24 +11,24 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.restservice.Auth.models.RefreshTokenModel;
 
 public interface JpaRefreshTokenRepository extends JpaRepository<RefreshTokenModel, UUID> {
-                @Modifying
-                @Transactional
-                @Query("""
+  @Modifying
+  @Transactional
+  @Query(
+      """
                                                 UPDATE RefreshTokenModel rt
                                                 SET rt.isExpired = true
                                                 WHERE rt.userId = :userId
                                                 AND rt.id = :tokenId
                                                                                                 """)
-                void revokeRefreshToken(
-                                                @Param("tokenId") UUID tokenId,
-                                                @Param("userId") UUID userId);
+  void revokeRefreshToken(@Param("tokenId") UUID tokenId, @Param("userId") UUID userId);
 
-                @Modifying
-                @Transactional
-                @Query("""
+  @Modifying
+  @Transactional
+  @Query(
+      """
                                                     UPDATE RefreshTokenModel rt
                                                     SET rt.isExpired = true
                                                     WHERE rt.id = :tokenId
                                                 """)
-                void revokeRefreshToken(@Param("tokenId") UUID tokenId);
+  void revokeRefreshToken(@Param("tokenId") UUID tokenId);
 }

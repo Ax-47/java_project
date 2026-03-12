@@ -1,10 +1,10 @@
 package com.example.restservice.Orders.domain;
 
-import com.example.restservice.Orders.exceptions.*;
-
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
+
+import com.example.restservice.Orders.exceptions.*;
 
 public class Order {
 
@@ -37,10 +37,7 @@ public class Order {
     this.updatedAt = Objects.requireNonNull(updatedAt);
   }
 
-  public static Order create(
-      UUID userId,
-      ProductSnapshot product,
-      OrderAddress shippingAddress) {
+  public static Order create(UUID userId, ProductSnapshot product, OrderAddress shippingAddress) {
     return new Order(
         null,
         userId,
@@ -58,17 +55,9 @@ public class Order {
       OrderAddress shippingAddress,
       OrderStatus status,
       LocalDateTime createdAt,
-      LocalDateTime updatedAt
+      LocalDateTime updatedAt) {
 
-  ) {
-    return new Order(
-        id,
-        userId,
-        snap_product,
-        shippingAddress,
-        status,
-        createdAt,
-        updatedAt);
+    return new Order(id, userId, snap_product, shippingAddress, status, createdAt, updatedAt);
   }
 
   public void ship() {
@@ -83,8 +72,7 @@ public class Order {
   }
 
   public void cancel() {
-    if (this.status == OrderStatus.SHIPPED ||
-        this.status == OrderStatus.COMPLETED)
+    if (this.status == OrderStatus.SHIPPED || this.status == OrderStatus.COMPLETED)
       throw new OrderCancellationNotAllowedException(this.status);
 
     this.status = OrderStatus.CANCELLED;
@@ -96,8 +84,7 @@ public class Order {
       throw new OrderStateException(
           this.status,
           expected,
-          "Invalid transition from " + this.status +
-              " (expected: " + expected + ")");
+          "Invalid transition from " + this.status + " (expected: " + expected + ")");
   }
 
   private void touch() {

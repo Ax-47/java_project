@@ -1,7 +1,5 @@
 package com.example.restservice.Address.usecases;
 
-import java.util.UUID;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,29 +13,28 @@ import com.example.restservice.Address.exceptions.UnauthorizedAddressActionExcep
 @Service
 public class SetDefaultAddressUsecase {
 
-    private final DatabaseAddressRepository repository;
+  private final DatabaseAddressRepository repository;
 
-    public SetDefaultAddressUsecase(DatabaseAddressRepository repository) {
-        this.repository = repository;
+  public SetDefaultAddressUsecase(DatabaseAddressRepository repository) {
+    this.repository = repository;
+  }
+
+  @Transactional
+  public SetDefaultAddressResponseDTO execute(SetDefaultAddressRequestDTO request) {
+    var addressId = request.addressId();
+    var userId = request.userId();
+
+    Address targetAddress =
+        repository
+            .findById(addressId)
+            .orElseThrow(() -> new AddressNotFoundException("Address not found"));
+
+    if (!targetAddress.getUserId().equals(userId)) {
+      throw new UnauthorizedAddressActionException("Unauthorized");
     }
-
-    @Transactional
-    public SetDefaultAddressResponseDTO execute(
-            SetDefaultAddressRequestDTO request) {
-        var addressId = request.addressId();
-        var userId = request.userId();
-
-        Address targetAddress = repository
-                .findById(addressId)
-                .orElseThrow(() -> new AddressNotFoundException("Address not found"));
-
-        if (!targetAddress.getUserId().equals(userId)) {
-            throw new UnauthorizedAddressActionException("Unauthorized");
-        }
-        repository.clearDefaultByUserId(userId);
-        repository.setDefaultAddress(addressId, userId);
-        repository.save(targetAddress);
-        return new SetDefaultAddressResponseDTO(
-                "Address is now set to default");
-    }
+    repository.clearDefaultByUserId(userId);
+    repository.setDefaultAddress(addressId, userId);
+    repository.save(targetAddress);
+    return new SetDefaultAddressResponseDTO("Address is now set to default");
+  }
 }

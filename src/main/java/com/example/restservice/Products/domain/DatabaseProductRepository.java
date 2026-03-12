@@ -4,9 +4,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface DatabaseProductRepository {
-    public Product save(Product product);
+  public Product save(Product product);
 
-    Optional<Product> findById(UUID id);
+  Optional<Product> findById(UUID id);
 
-    public Product delete(Product product);
+  public Product delete(Product product);
 }

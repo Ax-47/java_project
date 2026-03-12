@@ -8,9 +8,7 @@ public class OrderStateException extends RuntimeException {
   private final OrderStatus expectedStatus;
 
   public OrderStateException(
-      OrderStatus currentStatus,
-      OrderStatus expectedStatus,
-      String message) {
+      OrderStatus currentStatus, OrderStatus expectedStatus, String message) {
 
     super(message);
     this.currentStatus = currentStatus;

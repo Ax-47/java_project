@@ -1,10 +1,10 @@
 package com.example.restservice.Greeting.controller;
 
-import com.example.restservice.Greeting.usecase.GreetingUseCase;
+import org.springframework.web.bind.annotation.*;
+
 import com.example.restservice.Greeting.dto.GreetingRequest;
 import com.example.restservice.Greeting.dto.GreetingResponse;
-
-import org.springframework.web.bind.annotation.*;
+import com.example.restservice.Greeting.usecase.GreetingUseCase;
 
 @RestController
 @RequestMapping("/api/greeting")

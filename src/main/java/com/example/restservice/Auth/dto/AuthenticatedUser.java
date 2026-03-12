@@ -8,11 +8,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-public record AuthenticatedUser(
-    UUID userId,
-    String username,
-    String password,
-    Boolean isAdmin) implements UserDetails {
+public record AuthenticatedUser(UUID userId, String username, String password, Boolean isAdmin)
+    implements UserDetails {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -30,5 +27,4 @@ public record AuthenticatedUser(
   public String getUsername() {
     return this.username;
   }
-
 }
