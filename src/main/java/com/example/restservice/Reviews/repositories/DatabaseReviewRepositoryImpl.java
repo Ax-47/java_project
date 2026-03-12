@@ -18,6 +18,18 @@ public class DatabaseReviewRepositoryImpl implements DatabaseReviewRepository {
     ReviewModel saved = jpaReviewRepository.save(model);
     return saved.toDomain();
   }
+
+  @Override
+  public Optional<Review> findById(UUID id) {
+    return jpaReviewRepository.findById(id).map(ReviewModel::toDomain);
+  }
+
+  @Override
+  public Review delete(Review review) {
+    jpaReviewRepository.deleteById(review.getId());
+    return review;
+  }
+
   private final JpaReviewRepository jpaReviewRepository;
 
   public DatabaseReviewRepositoryImpl(JpaReviewRepository jpaReviewRepository) {
