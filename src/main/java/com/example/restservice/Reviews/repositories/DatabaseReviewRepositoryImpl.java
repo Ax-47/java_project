@@ -1,8 +1,10 @@
 package com.example.restservice.Reviews.repositories;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.stereotype.Repository;
 
-import com.example.restservice.Address.repositories.JpaAddressRepository;
 import com.example.restservice.Reviews.domain.DatabaseReviewRepository;
 import com.example.restservice.Reviews.domain.Review;
 import com.example.restservice.Reviews.models.ReviewModel;
@@ -18,7 +20,7 @@ public class DatabaseReviewRepositoryImpl implements DatabaseReviewRepository {
 
   @Override
   public Optional<Review> findById(UUID id) {
-    return jpaReviewRepository.findById(id).map(ReviewModel::toDomain);
+    return jpaReviewRepository.findById(id).map(model -> model.toDomain());
   }
 
   @Override

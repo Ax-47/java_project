@@ -1,5 +1,3 @@
 package com.example.restservice.Reviews.dto;
 
-public record CreateReviewResponseDTO(String message){
-
-}
+public record CreateReviewResponseDTO(String message) {}
