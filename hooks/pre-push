@@ -2,7 +2,7 @@
 
 echo "Running tests before push..."
 
-mvn -q test
+./mvnw -q test
 
 if [ $? -ne 0 ]; then
   echo "❌ Tests failed. Push aborted."
