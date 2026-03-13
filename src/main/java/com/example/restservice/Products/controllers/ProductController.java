@@ -42,4 +42,14 @@ public class ProductController {
     DeleteProductResponseDTO response = deleteProductUsecase.execute(requestModel);
     return ResponseEntity.ok(response);
   }
+
+  // GET /api/products
+  // GET /api/products/{productId}
+  // POST /api/products/{productId}/purchase
+  // GET /api/products/{productId}/categories
+  // POST /api/products/{productId}/categories/{categoryId}
+  // DELETE /api/products/{productId}/categories/{categoryId}
+  // PUT /api/products{productId}
+  // POST /api/products{productId}/images
+  // DELETE /api/products{productId}/images/{imageId}
 }

@@ -30,15 +30,15 @@ public final class Price {
     return new Price(amount);
   }
 
-  public Price add(BigDecimal amount) {
-    validatePositive(amount);
-    return new Price(this.value.add(amount));
+  public Price add(Price amount) {
+    Objects.requireNonNull(amount);
+    return new Price(this.value.add(amount.value));
   }
 
-  public Price subtract(BigDecimal amount) {
-    validatePositive(amount);
+  public Price subtract(Price amount) {
+    Objects.requireNonNull(amount);
 
-    BigDecimal result = this.value.subtract(amount);
+    BigDecimal result = this.value.subtract(amount.value);
 
     if (result.compareTo(BigDecimal.ZERO) < 0) {
       throw new InsufficientPriceException();
@@ -51,15 +51,25 @@ public final class Price {
     return value;
   }
 
-  private void validatePositive(BigDecimal amount) {
-    Objects.requireNonNull(amount);
-
-    if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-      throw new InvalidPriceAmountException();
-    }
-  }
-
   private BigDecimal normalize(BigDecimal value) {
     return value.setScale(SCALE, RoundingMode.HALF_UP);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Price)) return false;
+    Price price = (Price) o;
+    return value.compareTo(price.value) == 0;
+  }
+
+  @Override
+  public int hashCode() {
+    return value.hashCode();
+  }
+
+  @Override
+  public String toString() {
+    return value.toString();
   }
 }
