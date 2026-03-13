@@ -1,11 +1,14 @@
 package com.example.restservice.Categories.controllers;
 
+import java.util.UUID;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.restservice.Categories.dto.CategoryRequestDTO;
 import com.example.restservice.Categories.dto.CategoryResponseDTO;
 import com.example.restservice.Categories.usecases.CreateCategoryUsecase;
+import com.example.restservice.Categories.usecases.UpdateCategoryUsecase;
 
 import jakarta.validation.Valid;
 
@@ -14,9 +17,12 @@ import jakarta.validation.Valid;
 public class CategoryController {
 
   private final CreateCategoryUsecase createCategoryUsecase;
+  private final UpdateCategoryUsecase updateCategoryUsecase;
 
-  public CategoryController(CreateCategoryUsecase createCategoryUsecase) {
+  public CategoryController(
+      CreateCategoryUsecase createCategoryUsecase, UpdateCategoryUsecase updateCategoryUsecase) {
     this.createCategoryUsecase = createCategoryUsecase;
+    this.updateCategoryUsecase = updateCategoryUsecase;
   }
 
   @PostMapping
@@ -25,6 +31,14 @@ public class CategoryController {
     return ResponseEntity.ok(createCategoryUsecase.execute(request));
   }
 
+  @PatchMapping("/{id}")
+  public ResponseEntity<CategoryResponseDTO> rename(
+      @PathVariable UUID id, @Valid @RequestBody CategoryRequestDTO request) {
+
+    return ResponseEntity.ok(updateCategoryUsecase.execute(id, request));
+  }
+  // return ResponseEntity.ok(categoryService.findById(id));
+  // }
   // @GetMapping
   // public ResponseEntity<List<CategoryResponseDTO>> findAll() {
   // return ResponseEntity.ok(categoryService.findAll());
