@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
 import com.example.restservice.Categories.domain.Category;
 
 import jakarta.persistence.*;
@@ -13,8 +14,7 @@ import jakarta.persistence.*;
 @Table(name = "categories")
 public class CategoryModel {
 
-  @Id
-  private UUID id;
+  @Id private UUID id;
 
   @Column(length = 100, nullable = false)
   private String categoryName;
@@ -23,11 +23,9 @@ public class CategoryModel {
   @Column(updatable = false)
   private LocalDateTime createdAt;
 
-  @UpdateTimestamp
-  private LocalDateTime updatedAt;
+  @UpdateTimestamp private LocalDateTime updatedAt;
 
-  protected CategoryModel() {
-  }
+  protected CategoryModel() {}
 
   public UUID getId() {
     return id;
@@ -46,11 +44,7 @@ public class CategoryModel {
   }
 
   public Category toDomain() {
-    return Category.rehydrate(
-        this.id,
-        this.categoryName,
-        this.createdAt,
-        this.updatedAt);
+    return Category.rehydrate(this.id, this.categoryName, this.createdAt, this.updatedAt);
   }
 
   public static CategoryModel fromDomain(Category category) {

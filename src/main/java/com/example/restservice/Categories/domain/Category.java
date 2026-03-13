@@ -11,11 +11,7 @@ public class Category {
   private final LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 
-  private Category(
-      UUID id,
-      String categoryName,
-      LocalDateTime createdAt,
-      LocalDateTime updatedAt) {
+  private Category(UUID id, String categoryName, LocalDateTime createdAt, LocalDateTime updatedAt) {
     this.id = Objects.requireNonNull(id);
     this.categoryName = validate(categoryName);
     this.createdAt = Objects.requireNonNull(createdAt);
@@ -25,23 +21,12 @@ public class Category {
   public static Category create(String categoryName) {
     LocalDateTime now = LocalDateTime.now();
 
-    return new Category(
-        UUID.randomUUID(),
-        categoryName,
-        now,
-        now);
+    return new Category(UUID.randomUUID(), categoryName, now, now);
   }
 
   public static Category rehydrate(
-      UUID id,
-      String categoryName,
-      LocalDateTime createdAt,
-      LocalDateTime updatedAt) {
-    return new Category(
-        id,
-        categoryName,
-        createdAt,
-        updatedAt);
+      UUID id, String categoryName, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    return new Category(id, categoryName, createdAt, updatedAt);
   }
 
   public void rename(String categoryName) {
