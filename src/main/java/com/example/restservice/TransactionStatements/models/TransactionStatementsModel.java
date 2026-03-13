@@ -17,7 +17,8 @@ import jakarta.persistence.*;
 @Table(name = "transaction_statements")
 public class TransactionStatementsModel {
 
-  @Id private UUID id;
+  @Id
+  private UUID id;
 
   @Column(nullable = false)
   private UUID userId;
@@ -47,7 +48,8 @@ public class TransactionStatementsModel {
   @Column(updatable = false)
   private LocalDateTime createdAt;
 
-  protected TransactionStatementsModel() {}
+  protected TransactionStatementsModel() {
+  }
 
   public TransactionStatements toDomain() {
     return new TransactionStatements(
@@ -63,7 +65,8 @@ public class TransactionStatementsModel {
   }
 
   public static TransactionStatementsModel fromDomain(TransactionStatements domain) {
-    if (domain == null) return null;
+    if (domain == null)
+      return null;
 
     TransactionStatementsModel model = new TransactionStatementsModel();
 
