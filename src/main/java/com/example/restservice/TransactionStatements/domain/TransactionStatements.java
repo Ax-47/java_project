@@ -54,7 +54,15 @@ public class TransactionStatements {
       String referenceId) {
 
     return new TransactionStatements(
-        null, userId, orderId, amount, type, method, status, referenceId, LocalDateTime.now());
+        UUID.randomUUID(),
+        userId,
+        orderId,
+        amount,
+        type,
+        method,
+        status,
+        referenceId,
+        LocalDateTime.now());
   }
 
   public static TransactionStatements rehydrate(
