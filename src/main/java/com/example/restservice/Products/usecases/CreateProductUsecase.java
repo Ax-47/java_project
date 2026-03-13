@@ -23,6 +23,7 @@ public class CreateProductUsecase {
             request.name(),
             request.price(),
             request.description(),
+            request.categoryId(),
             request.createdBy());
 
     productRepository.save(newProduct);
