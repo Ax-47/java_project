@@ -26,7 +26,8 @@ public class ProductModel {
   @Column(length = 511)
   private String productDescription;
 
-  @Id private UUID categoryId;
+  @Column(nullable = false)
+  private UUID categoryId;
 
   @Column(nullable = false)
   private UUID createdBy;
