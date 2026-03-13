@@ -45,4 +45,14 @@ public class OrderController {
     CancelOrderResponseDTO response = cancelOrderUsecase.execute(request);
     return ResponseEntity.ok(response);
   }
+  // POST /api/orders
+  // GET /api/orders
+  // GET /api/orders/{orderId}
+  //
+  // GET /api/users/{userId}/orders
+  //
+  // POST /api/orders/{orderId}/pay
+  // POST /api/orders/{orderId}/cancel
+  // POST /api/orders/{orderId}/ship
+  // POST /api/orders/{orderId}/deliver
 }
