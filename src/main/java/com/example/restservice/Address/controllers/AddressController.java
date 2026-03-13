@@ -57,4 +57,7 @@ public class AddressController {
     SetDefaultAddressResponseDTO response = this.setDefaultAddressUsecase.execute(requestModel);
     return ResponseEntity.ok(response);
   }
+  // GET /api/dddresses
+  // GET /api/dddresses/{dddressId}
+  // PUT /api/products/{productId}
 }
