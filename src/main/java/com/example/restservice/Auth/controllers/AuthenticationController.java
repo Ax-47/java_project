@@ -2,6 +2,7 @@ package com.example.restservice.Auth.controllers;
 
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -20,6 +21,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -30,13 +33,21 @@ public class AuthenticationController {
   private final RefreshTokenUsecase refreshTokenUsecase;
   private final SignOutUsecase signOutUsecase;
 
+  private long accessTokenExpiredInSeconds;
+
+  private long refreshTokenExpiredInSeconds;
+
   public AuthenticationController(
       SignInUsecase signInUsecase,
       SignOutUsecase signOutUsecase,
-      RefreshTokenUsecase refreshTokenUsecase) {
+      RefreshTokenUsecase refreshTokenUsecase,
+      @Value("${token.access-token-expired-in-seconds}") long accessTokenExpiredInSeconds,
+      @Value("${token.refresh-token-expired-in-seconds}") long refreshTokenExpiredInSeconds) {
     this.signInUsecase = signInUsecase;
     this.refreshTokenUsecase = refreshTokenUsecase;
     this.signOutUsecase = signOutUsecase;
+    this.accessTokenExpiredInSeconds = accessTokenExpiredInSeconds;
+    this.refreshTokenExpiredInSeconds = refreshTokenExpiredInSeconds;
   }
 
   @Operation(summary = "Get current user")
@@ -60,8 +71,23 @@ public class AuthenticationController {
         @ApiResponse(responseCode = "200", description = "Login success"),
         @ApiResponse(responseCode = "401", description = "Invalid credentials")
       })
-  public ResponseEntity<TokenResponseDTO> signin(@RequestBody @Validated SignInRequestDTO request) {
-    return ResponseEntity.ok(signInUsecase.execute(request));
+  public ResponseEntity<TokenResponseDTO> signin(
+      @RequestBody @Validated SignInRequestDTO request, HttpServletResponse response) {
+
+    TokenResponseDTO tokens = signInUsecase.execute(request);
+
+    Cookie accessCookie = new Cookie("access_token", tokens.access_token());
+
+    accessCookie.setHttpOnly(true);
+    accessCookie.setPath("/");
+    accessCookie.setMaxAge((int) accessTokenExpiredInSeconds);
+    response.addCookie(accessCookie);
+    Cookie refreshCookie = new Cookie("refresh_token", tokens.refresh_token());
+    refreshCookie.setHttpOnly(true);
+    refreshCookie.setPath("/");
+    refreshCookie.setMaxAge((int) refreshTokenExpiredInSeconds);
+    response.addCookie(refreshCookie);
+    return ResponseEntity.ok(tokens);
   }
 
   @PostMapping("/refresh")
@@ -75,8 +101,19 @@ public class AuthenticationController {
   @Operation(summary = "Sign out")
   @SecurityRequirement(name = "bearerAuth")
   @PostMapping("/signout")
-  public ResponseEntity<Void> logout(@RequestHeader("Authorization") String bearer) {
+  public ResponseEntity<Void> logout(
+      @RequestHeader("Authorization") String bearer, HttpServletResponse response) {
     String refreshToken = bearer.substring(7);
+
+    Cookie cookie = new Cookie("access_token", null);
+    cookie.setMaxAge(0);
+    cookie.setPath("/");
+    response.addCookie(cookie);
+
+    Cookie rcookie = new Cookie("refresh_token", null);
+    rcookie.setMaxAge(0);
+    rcookie.setPath("/");
+    response.addCookie(rcookie);
     signOutUsecase.execute(refreshToken);
     return ResponseEntity.noContent().build();
   }
