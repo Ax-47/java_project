@@ -56,7 +56,8 @@ public class CategoryModel {
 
     entity.id = category.getId();
     entity.categoryName = category.getCategoryName();
-
+    entity.createdAt = category.getCreatedAt();
+    entity.updatedAt = category.getUpdatedAt();
     return entity;
   }
 }
