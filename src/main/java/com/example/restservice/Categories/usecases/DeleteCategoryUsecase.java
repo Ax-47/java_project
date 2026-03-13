@@ -5,7 +5,6 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.example.restservice.Categories.domain.DatabaseCategoryRepository;
-import com.example.restservice.Categories.dto.*;
 
 import jakarta.transaction.Transactional;
 
