@@ -1,5 +1,6 @@
 package com.example.restservice.ProductCategories.domain;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class ProductCategory {
@@ -12,7 +13,7 @@ public class ProductCategory {
     this.categoryId = categoryId;
   }
 
-  public static ProductCategory create(UUID productId, UUID categoryId) {
+  public static ProductCategory of(UUID productId, UUID categoryId) {
     return new ProductCategory(productId, categoryId);
   }
 
@@ -22,5 +23,18 @@ public class ProductCategory {
 
   public UUID getCategoryId() {
     return categoryId;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof ProductCategory)) return false;
+    ProductCategory that = (ProductCategory) o;
+    return productId.equals(that.productId) && categoryId.equals(that.categoryId);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(productId, categoryId);
   }
 }
