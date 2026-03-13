@@ -42,16 +42,16 @@ public class DatabaseCategoryRepositoryImpl implements DatabaseCategoryRepositor
   @Override
   public Page<Category> findAllCategories(PageQuery query) {
 
-    Sort sort = query.ascending()
-        ? Sort.by(query.sortBy()).ascending()
-        : Sort.by(query.sortBy()).descending();
+    Sort sort =
+        query.ascending()
+            ? Sort.by(query.sortBy()).ascending()
+            : Sort.by(query.sortBy()).descending();
 
     Pageable pageable = PageRequest.of(query.page(), query.size(), sort);
 
-    org.springframework.data.domain.Page<CategoryModel> page = jpaCategoryRepository.findAll(pageable);
-    List<Category> users = page.getContent().stream()
-        .map(category -> category.toDomain())
-        .toList();
+    org.springframework.data.domain.Page<CategoryModel> page =
+        jpaCategoryRepository.findAll(pageable);
+    List<Category> users = page.getContent().stream().map(category -> category.toDomain()).toList();
 
     return new Page<>(
         users, page.getTotalElements(), page.getTotalPages(), page.getNumber(), page.getSize());

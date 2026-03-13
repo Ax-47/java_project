@@ -6,8 +6,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/review")
 public class ReviewController {
 
-  public ReviewController() {
-  }
+  public ReviewController() {}
 
   // GET /api/review
   // GET /api/review/products/{productId}
