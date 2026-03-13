@@ -43,14 +43,15 @@ public class CreateTransactionStatementsUsecase {
           "orderId", "Order ID must be null for top-up transactions");
     }
 
-    TransactionStatements newTransaction = TransactionStatements.create(
-        request.userId(),
-        request.orderId(),
-        request.amount(),
-        request.type(),
-        request.method(),
-        request.status(),
-        request.referenceId());
+    TransactionStatements newTransaction =
+        TransactionStatements.create(
+            request.userId(),
+            request.orderId(),
+            request.amount(),
+            request.type(),
+            request.method(),
+            request.status(),
+            request.referenceId());
 
     this.databaseTransactionStatementsRepository.save(newTransaction);
 
