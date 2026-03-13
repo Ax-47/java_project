@@ -5,6 +5,10 @@
     <title>Sign In</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- CSRF -->
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
   </head>
 
   <body class="bg-slate-900 flex items-center justify-center h-screen">
@@ -48,11 +52,25 @@
           const name = document.getElementById("name").value;
           const password = document.getElementById("password").value;
 
+          const csrfToken = document
+            .querySelector('meta[name="_csrf"]')
+            ?.getAttribute("content");
+
+          const csrfHeader = document
+            .querySelector('meta[name="_csrf_header"]')
+            ?.getAttribute("content");
+
+          const headers = {
+            "Content-Type": "application/json",
+          };
+
+          if (csrfToken && csrfHeader) {
+            headers[csrfHeader] = csrfToken;
+          }
+
           const res = await fetch("/api/auth/signin", {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
+            headers: headers,
             body: JSON.stringify({
               name,
               password,
@@ -60,7 +78,9 @@
           });
 
           if (!res.ok) {
-            document.getElementById("error").innerText = "Login failed";
+            const errorText = await res.text();
+            document.getElementById("error").innerText =
+              errorText || "Login failed";
             return;
           }
 
@@ -69,6 +89,7 @@
           localStorage.setItem("accessToken", data.access_token);
           localStorage.setItem("refreshToken", data.refresh_token);
 
+          window.location.href = "/dashboard";
         });
     </script>
   </body>

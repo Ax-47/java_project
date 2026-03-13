@@ -88,11 +88,18 @@ public class JwtRepositoryImpl implements TokenRepository {
 
     Jwt jwt = jwtDecoder.decode(token);
 
-    UUID tokenId = UUID.fromString(jwt.getId());
+    UUID tokenId = null;
+    if (jwt.getId() != null) {
+      tokenId = UUID.fromString(jwt.getId());
+    }
+
     UUID userId = UUID.fromString(jwt.getSubject());
+    String username = jwt.getClaim("username");
+    String role = jwt.getClaim(ROLE_CLAIM);
     String secret = jwt.getClaim("secret");
     String type = jwt.getClaim("type");
 
-    return new DecodedToken(tokenId, userId, secret, type);
+    Instant expireAt = jwt.getExpiresAt();
+    return new DecodedToken(tokenId, userId, username, role, secret, type, expireAt);
   }
 }
