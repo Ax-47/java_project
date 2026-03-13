@@ -34,6 +34,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import com.example.restservice.Models.RSAKeyProperties;
 import com.nimbusds.jose.jwk.JWK;
@@ -60,7 +61,7 @@ public class SecurityConfig {
 
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.csrf(csrf -> csrf.disable())
+    http.csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
         .authorizeHttpRequests(
             auth ->
                 auth.requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**")
@@ -69,7 +70,7 @@ public class SecurityConfig {
                     .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**")
                     .permitAll()
                     // pages
-                    .requestMatchers("/signin")
+                    .requestMatchers("/", "/signin")
                     .permitAll()
                     // auth api
                     .requestMatchers("/api/auth/**")
