@@ -17,4 +17,7 @@ public record CreateProductRequestDTO(
     @NotNull(message = "Category ID is required") UUID categoryId,
     @NotNull(message = "Price is required") @Positive(message = "Price must be greater than zero")
         BigDecimal price,
-    @NotNull(message = "Creator User ID is required") UUID createdBy) {}
+    @NotNull(message = "Creator User ID is required") UUID createdBy) 
+
+    {}
+

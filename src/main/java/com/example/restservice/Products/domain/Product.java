@@ -64,8 +64,7 @@ public class Product {
       LocalDateTime createdAt,
       LocalDateTime updatedAt) {
 
-    return new Product(
-        id, name, Price.of(price), description, createdBy, categoryId, createdAt, updatedAt);
+    return new Product(id, name, Price.of(price), description, createdBy, categoryId, createdAt, updatedAt);
   }
 
   public void update(String name, BigDecimal price, String description) {
@@ -124,4 +123,5 @@ public class Product {
   public UUID getCategoryId() {
     return categoryId;
   }
+
 }
