@@ -28,4 +28,9 @@ public class DatabaseCategoryRepositoryImpl implements DatabaseCategoryRepositor
   public Optional<Category> findById(UUID id) {
     return jpaCategoryRepository.findById(id).map(CategoryModel::toDomain);
   }
+
+  @Override
+  public int delete(UUID categoryId) {
+    return jpaCategoryRepository.deleteCategory(categoryId);
+  }
 }

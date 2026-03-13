@@ -8,6 +8,5 @@ public interface DatabaseCategoryRepository {
 
   public Optional<Category> findById(UUID id);
 
-  // public Category delete(Category category);
-
+  public int delete(UUID categoryId);
 }
