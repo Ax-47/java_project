@@ -21,8 +21,7 @@ public record GetTransactionStatementsByUserResponseDTO(
     LocalDateTime createdAt) {
 
   public static GetTransactionStatementsByUserResponseDTO from(TransactionStatements statement) {
-    if (statement == null)
-      return null;
+    if (statement == null) return null;
 
     return new GetTransactionStatementsByUserResponseDTO(
         statement.getId(),
