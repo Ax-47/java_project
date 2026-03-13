@@ -12,7 +12,6 @@ public final class Price {
 
   private final BigDecimal value;
 
-
   private Price(BigDecimal value) {
     Objects.requireNonNull(value, "Price cannot be null");
 
