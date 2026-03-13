@@ -24,21 +24,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 
 @WebMvcTest(AuthenticationController.class)
+@AutoConfigureMockMvc(addFilters = false)
 @Import(ObjectMapper.class)
 class AuthenticationControllerTest {
 
-  @Autowired
-  private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-  @MockitoBean
-  private SignInUsecase signInUsecase;
-  @MockitoBean
-  private RefreshTokenUsecase refreshTokenUsecase;
-  @MockitoBean
-  private SignOutUsecase signOutUsecase;
+  @MockitoBean private SignInUsecase signInUsecase;
+  @MockitoBean private RefreshTokenUsecase refreshTokenUsecase;
+  @MockitoBean private SignOutUsecase signOutUsecase;
 
-  @Autowired
-  private ObjectMapper objectMapper;
+  @Autowired private ObjectMapper objectMapper;
 
   @Test
   void signin_should_return_tokens() throws Exception {
