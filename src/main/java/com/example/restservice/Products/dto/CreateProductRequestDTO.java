@@ -9,7 +9,6 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 public record CreateProductRequestDTO(
-    @NotNull(message = "Product ID is required") UUID id,
     @NotBlank(message = "Product name is required")
         @Size(max = 255, message = "Product name too long")
         String name,

@@ -53,4 +53,11 @@ public class UserController {
 
     return ResponseEntity.ok(PageResponse.from(findAllUsersUsecase.execute(query)));
   }
+
+  // GET /api/users
+  // GET /api/users/{userId}
+  // PUT /api/users/{userId}
+  // DELETE /api/users/{userId}
+  // POST /api/users/profile
+  // POST /api/users/backgound
 }

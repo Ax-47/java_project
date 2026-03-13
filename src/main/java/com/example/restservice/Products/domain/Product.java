@@ -1,10 +1,13 @@
 package com.example.restservice.Products.domain;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
+import com.example.restservice.ProductCategories.domain.ProductCategory;
 import com.example.restservice.Products.exceptions.*;
 
 public class Product {
@@ -13,10 +16,10 @@ public class Product {
   private String name;
   private Price price;
   private String description;
+  private final Set<ProductCategory> categories = new HashSet<>();
   private final UUID createdBy;
-  private final LocalDateTime createdAt;
-  private LocalDateTime updatedAt;
-  private UUID categoryId;
+  private final Instant createdAt;
+  private Instant updatedAt;
 
   private Product(
       UUID id,
@@ -24,9 +27,8 @@ public class Product {
       Price price,
       String description,
       UUID createdBy,
-      UUID categoryId,
-      LocalDateTime createdAt,
-      LocalDateTime updatedAt) {
+      Instant createdAt,
+      Instant updatedAt) {
 
     validateName(name);
     validateDescription(description);
@@ -40,18 +42,10 @@ public class Product {
     this.updatedAt = Objects.requireNonNull(updatedAt);
   }
 
-  public static Product create(
-      UUID id, String name, BigDecimal price, String description, UUID categoryId, UUID createdBy) {
+  public static Product create(String name, BigDecimal price, String description, UUID createdBy) {
 
-    return new Product(
-        id,
-        name,
-        Price.of(price),
-        description,
-        createdBy,
-        categoryId,
-        LocalDateTime.now(),
-        LocalDateTime.now());
+    Instant now = Instant.now();
+    return new Product(UUID.randomUUID(), name, Price.of(price), description, createdBy, now, now);
   }
 
   public static Product rehydrate(
@@ -60,12 +54,10 @@ public class Product {
       BigDecimal price,
       String description,
       UUID createdBy,
-      UUID categoryId,
-      LocalDateTime createdAt,
-      LocalDateTime updatedAt) {
+      Instant createdAt,
+      Instant updatedAt) {
 
-    return new Product(
-        id, name, Price.of(price), description, createdBy, categoryId, createdAt, updatedAt);
+    return new Product(id, name, Price.of(price), description, createdBy, createdAt, updatedAt);
   }
 
   public void update(String name, BigDecimal price, String description) {
@@ -75,7 +67,7 @@ public class Product {
     this.name = name;
     this.price = Price.of(price);
     this.description = description;
-    this.updatedAt = LocalDateTime.now();
+    this.updatedAt = Instant.now();
   }
 
   private void validateName(String name) {
@@ -91,6 +83,17 @@ public class Product {
     if (description != null && description.length() > 511) {
       throw new InvalidProductDescriptionException("Description too long");
     }
+  }
+
+  public void addCategory(UUID categoryId) {
+    ProductCategory relation = ProductCategory.of(this.id, categoryId);
+    if (!categories.add(relation)) {
+      throw new IllegalStateException("Category already exists");
+    }
+  }
+
+  public void removeCategory(UUID categoryId) {
+    categories.removeIf(pc -> pc.getCategoryId().equals(categoryId));
   }
 
   public UUID getId() {
@@ -113,15 +116,11 @@ public class Product {
     return createdBy;
   }
 
-  public LocalDateTime getCreatedAt() {
+  public Instant getCreatedAt() {
     return createdAt;
   }
 
-  public LocalDateTime getUpdatedAt() {
+  public Instant getUpdatedAt() {
     return updatedAt;
-  }
-
-  public UUID getCategoryId() {
-    return categoryId;
   }
 }

@@ -1,7 +1,7 @@
 package com.example.restservice.Products.models;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -27,16 +27,13 @@ public class ProductModel {
   private String productDescription;
 
   @Column(nullable = false)
-  private UUID categoryId;
-
-  @Column(nullable = false)
   private UUID createdBy;
 
   @CreationTimestamp
   @Column(updatable = false)
-  private LocalDateTime createdAt;
+  private Instant createdAt;
 
-  @UpdateTimestamp private LocalDateTime updatedAt;
+  @UpdateTimestamp private Instant updatedAt;
 
   protected ProductModel() {}
 
@@ -60,16 +57,12 @@ public class ProductModel {
     return createdBy;
   }
 
-  public LocalDateTime getCreatedAt() {
+  public Instant getCreatedAt() {
     return createdAt;
   }
 
-  public LocalDateTime getUpdatedAt() {
+  public Instant getUpdatedAt() {
     return updatedAt;
-  }
-
-  public UUID getCategoryId() {
-    return categoryId;
   }
 
   public Product toDomain() {
@@ -78,7 +71,6 @@ public class ProductModel {
         this.productName,
         this.productPrice,
         this.productDescription,
-        this.categoryId,
         this.createdBy,
         this.createdAt,
         this.updatedAt);

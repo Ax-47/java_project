@@ -18,10 +18,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,13 +26,7 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
-import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import com.example.restservice.Models.RSAKeyProperties;
 import com.nimbusds.jose.jwk.JWK;
@@ -45,67 +36,30 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
-import jakarta.servlet.http.HttpServletResponse;
-
 @Configuration
-@EnableWebSecurity
-@EnableMethodSecurity(jsr250Enabled = true)
-@Profile("prod")
-public class SecurityConfig {
+@Profile("dev")
+public class DevSecurityConfig {
 
   private final ResourceLoader resourceLoader;
-  private final AuthorizeFilter authorizeFilter;
 
-  public SecurityConfig(ResourceLoader resourceLoader, AuthorizeFilter authorizeFilter) {
+  public DevSecurityConfig(ResourceLoader resourceLoader) {
     this.resourceLoader = resourceLoader;
-    this.authorizeFilter = authorizeFilter;
   }
 
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+
+    http.csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(
             auth ->
-                auth.requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**")
+                auth.requestMatchers("/swagger-ui/**", "/v3/api-docs/**")
                     .permitAll()
-                    // static files
-                    .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**")
-                    .permitAll()
-                    // pages
-                    .requestMatchers("/", "/signin")
-                    .permitAll()
-                    // auth api
-                    .requestMatchers("/api/auth/**")
-                    .permitAll()
-                    // other api must auth
                     .requestMatchers("/api/**")
-                    .authenticated()
+                    .permitAll()
                     .anyRequest()
-                    .authenticated())
-        .addFilterBefore(authorizeFilter, UsernamePasswordAuthenticationFilter.class)
-        // .oauth2ResourceServer(
-        // rs -> rs.jwt(jwt ->
-        // jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
-        .exceptionHandling(
-            ex ->
-                ex.authenticationEntryPoint(authenticationEntryPoint())
-                    .accessDeniedHandler(accessDeniedHandler()))
-        .sessionManagement(
-            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-    ;
+                    .permitAll());
 
     return http.build();
-  }
-
-  @Bean
-  public JwtAuthenticationConverter jwtAuthenticationConverter() {
-    JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter =
-        new JwtGrantedAuthoritiesConverter();
-    jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("role");
-    jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
-    JwtAuthenticationConverter jwtConverter = new JwtAuthenticationConverter();
-    jwtConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
-    return jwtConverter;
   }
 
   @Bean
@@ -163,41 +117,5 @@ public class SecurityConfig {
   @Bean
   public PasswordEncoder passwordEncoder() {
     return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-  }
-
-  @Bean
-  AuthenticationEntryPoint authenticationEntryPoint() {
-    return (request, response, authException) -> {
-      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-      response.setContentType("application/json");
-
-      response
-          .getWriter()
-          .write(
-              """
-                  {
-                    "error": "Unauthorized",
-                    "message": "Authentication required"
-                  }
-                  """);
-    };
-  }
-
-  @Bean
-  AccessDeniedHandler accessDeniedHandler() {
-    return (request, response, accessDeniedException) -> {
-      response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-      response.setContentType("application/json");
-
-      response
-          .getWriter()
-          .write(
-              """
-                  {
-                    "error": "Forbidden",
-                    "message": "You do not have permission to access this resource"
-                  }
-                  """);
-    };
   }
 }
