@@ -67,6 +67,7 @@ public class ProductModel {
   public LocalDateTime getUpdatedAt() {
     return updatedAt;
   }
+
   public UUID getCategoryId() {
     return categoryId;
   }

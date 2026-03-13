@@ -123,5 +123,4 @@ public class Product {
   public UUID getCategoryId() {
     return categoryId;
   }
-
 }
