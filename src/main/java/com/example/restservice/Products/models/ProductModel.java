@@ -26,6 +26,8 @@ public class ProductModel {
   @Column(length = 511)
   private String productDescription;
 
+  @Id private UUID categoryId;
+
   @Column(nullable = false)
   private UUID createdBy;
 
@@ -65,12 +67,17 @@ public class ProductModel {
     return updatedAt;
   }
 
+  public UUID getCategoryId() {
+    return categoryId;
+  }
+
   public Product toDomain() {
     return Product.rehydrate(
         this.id,
         this.productName,
         this.productPrice,
         this.productDescription,
+        this.categoryId,
         this.createdBy,
         this.createdAt,
         this.updatedAt);
