@@ -1,5 +1,6 @@
 package com.example.restservice.TransactionStatements.models;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -24,8 +25,8 @@ public class TransactionStatementsModel {
   @Column(nullable = true)
   private UUID orderId;
 
-  @Column(nullable = false)
-  private Double amount;
+  @Column(nullable = false, precision = 19, scale = 2)
+  private BigDecimal amount;
 
   @Column(nullable = false)
   @Enumerated(EnumType.STRING)

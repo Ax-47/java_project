@@ -1,5 +1,6 @@
 package com.example.restservice.TransactionStatements.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -12,7 +13,7 @@ public record GetTransactionStatementsByUserResponseDTO(
     UUID id,
     UUID userId,
     UUID orderId,
-    Double amount,
+    BigDecimal amount,
     TransactionStatementsType type,
     TransactionStatementsMethod method,
     TransactionStatementsStatus status,
