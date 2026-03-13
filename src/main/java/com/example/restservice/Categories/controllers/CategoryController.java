@@ -5,11 +5,9 @@ import java.util.UUID;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.restservice.Categories.dto.CategoryRequestDTO;
-import com.example.restservice.Categories.dto.CategoryResponseDTO;
-import com.example.restservice.Categories.usecases.CreateCategoryUsecase;
-import com.example.restservice.Categories.usecases.DeleteCategoryUsecase;
-import com.example.restservice.Categories.usecases.UpdateCategoryUsecase;
+import com.example.restservice.Categories.dto.*;
+import com.example.restservice.Categories.usecases.*;
+import com.example.restservice.common.*;
 
 import jakarta.validation.Valid;
 
@@ -20,14 +18,20 @@ public class CategoryController {
   private final CreateCategoryUsecase createCategoryUsecase;
   private final UpdateCategoryUsecase updateCategoryUsecase;
   private final DeleteCategoryUsecase deleteCategoryUsecase;
+  private final GetCategoryUsecase getCategoryUsecase;
+  private final FindCategoriesUsecase findCategoriesUsecase;
 
   public CategoryController(
       CreateCategoryUsecase createCategoryUsecase,
       UpdateCategoryUsecase updateCategoryUsecase,
+      GetCategoryUsecase getCategoryUsecase,
+      FindCategoriesUsecase findCategoriesUsecase,
       DeleteCategoryUsecase deleteCategoryUsecase) {
     this.createCategoryUsecase = createCategoryUsecase;
     this.updateCategoryUsecase = updateCategoryUsecase;
     this.deleteCategoryUsecase = deleteCategoryUsecase;
+    this.getCategoryUsecase = getCategoryUsecase;
+    this.findCategoriesUsecase = findCategoriesUsecase;
   }
 
   @PostMapping
@@ -43,22 +47,28 @@ public class CategoryController {
     return ResponseEntity.ok(updateCategoryUsecase.execute(id, request));
   }
 
-  // @GetMapping
-  // public ResponseEntity<List<CategoryResponseDTO>> findAll() {
-  // return ResponseEntity.ok(categoryService.findAll());
-  // }
-  //
-  // @GetMapping("/{id}")
-  // public ResponseEntity<CategoryResponseDTO> findById(
-  // @PathVariable UUID id) {
-  //
-  // return ResponseEntity.ok(categoryService.findById(id));
-  // }
-  //
+  @GetMapping
+  public ResponseEntity<PageResponse<CategoryResponseDTO>> findAllUsers(
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size,
+      @RequestParam(defaultValue = "categoryName") String sortBy,
+      @RequestParam(defaultValue = "true") boolean asc) {
+
+    PageQuery query = new PageQuery(page, size, sortBy, asc);
+    return ResponseEntity.ok(PageResponse.from(findCategoriesUsecase.execute(query)));
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<CategoryResponseDTO> findById(@PathVariable UUID id) {
+
+    return ResponseEntity.ok(getCategoryUsecase.execute(id));
+  }
+
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> delete(@PathVariable UUID id) {
 
     deleteCategoryUsecase.execute(id);
     return ResponseEntity.noContent().build();
   }
+  // GET /api/categories/{categoryId}/products
 }
