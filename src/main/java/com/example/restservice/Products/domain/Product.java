@@ -16,6 +16,7 @@ public class Product {
   private final UUID createdBy;
   private final LocalDateTime createdAt;
   private LocalDateTime updatedAt;
+  private UUID categoryId;
 
   private Product(
       UUID id,
@@ -23,6 +24,7 @@ public class Product {
       Price price,
       String description,
       UUID createdBy,
+      UUID categoryId,
       LocalDateTime createdAt,
       LocalDateTime updatedAt) {
 
@@ -39,7 +41,7 @@ public class Product {
   }
 
   public static Product create(
-      UUID id, String name, BigDecimal price, String description, UUID createdBy) {
+      UUID id, String name, BigDecimal price, String description, UUID categoryId, UUID createdBy) {
 
     return new Product(
         id,
@@ -47,6 +49,7 @@ public class Product {
         Price.of(price),
         description,
         createdBy,
+        categoryId,
         LocalDateTime.now(),
         LocalDateTime.now());
   }
@@ -57,10 +60,12 @@ public class Product {
       BigDecimal price,
       String description,
       UUID createdBy,
+      UUID categoryId,
       LocalDateTime createdAt,
       LocalDateTime updatedAt) {
 
-    return new Product(id, name, Price.of(price), description, createdBy, createdAt, updatedAt);
+    return new Product(
+        id, name, Price.of(price), description, createdBy, categoryId, createdAt, updatedAt);
   }
 
   public void update(String name, BigDecimal price, String description) {
@@ -114,5 +119,9 @@ public class Product {
 
   public LocalDateTime getUpdatedAt() {
     return updatedAt;
+  }
+
+  public UUID getCategoryId() {
+    return categoryId;
   }
 }
