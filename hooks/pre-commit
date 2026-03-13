@@ -1,7 +1,7 @@
 #!/bin/sh
 
 echo "Running formatter..."
-mvn -q spotless:apply
+./mvnw -q spotless:apply
 
 echo "Checking build..."
-mvn -q -DskipTests compile
+./mvnw -q -DskipTests compile
