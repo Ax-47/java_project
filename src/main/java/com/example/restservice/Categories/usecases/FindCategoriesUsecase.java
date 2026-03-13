@@ -20,7 +20,8 @@ public class FindCategoriesUsecase {
 
   public Page<CategoryResponseDTO> execute(PageQuery query) {
     Page<Category> usersPage = databaseCategoryRepository.findAllCategories(query);
-    List<CategoryResponseDTO> content = usersPage.content().stream().map(CategoryResponseDTO::from).toList();
+    List<CategoryResponseDTO> content =
+        usersPage.content().stream().map(CategoryResponseDTO::from).toList();
     return new Page<>(
         content,
         usersPage.totalElements(),
