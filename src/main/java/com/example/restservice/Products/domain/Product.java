@@ -41,7 +41,7 @@ public class Product {
   }
 
   public static Product create(
-      UUID id, String name, BigDecimal price, String description,UUID categoryId, UUID createdBy) {
+      UUID id, String name, BigDecimal price, String description, UUID categoryId, UUID createdBy) {
 
     return new Product(
         id,
@@ -64,7 +64,8 @@ public class Product {
       LocalDateTime createdAt,
       LocalDateTime updatedAt) {
 
-    return new Product(id, name, Price.of(price), description, createdBy,categoryId, createdAt, updatedAt);
+    return new Product(
+        id, name, Price.of(price), description, createdBy, categoryId, createdAt, updatedAt);
   }
 
   public void update(String name, BigDecimal price, String description) {
@@ -119,8 +120,8 @@ public class Product {
   public LocalDateTime getUpdatedAt() {
     return updatedAt;
   }
-  public UUID getCategoryId(){
+
+  public UUID getCategoryId() {
     return categoryId;
   }
-
 }
