@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.restservice.Categories.dto.CategoryRequestDTO;
 import com.example.restservice.Categories.dto.CategoryResponseDTO;
 import com.example.restservice.Categories.usecases.CreateCategoryUsecase;
+import com.example.restservice.Categories.usecases.DeleteCategoryUsecase;
 import com.example.restservice.Categories.usecases.UpdateCategoryUsecase;
 
 import jakarta.validation.Valid;
@@ -18,11 +19,15 @@ public class CategoryController {
 
   private final CreateCategoryUsecase createCategoryUsecase;
   private final UpdateCategoryUsecase updateCategoryUsecase;
+  private final DeleteCategoryUsecase deleteCategoryUsecase;
 
   public CategoryController(
-      CreateCategoryUsecase createCategoryUsecase, UpdateCategoryUsecase updateCategoryUsecase) {
+      CreateCategoryUsecase createCategoryUsecase,
+      UpdateCategoryUsecase updateCategoryUsecase,
+      DeleteCategoryUsecase deleteCategoryUsecase) {
     this.createCategoryUsecase = createCategoryUsecase;
     this.updateCategoryUsecase = updateCategoryUsecase;
+    this.deleteCategoryUsecase = deleteCategoryUsecase;
   }
 
   @PostMapping
@@ -37,8 +42,7 @@ public class CategoryController {
 
     return ResponseEntity.ok(updateCategoryUsecase.execute(id, request));
   }
-  // return ResponseEntity.ok(categoryService.findById(id));
-  // }
+
   // @GetMapping
   // public ResponseEntity<List<CategoryResponseDTO>> findAll() {
   // return ResponseEntity.ok(categoryService.findAll());
@@ -51,11 +55,10 @@ public class CategoryController {
   // return ResponseEntity.ok(categoryService.findById(id));
   // }
   //
-  // @DeleteMapping("/{id}")
-  // public ResponseEntity<Void> delete(
-  // @PathVariable UUID id) {
-  //
-  // categoryService.delete(id);
-  // return ResponseEntity.noContent().build();
-  // }
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> delete(@PathVariable UUID id) {
+
+    deleteCategoryUsecase.execute(id);
+    return ResponseEntity.noContent().build();
+  }
 }
