@@ -1,5 +1,6 @@
 package com.example.restservice.TransactionStatements.domain;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -11,7 +12,7 @@ public class TransactionStatements {
   private final UUID id;
   private final UUID userId;
   private final UUID orderId; // nullable
-  private final Double amount;
+  private final BigDecimal amount;
 
   private final TransactionStatementsType type;
   private final TransactionStatementsMethod method;
@@ -24,7 +25,7 @@ public class TransactionStatements {
       UUID id,
       UUID userId,
       UUID orderId,
-      Double amount,
+      BigDecimal amount,
       TransactionStatementsType type,
       TransactionStatementsMethod method,
       TransactionStatementsStatus status,
@@ -47,7 +48,7 @@ public class TransactionStatements {
   public static TransactionStatements create(
       UUID userId,
       UUID orderId,
-      Double amount,
+      BigDecimal amount,
       TransactionStatementsType type,
       TransactionStatementsMethod method,
       TransactionStatementsStatus status,
@@ -69,7 +70,7 @@ public class TransactionStatements {
       UUID id,
       UUID userId,
       UUID orderId,
-      Double amount,
+      BigDecimal amount,
       TransactionStatementsType type,
       TransactionStatementsMethod method,
       TransactionStatementsStatus status,
@@ -99,7 +100,7 @@ public class TransactionStatements {
     return orderId;
   }
 
-  public Double getAmount() {
+  public BigDecimal getAmount() {
     return amount;
   }
 
