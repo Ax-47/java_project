@@ -9,8 +9,7 @@ import jakarta.persistence.*;
 @Table(name = "product_categories")
 public class ProductCategoryModel {
 
-  @EmbeddedId
-  private ProductCategoryId id;
+  @EmbeddedId private ProductCategoryId id;
 
   @ManyToOne
   @MapsId("productId")
@@ -22,8 +21,7 @@ public class ProductCategoryModel {
   @JoinColumn(name = "category_id")
   private CategoryModel category;
 
-  protected ProductCategoryModel() {
-  }
+  protected ProductCategoryModel() {}
 
   public ProductCategoryModel(ProductModel product, CategoryModel category) {
     this.product = product;

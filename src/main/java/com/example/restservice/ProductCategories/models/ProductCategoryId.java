@@ -1,4 +1,3 @@
-
 package com.example.restservice.ProductCategories.models;
 
 import java.io.Serializable;
@@ -13,8 +12,7 @@ public class ProductCategoryId implements Serializable {
   private UUID productId;
   private UUID categoryId;
 
-  protected ProductCategoryId() {
-  }
+  protected ProductCategoryId() {}
 
   public ProductCategoryId(UUID productId, UUID categoryId) {
     this.productId = productId;
@@ -31,13 +29,10 @@ public class ProductCategoryId implements Serializable {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o)
-      return true;
-    if (!(o instanceof ProductCategoryId))
-      return false;
+    if (this == o) return true;
+    if (!(o instanceof ProductCategoryId)) return false;
     ProductCategoryId that = (ProductCategoryId) o;
-    return Objects.equals(productId, that.productId) &&
-        Objects.equals(categoryId, that.categoryId);
+    return Objects.equals(productId, that.productId) && Objects.equals(categoryId, that.categoryId);
   }
 
   @Override
