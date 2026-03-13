@@ -38,18 +38,10 @@ public class Product {
     this.updatedAt = Objects.requireNonNull(updatedAt);
   }
 
-  public static Product create(
-      String name, BigDecimal price, String description, UUID createdBy) {
+  public static Product create(String name, BigDecimal price, String description, UUID createdBy) {
 
     Instant now = Instant.now();
-    return new Product(
-        UUID.randomUUID(),
-        name,
-        Price.of(price),
-        description,
-        createdBy,
-        now,
-        now);
+    return new Product(UUID.randomUUID(), name, Price.of(price), description, createdBy, now, now);
   }
 
   public static Product rehydrate(

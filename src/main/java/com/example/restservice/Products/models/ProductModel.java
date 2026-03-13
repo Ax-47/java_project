@@ -15,8 +15,7 @@ import jakarta.persistence.*;
 @Table(name = "products")
 public class ProductModel {
 
-  @Id
-  private UUID id;
+  @Id private UUID id;
 
   @Column(length = 255, nullable = false, unique = true)
   private String productName;
@@ -34,11 +33,9 @@ public class ProductModel {
   @Column(updatable = false)
   private Instant createdAt;
 
-  @UpdateTimestamp
-  private Instant updatedAt;
+  @UpdateTimestamp private Instant updatedAt;
 
-  protected ProductModel() {
-  }
+  protected ProductModel() {}
 
   public UUID getId() {
     return id;
