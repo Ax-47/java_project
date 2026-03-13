@@ -5,12 +5,12 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.restservice.Auth.dto.SignInRequestDTO;
 import com.example.restservice.Auth.dto.TokenResponseDTO;
+import com.example.restservice.Auth.dto.UserPrincipalDTO;
 import com.example.restservice.Auth.usecases.RefreshTokenUsecase;
 import com.example.restservice.Auth.usecases.SignInUsecase;
 import com.example.restservice.Auth.usecases.SignOutUsecase;
@@ -53,16 +53,16 @@ public class AuthenticationController {
   @Operation(summary = "Get current user")
   @SecurityRequirement(name = "bearerAuth")
   @GetMapping("/me")
-  public Map<String, Object> me(@AuthenticationPrincipal Jwt jwt) {
-    return jwt.getClaims();
+  public Map<String, Object> me(@AuthenticationPrincipal UserPrincipalDTO userPrincipal) {
+    return Map.of("user", userPrincipal);
   }
 
   @Operation(summary = "Admin only endpoint")
   @SecurityRequirement(name = "bearerAuth")
   @GetMapping("/admin")
   @RolesAllowed("ADMIN")
-  public Map<String, Object> admin(@AuthenticationPrincipal Jwt jwt) {
-    return jwt.getClaims();
+  public Map<String, Object> admin(@AuthenticationPrincipal UserPrincipalDTO userPrincipal) {
+    return Map.of("user", userPrincipal);
   }
 
   @PostMapping("/signin")
@@ -77,7 +77,6 @@ public class AuthenticationController {
     TokenResponseDTO tokens = signInUsecase.execute(request);
 
     Cookie accessCookie = new Cookie("access_token", tokens.access_token());
-
     accessCookie.setHttpOnly(true);
     accessCookie.setPath("/");
     accessCookie.setMaxAge((int) accessTokenExpiredInSeconds);
@@ -93,8 +92,20 @@ public class AuthenticationController {
   @PostMapping("/refresh")
   @Operation(summary = "Refresh access token")
   @SecurityRequirement(name = "bearerAuth")
-  public ResponseEntity<TokenResponseDTO> refresh(@RequestHeader("Authorization") String bearer) {
-    String refreshToken = bearer.substring(7);
+  public ResponseEntity<TokenResponseDTO> refresh(
+      @CookieValue("refresh_token") String refreshToken, HttpServletResponse response) {
+    TokenResponseDTO tokens = refreshTokenUsecase.execute(refreshToken);
+
+    Cookie accessCookie = new Cookie("access_token", tokens.access_token());
+    accessCookie.setHttpOnly(true);
+    accessCookie.setPath("/");
+    accessCookie.setMaxAge((int) accessTokenExpiredInSeconds);
+    response.addCookie(accessCookie);
+    Cookie refreshCookie = new Cookie("refresh_token", tokens.refresh_token());
+    refreshCookie.setHttpOnly(true);
+    refreshCookie.setPath("/");
+    refreshCookie.setMaxAge((int) refreshTokenExpiredInSeconds);
+    response.addCookie(refreshCookie);
     return ResponseEntity.ok(refreshTokenUsecase.execute(refreshToken));
   }
 
@@ -102,8 +113,7 @@ public class AuthenticationController {
   @SecurityRequirement(name = "bearerAuth")
   @PostMapping("/signout")
   public ResponseEntity<Void> logout(
-      @RequestHeader("Authorization") String bearer, HttpServletResponse response) {
-    String refreshToken = bearer.substring(7);
+      @CookieValue("refresh_token") String refreshToken, HttpServletResponse response) {
 
     Cookie cookie = new Cookie("access_token", null);
     cookie.setMaxAge(0);

@@ -1,24 +1,35 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
-    <meta charset="UTF-8">
+<!doctype html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <head>
+    <meta charset="UTF-8" />
     <title>My Authorization Server</title>
-</head>
-<body>
-    <h1>Welcome to My Auth Server (Port 9000)</h1>
+  </head>
 
+  <body>
+    <h1>Welcome to My Auth Server (Port 9000)</h1>
+    <pre sec:authentication="principal"></pre>
     <div sec:authorize="!isAuthenticated()">
-        <p>You are not logged in.</p>
-        <a th:href="@{/login}">Log In Here</a>
+      <p>You are not logged in.</p>
+      <a th:href="@{/signin}">Log In Here</a>
     </div>
 
     <div sec:authorize="isAuthenticated()">
-        <p style="color: green;">🎉 You are logged in successfully!</p>
-        <p>Hello, <strong th:text="${username}">User</strong></p>
-        
-        <form th:action="@{/logout}" method="post">
-            <button type="submit">Log Out</button>
-        </form>
+      <p style="color: green">🎉 You are logged in successfully!</p>
+
+      <p>Hello, <strong sec:authentication="name"></strong></p>
+
+      <form th:action="@{/api/auth/signout}" method="post">
+        <input
+          type="hidden"
+          th:name="${_csrf.parameterName}"
+          th:value="${_csrf.token}"
+        />
+        <button type="submit">Log Out</button>
+      </form>
     </div>
-</body>
+  </body>
 </html>
