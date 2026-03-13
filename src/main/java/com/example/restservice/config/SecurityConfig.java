@@ -33,6 +33,8 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import com.example.restservice.Models.RSAKeyProperties;
 import com.nimbusds.jose.jwk.JWK;
@@ -50,14 +52,16 @@ import jakarta.servlet.http.HttpServletResponse;
 public class SecurityConfig {
 
   private final ResourceLoader resourceLoader;
+  private final AuthorizeFilter authorizeFilter;
 
-  public SecurityConfig(ResourceLoader resourceLoader) {
+  public SecurityConfig(ResourceLoader resourceLoader, AuthorizeFilter authorizeFilter) {
     this.resourceLoader = resourceLoader;
+    this.authorizeFilter = authorizeFilter;
   }
 
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.csrf(csrf -> csrf.disable())
+    http.csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
         .authorizeHttpRequests(
             auth ->
                 auth.requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**")
@@ -66,7 +70,7 @@ public class SecurityConfig {
                     .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**")
                     .permitAll()
                     // pages
-                    .requestMatchers("/signin", "/dashboard")
+                    .requestMatchers("/", "/signin")
                     .permitAll()
                     // auth api
                     .requestMatchers("/api/auth/**")
@@ -76,8 +80,10 @@ public class SecurityConfig {
                     .authenticated()
                     .anyRequest()
                     .authenticated())
-        .oauth2ResourceServer(
-            rs -> rs.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
+        .addFilterBefore(authorizeFilter, UsernamePasswordAuthenticationFilter.class)
+        // .oauth2ResourceServer(
+        // rs -> rs.jwt(jwt ->
+        // jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
         .exceptionHandling(
             ex ->
                 ex.authenticationEntryPoint(authenticationEntryPoint())
@@ -167,11 +173,11 @@ public class SecurityConfig {
           .getWriter()
           .write(
               """
-                    {
-                      "error": "Unauthorized",
-                      "message": "Authentication required"
-                    }
-                    """);
+                  {
+                    "error": "Unauthorized",
+                    "message": "Authentication required"
+                  }
+                  """);
     };
   }
 
@@ -185,11 +191,11 @@ public class SecurityConfig {
           .getWriter()
           .write(
               """
-                    {
-                      "error": "Forbidden",
-                      "message": "You do not have permission to access this resource"
-                    }
-                    """);
+                  {
+                    "error": "Forbidden",
+                    "message": "You do not have permission to access this resource"
+                  }
+                  """);
     };
   }
 }
