@@ -7,7 +7,6 @@ public interface DatabaseCategoryRepository {
   public Category save(Category category);
 
   public Optional<Category> findById(UUID id);
-  // Optional<Category> findById(UUID id);
 
   // public Category delete(Category category);
 
