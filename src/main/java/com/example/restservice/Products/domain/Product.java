@@ -1,7 +1,7 @@
 package com.example.restservice.Products.domain;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -14,8 +14,8 @@ public class Product {
   private Price price;
   private String description;
   private final UUID createdBy;
-  private final LocalDateTime createdAt;
-  private LocalDateTime updatedAt;
+  private final Instant createdAt;
+  private Instant updatedAt;
 
   private Product(
       UUID id,
@@ -23,8 +23,8 @@ public class Product {
       Price price,
       String description,
       UUID createdBy,
-      LocalDateTime createdAt,
-      LocalDateTime updatedAt) {
+      Instant createdAt,
+      Instant updatedAt) {
 
     validateName(name);
     validateDescription(description);
@@ -39,16 +39,17 @@ public class Product {
   }
 
   public static Product create(
-      UUID id, String name, BigDecimal price, String description, UUID createdBy) {
+      String name, BigDecimal price, String description, UUID createdBy) {
 
+    Instant now = Instant.now();
     return new Product(
-        id,
+        UUID.randomUUID(),
         name,
         Price.of(price),
         description,
         createdBy,
-        LocalDateTime.now(),
-        LocalDateTime.now());
+        now,
+        now);
   }
 
   public static Product rehydrate(
@@ -57,8 +58,8 @@ public class Product {
       BigDecimal price,
       String description,
       UUID createdBy,
-      LocalDateTime createdAt,
-      LocalDateTime updatedAt) {
+      Instant createdAt,
+      Instant updatedAt) {
 
     return new Product(id, name, Price.of(price), description, createdBy, createdAt, updatedAt);
   }
@@ -70,7 +71,7 @@ public class Product {
     this.name = name;
     this.price = Price.of(price);
     this.description = description;
-    this.updatedAt = LocalDateTime.now();
+    this.updatedAt = Instant.now();
   }
 
   private void validateName(String name) {
@@ -108,11 +109,11 @@ public class Product {
     return createdBy;
   }
 
-  public LocalDateTime getCreatedAt() {
+  public Instant getCreatedAt() {
     return createdAt;
   }
 
-  public LocalDateTime getUpdatedAt() {
+  public Instant getUpdatedAt() {
     return updatedAt;
   }
 }

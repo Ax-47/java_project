@@ -1,7 +1,7 @@
 package com.example.restservice.Products.models;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -15,7 +15,8 @@ import jakarta.persistence.*;
 @Table(name = "products")
 public class ProductModel {
 
-  @Id private UUID id;
+  @Id
+  private UUID id;
 
   @Column(length = 255, nullable = false, unique = true)
   private String productName;
@@ -31,11 +32,13 @@ public class ProductModel {
 
   @CreationTimestamp
   @Column(updatable = false)
-  private LocalDateTime createdAt;
+  private Instant createdAt;
 
-  @UpdateTimestamp private LocalDateTime updatedAt;
+  @UpdateTimestamp
+  private Instant updatedAt;
 
-  protected ProductModel() {}
+  protected ProductModel() {
+  }
 
   public UUID getId() {
     return id;
@@ -57,11 +60,11 @@ public class ProductModel {
     return createdBy;
   }
 
-  public LocalDateTime getCreatedAt() {
+  public Instant getCreatedAt() {
     return createdAt;
   }
 
-  public LocalDateTime getUpdatedAt() {
+  public Instant getUpdatedAt() {
     return updatedAt;
   }
 
