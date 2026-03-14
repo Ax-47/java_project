@@ -1,16 +1,11 @@
 package com.example.restservice.ProductCategories.repositories;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import com.example.restservice.Categories.domain.Category;
-import com.example.restservice.Categories.domain.DatabaseCategoryRepository;
 import com.example.restservice.Categories.models.CategoryModel;
 import com.example.restservice.Categories.repositories.JpaCategoryRepository;
 import com.example.restservice.ProductCategories.domain.DatabaseProductCategoryRepository;
@@ -27,8 +22,10 @@ public class DatabaseProductCategoryRepositoryImpl implements DatabaseProductCat
   private final JpaProductRepository jpaProductRepository;
   private final JpaCategoryRepository jpaCategoryRepository;
 
-  public DatabaseProductCategoryRepositoryImpl(JpaProductCategoryRepository jpaProductCategoryRepository,
-      JpaProductRepository jpaProductRepository, JpaCategoryRepository jpaCategoryRepository) {
+  public DatabaseProductCategoryRepositoryImpl(
+      JpaProductCategoryRepository jpaProductCategoryRepository,
+      JpaProductRepository jpaProductRepository,
+      JpaCategoryRepository jpaCategoryRepository) {
     this.jpaProductCategoryRepository = jpaProductCategoryRepository;
     this.jpaProductRepository = jpaProductRepository;
     this.jpaCategoryRepository = jpaCategoryRepository;
@@ -52,9 +49,7 @@ public class DatabaseProductCategoryRepositoryImpl implements DatabaseProductCat
   @Override
   public List<Category> findCategoriesByProductId(UUID productId) {
 
-    return jpaProductCategoryRepository
-        .findByProductId(productId)
-        .stream()
+    return jpaProductCategoryRepository.findByProductId(productId).stream()
         .map(pc -> pc.getCategory().toDomain())
         .toList();
   }

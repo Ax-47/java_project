@@ -12,8 +12,7 @@ public class RemoveProductCategoryUsecase {
 
   private final DatabaseProductCategoryRepository productCategoryRepository;
 
-  public RemoveProductCategoryUsecase(
-      DatabaseProductCategoryRepository productCategoryRepository) {
+  public RemoveProductCategoryUsecase(DatabaseProductCategoryRepository productCategoryRepository) {
     this.productCategoryRepository = productCategoryRepository;
   }
 
