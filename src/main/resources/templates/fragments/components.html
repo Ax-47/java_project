@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <a th:fragment="btn-link(text, colorClass, url)" 
+       th:href="@{${url}}" 
+       th:text="${text}" 
+       th:class="'font-extrabold px-6 py-2 rounded-lg text-white inline-block text-center shadow hover:opacity-90 transition ' + ${colorClass}">
+    </a>
+
+    <button th:fragment="btn-submit(text, colorClass)" 
+            type="submit" 
+            th:text="${text}" 
+            th:class="'font-extrabold px-8 py-3 rounded-lg text-white inline-block text-center shadow hover:opacity-90 transition w-full md:w-auto ' + ${colorClass}">
+    </button>
+</body>
+</html>
