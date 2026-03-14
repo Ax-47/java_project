@@ -34,12 +34,14 @@ public class CategoryController {
     this.findCategoriesUsecase = findCategoriesUsecase;
   }
 
+  // post /api/categories
   @PostMapping
   public ResponseEntity<CategoryResponseDTO> create(
       @Valid @RequestBody CategoryRequestDTO request) {
     return ResponseEntity.ok(createCategoryUsecase.execute(request));
   }
 
+  // patch /api/categories/{id}
   @PatchMapping("/{id}")
   public ResponseEntity<CategoryResponseDTO> rename(
       @PathVariable UUID id, @Valid @RequestBody CategoryRequestDTO request) {
@@ -47,6 +49,7 @@ public class CategoryController {
     return ResponseEntity.ok(updateCategoryUsecase.execute(id, request));
   }
 
+  // get /api/categories
   @GetMapping
   public ResponseEntity<PageResponse<CategoryResponseDTO>> findAllUsers(
       @RequestParam(defaultValue = "0") int page,
@@ -58,12 +61,14 @@ public class CategoryController {
     return ResponseEntity.ok(PageResponse.from(findCategoriesUsecase.execute(query)));
   }
 
+  // get /api/categories//{id}
   @GetMapping("/{id}")
   public ResponseEntity<CategoryResponseDTO> findById(@PathVariable UUID id) {
 
     return ResponseEntity.ok(getCategoryUsecase.execute(id));
   }
 
+  // del /api/categories//{id}
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> delete(@PathVariable UUID id) {
 
