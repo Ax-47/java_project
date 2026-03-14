@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.example.restservice.Products.domain.Price;
 import com.example.restservice.Products.domain.Product;
 
 import jakarta.persistence.*;
@@ -76,7 +77,7 @@ public class ProductModel {
     return Product.rehydrate(
         this.id,
         this.productName,
-        this.productPrice,
+        Price.of(this.productPrice),
         this.productDescription,
         this.createdBy,
         this.categoryId,
@@ -91,14 +92,13 @@ public class ProductModel {
 
     ProductModel model = new ProductModel();
 
-    if (product.getId() != null) {
-      model.id = product.getId();
-    }
-
+    model.id = product.getId();
     model.productName = product.getName();
     model.productPrice = product.getPrice().getValue();
     model.productDescription = product.getDescription();
     model.createdBy = product.getCreatedBy();
+    model.createdAt = product.getCreatedAt();
+    model.updatedAt = product.getUpdatedAt();
 
     return model;
   }
