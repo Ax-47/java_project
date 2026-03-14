@@ -45,10 +45,12 @@ public class Product {
     this.updatedAt = Objects.requireNonNull(updatedAt);
   }
 
-  public static Product create(String name, BigDecimal price, String description, UUID createdBy, UUID categoryId) {
+  public static Product create(
+      String name, BigDecimal price, String description, UUID createdBy, UUID categoryId) {
 
     Instant now = Instant.now();
-    return new Product(UUID.randomUUID(), name, Price.of(price), description, createdBy,categoryId, now, now);
+    return new Product(
+        UUID.randomUUID(), name, Price.of(price), description, createdBy, categoryId, now, now);
   }
 
   public static Product rehydrate(
@@ -61,7 +63,8 @@ public class Product {
       Instant createdAt,
       Instant updatedAt) {
 
-    return new Product(id, name, Price.of(price), description, createdBy, categoryId, createdAt, updatedAt);
+    return new Product(
+        id, name, Price.of(price), description, createdBy, categoryId, createdAt, updatedAt);
   }
 
   public void update(String name, BigDecimal price, String description) {
@@ -127,6 +130,7 @@ public class Product {
   public Instant getUpdatedAt() {
     return updatedAt;
   }
+
   public UUID getCategoryId() {
     return categoryId;
   }
