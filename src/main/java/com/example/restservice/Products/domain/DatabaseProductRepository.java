@@ -3,10 +3,15 @@ package com.example.restservice.Products.domain;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.example.restservice.common.Page;
+import com.example.restservice.common.PageQuery;
+
 public interface DatabaseProductRepository {
-  public Product save(Product product);
+  Product save(Product product);
 
   Optional<Product> findById(UUID id);
 
-  public Product delete(Product product);
+  Product delete(Product product);
+
+  Page<Product> findAllProducts(PageQuery query);
 }
