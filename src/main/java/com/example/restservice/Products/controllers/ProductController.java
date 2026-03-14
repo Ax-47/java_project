@@ -1,31 +1,45 @@
 package com.example.restservice.Products.controllers;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
 
-import com.example.restservice.Products.dto.CreateProductRequestDTO;
-import com.example.restservice.Products.dto.CreateProductResponseDTO;
-import com.example.restservice.Products.dto.DeleteProductRequestDTO;
-import com.example.restservice.Products.dto.DeleteProductResponseDTO;
-import com.example.restservice.Products.usecases.CreateProductUsecase;
-import com.example.restservice.Products.usecases.DeleteProductUsecase;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.example.restservice.Images.domain.ImageResourceType;
+import com.example.restservice.Images.dto.*;
+import com.example.restservice.Images.usecases.*;
+import com.example.restservice.Products.dto.*;
+import com.example.restservice.Products.usecases.*;
 
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("api/products")
 public class ProductController {
-  private CreateProductUsecase createProductUsecase;
-  private DeleteProductUsecase deleteProductUsecase;
+  private final CreateProductUsecase createProductUsecase;
+  private final DeleteProductUsecase deleteProductUsecase;
+  private final UploadImageUsecase uploadImageUsecase;
+  private final FindImageUsecase findImageUsecase;
+  private final ReorderImageUsecase reorderImageUsecase;
+  private final DeleteImageUsecase deleteImageUsecase;
 
   public ProductController(
-      CreateProductUsecase createProductUsecase, DeleteProductUsecase deleteProductUsecase) {
+      CreateProductUsecase createProductUsecase,
+      DeleteProductUsecase deleteProductUsecase,
+      UploadImageUsecase uploadImageUsecase,
+      FindImageUsecase findImageUsecase,
+      DeleteImageUsecase deleteImageUsecase,
+      ReorderImageUsecase reorderImageUsecase) {
+
     this.createProductUsecase = createProductUsecase;
     this.deleteProductUsecase = deleteProductUsecase;
+    this.deleteImageUsecase = deleteImageUsecase;
+    this.uploadImageUsecase = uploadImageUsecase;
+    this.findImageUsecase = findImageUsecase;
+    this.reorderImageUsecase = reorderImageUsecase;
   }
 
   // HELLLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
@@ -43,6 +57,31 @@ public class ProductController {
     return ResponseEntity.ok(response);
   }
 
+  @PostMapping("/{productId}/images")
+  public UploadImageResponseDTO uploadProductImage(
+      @PathVariable UUID productId, @RequestParam MultipartFile file, @RequestParam int sortOrder)
+      throws IOException {
+
+    return uploadImageUsecase.execute(file, productId, ImageResourceType.PRODUCT, sortOrder);
+  }
+
+  @GetMapping("/{productId}/images")
+  public List<UploadImageResponseDTO> findProductImages(@PathVariable UUID productId) {
+    return findImageUsecase.execute(productId, ImageResourceType.PRODUCT);
+  }
+
+  @PatchMapping("/{productId}/images/reorder")
+  public void reorderProductImages(
+      @PathVariable UUID productId, @RequestBody List<ReorderImageRequestDTO> request) {
+
+    reorderImageUsecase.execute(productId, request);
+  }
+
+  @DeleteMapping("/{productId}/images/{imageId}")
+  public void deleteProductImage(@PathVariable UUID productId, @PathVariable UUID imageId) {
+
+    deleteImageUsecase.execute(productId, imageId);
+  }
   // GET /api/products
   // GET /api/products/{productId}
   // POST /api/products/{productId}/purchase
@@ -50,6 +89,4 @@ public class ProductController {
   // POST /api/products/{productId}/categories/{categoryId}
   // DELETE /api/products/{productId}/categories/{categoryId}
   // PUT /api/products{productId}
-  // POST /api/products{productId}/images
-  // DELETE /api/products{productId}/images/{imageId}
 }
