@@ -3,9 +3,6 @@ package com.example.restservice.Address.models;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
 import com.example.restservice.Address.domain.Address;
 
 import jakarta.persistence.*;
@@ -14,7 +11,9 @@ import jakarta.persistence.*;
 @Table(name = "addresses")
 public class AddressModel {
 
-  @Id private UUID id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private UUID id;
 
   @Column(nullable = false)
   private UUID userId;
@@ -51,11 +50,10 @@ public class AddressModel {
 
   private boolean isDefault;
 
-  @CreationTimestamp
   @Column(updatable = false)
   private LocalDateTime createdAt;
 
-  @UpdateTimestamp private LocalDateTime updatedAt;
+  private LocalDateTime updatedAt;
 
   protected AddressModel() {}
 
@@ -161,6 +159,8 @@ public class AddressModel {
     entity.country = address.getCountry();
     entity.label = address.getLabel();
     entity.isDefault = address.isDefault();
+    entity.createdAt = address.getCreatedAt();
+    entity.updatedAt = address.getUpdatedAt();
 
     return entity;
   }
