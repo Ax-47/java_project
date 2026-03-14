@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Khula:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Khula', sans-serif; }</style>
+    <title>Top up Ming Point</title>
+</head>
+<body class="bg-white text-black m-0 p-0">
+    <div th:replace="~{fragments/header :: navbar}"></div>
+
+    <div class="text-center mt-12 mb-8">
+        <h2 class="text-3xl font-bold flex justify-center items-center gap-4">
+            <img th:src="@{/images/card-icon.png}" alt="Card Icon" class="w-10 h-10 object-contain">
+            
+            เติมหมิงพอยท์
+            
+            <img th:src="@{/images/ming-coin.png}" alt="Ming Coin" class="w-[50px] h-[50px] rounded-full object-cover shadow-sm">
+        </h2>
+    </div>
+
+    <div class="bg-[#FCF2D9] rounded-2xl p-8 max-w-2xl mx-auto mt-8 shadow-sm">
+        <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+            <span class="w-2 h-2 bg-black rounded-full"></span>
+            กรอกจำนวนเงินที่จะเติม
+        </h3>
+        <input type="number" class="w-full p-4 rounded-xl border-none focus:outline-none focus:ring-2 focus:ring-[#0175CC] mb-3 text-lg" placeholder="จำนวนเงิน">
+        <p class="text-[#0175CC] text-sm font-semibold flex items-center gap-2">
+            <span class="w-1.5 h-1.5 bg-[#0175CC] rounded-full"></span>
+            1 หมิงพอยท์ = 1 บาท
+        </p>
+    </div>
+
+    <div class="bg-[#FCF2D9] rounded-2xl p-8 max-w-2xl mx-auto mt-6 shadow-sm">
+        <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+            <span class="w-2 h-2 bg-black rounded-full"></span>
+            ตรวจสอบเนื้อหาการชำระเงิน
+        </h3>
+        <p class="flex justify-between text-lg font-semibold items-center">
+            ยอดชำระ (ไม่มีภาษี) 
+            <span class="text-xl">฿00.00</span>
+        </p>
+        <hr class="border-gray-400 my-6">
+        <ul class="text-[#0175CC] text-sm font-semibold space-y-2">
+            <li class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 bg-[#0175CC] rounded-full"></span>
+                หมิงพอยท์ที่ซื้อจะไม่มีวันหมดอายุ
+            </li>
+            <li class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 bg-[#0175CC] rounded-full"></span>
+                หลังจากซื้อแล้ว จะไม่สามารถยกเลิกหรือคืนเงินได้
+            </li>
+        </ul>
+    </div>
+
+    <div class="text-center mt-10 mb-16 flex justify-center gap-6">
+        <button class="bg-[#FF4545] text-white font-bold px-12 py-3 rounded-xl hover:opacity-90 transition shadow-sm text-lg">ยกเลิก</button>
+        <button class="bg-[#0175CC] text-white font-bold px-12 py-3 rounded-xl hover:opacity-90 transition shadow-sm text-lg">ชำระเงิน</button>
+    </div>
+</body>
+</html>
