@@ -29,6 +29,7 @@ public class ProductController {
   private final DeleteImageUsecase deleteImageUsecase;
   private final FindProductsUsecase findProductsUsecase;
   private final FindProductUsecase findProductUsecase;
+  private final UpdateProductUsecase updateProductUsecase;
 
   public ProductController(
       CreateProductUsecase createProductUsecase,
@@ -38,6 +39,7 @@ public class ProductController {
       DeleteImageUsecase deleteImageUsecase,
       FindProductsUsecase findProductsUsecase,
       FindProductUsecase findProductUsecase,
+      UpdateProductUsecase updateProductUsecase,
       ReorderImageUsecase reorderImageUsecase) {
 
     this.createProductUsecase = createProductUsecase;
@@ -47,6 +49,7 @@ public class ProductController {
     this.findImageUsecase = findImageUsecase;
     this.findProductUsecase = findProductUsecase;
     this.reorderImageUsecase = reorderImageUsecase;
+    this.updateProductUsecase = updateProductUsecase;
     this.findProductsUsecase = findProductsUsecase;
   }
 
@@ -107,7 +110,12 @@ public class ProductController {
     return ResponseEntity.ok(findProductUsecase.execute(id));
   }
 
-  // PUT /api/products{productId}
+  @PutMapping("/{id}")
+  public ResponseEntity<ProductResponseDTO> putById(
+      @PathVariable UUID id, @Valid @RequestBody UpdateProductRequestDTO request) {
+    return ResponseEntity.ok(updateProductUsecase.execute(id, request));
+  }
+
   // POST /api/products/{productId}/purchase
   // GET /api/products/{productId}/categories
   // POST /api/products/{productId}/categories/{categoryId}
