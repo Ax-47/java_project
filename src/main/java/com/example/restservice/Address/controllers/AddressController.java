@@ -86,7 +86,7 @@ public class AddressController {
     return ResponseEntity.ok(response);
   }
 
-  @PutMapping("/updateaddress")
+  @PutMapping
   public ResponseEntity<UpdateAddressResponseDTO> update(
       @Valid @RequestBody UpdateAddressRequestDTO requestModel) {
 
