@@ -13,6 +13,8 @@ import com.example.restservice.Images.dto.*;
 import com.example.restservice.Images.usecases.*;
 import com.example.restservice.Products.dto.*;
 import com.example.restservice.Products.usecases.*;
+import com.example.restservice.common.PageQuery;
+import com.example.restservice.common.PageResponse;
 
 import jakarta.validation.Valid;
 
@@ -25,6 +27,8 @@ public class ProductController {
   private final FindImageUsecase findImageUsecase;
   private final ReorderImageUsecase reorderImageUsecase;
   private final DeleteImageUsecase deleteImageUsecase;
+  private final FindProductsUsecase findProductsUsecase;
+  private final FindProductUsecase findProductUsecase;
 
   public ProductController(
       CreateProductUsecase createProductUsecase,
@@ -32,6 +36,8 @@ public class ProductController {
       UploadImageUsecase uploadImageUsecase,
       FindImageUsecase findImageUsecase,
       DeleteImageUsecase deleteImageUsecase,
+      FindProductsUsecase findProductsUsecase,
+      FindProductUsecase findProductUsecase,
       ReorderImageUsecase reorderImageUsecase) {
 
     this.createProductUsecase = createProductUsecase;
@@ -39,7 +45,9 @@ public class ProductController {
     this.deleteImageUsecase = deleteImageUsecase;
     this.uploadImageUsecase = uploadImageUsecase;
     this.findImageUsecase = findImageUsecase;
+    this.findProductUsecase = findProductUsecase;
     this.reorderImageUsecase = reorderImageUsecase;
+    this.findProductsUsecase = findProductsUsecase;
   }
 
   // HELLLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
@@ -82,11 +90,26 @@ public class ProductController {
 
     deleteImageUsecase.execute(productId, imageId);
   }
-  // GET /api/products
-  // GET /api/products/{productId}
+
+  @GetMapping
+  public ResponseEntity<PageResponse<ProductResponseDTO>> findAllProducts(
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size,
+      @RequestParam(defaultValue = "productName") String sortBy,
+      @RequestParam(defaultValue = "true") boolean asc) {
+
+    PageQuery query = new PageQuery(page, size, sortBy, asc);
+    return ResponseEntity.ok(PageResponse.from(findProductsUsecase.execute(query)));
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<ProductResponseDTO> findById(@PathVariable UUID id) {
+    return ResponseEntity.ok(findProductUsecase.execute(id));
+  }
+
+  // PUT /api/products{productId}
   // POST /api/products/{productId}/purchase
   // GET /api/products/{productId}/categories
   // POST /api/products/{productId}/categories/{categoryId}
   // DELETE /api/products/{productId}/categories/{categoryId}
-  // PUT /api/products{productId}
 }
