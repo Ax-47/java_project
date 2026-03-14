@@ -1,10 +1,13 @@
 package com.example.restservice.Reviews.usecases;
 
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 
 import com.example.restservice.Reviews.domain.*;
-import com.example.restservice.Reviews.domain.DatabaseReviewRepository;
 import com.example.restservice.Reviews.dto.*;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class DeleteReviewUsecase {
@@ -15,15 +18,13 @@ public class DeleteReviewUsecase {
     this.databaseReviewRepository = databaseReviewRepository;
   }
 
-  public DeleteReviewResponseDTO execute(DeleteReviewRequestDTO request) {
+  @Transactional
+  public DeleteReviewResponseDTO execute(UUID productId) {
     Review existingReview =
         this.databaseReviewRepository
-            .findById(request.reviewId())
+            .findById(productId)
             .orElseThrow(() -> new RuntimeException("Review not found"));
 
-    if (!existingReview.getUserId().equals(request.userId())) {
-      throw new RuntimeException("Unauthorized to delete this review");
-    }
     this.databaseReviewRepository.delete(existingReview);
 
     return new DeleteReviewResponseDTO("Review was deleted successfully");
