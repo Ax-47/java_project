@@ -18,6 +18,7 @@ public class Product {
   private String description;
   private final Set<ProductCategory> categories = new HashSet<>();
   private final UUID createdBy;
+  private final UUID categoryId;
   private final Instant createdAt;
   private Instant updatedAt;
 
@@ -27,6 +28,7 @@ public class Product {
       Price price,
       String description,
       UUID createdBy,
+      UUID categoryId,
       Instant createdAt,
       Instant updatedAt) {
 
@@ -38,14 +40,15 @@ public class Product {
     this.price = Objects.requireNonNull(price);
     this.description = description;
     this.createdBy = Objects.requireNonNull(createdBy);
+    this.categoryId = Objects.requireNonNull(categoryId);
     this.createdAt = Objects.requireNonNull(createdAt);
     this.updatedAt = Objects.requireNonNull(updatedAt);
   }
 
-  public static Product create(String name, BigDecimal price, String description, UUID createdBy) {
+  public static Product create(String name, BigDecimal price, String description, UUID createdBy, UUID categoryId) {
 
     Instant now = Instant.now();
-    return new Product(UUID.randomUUID(), name, Price.of(price), description, createdBy, now, now);
+    return new Product(UUID.randomUUID(), name, Price.of(price), description, createdBy,categoryId, now, now);
   }
 
   public static Product rehydrate(
@@ -54,10 +57,11 @@ public class Product {
       BigDecimal price,
       String description,
       UUID createdBy,
+      UUID categoryId,
       Instant createdAt,
       Instant updatedAt) {
 
-    return new Product(id, name, Price.of(price), description, createdBy, createdAt, updatedAt);
+    return new Product(id, name, Price.of(price), description, createdBy, categoryId, createdAt, updatedAt);
   }
 
   public void update(String name, BigDecimal price, String description) {
@@ -122,5 +126,8 @@ public class Product {
 
   public Instant getUpdatedAt() {
     return updatedAt;
+  }
+  public UUID getCategoryId() {
+    return categoryId;
   }
 }
