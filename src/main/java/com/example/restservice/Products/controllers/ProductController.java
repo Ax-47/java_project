@@ -134,15 +134,13 @@ public class ProductController {
 
   @DeleteMapping("/{productId}/categories/{categoryId}")
   public ResponseEntity<Void> removeCategory(
-      @PathVariable UUID productId,
-      @PathVariable UUID categoryId) {
+      @PathVariable UUID productId, @PathVariable UUID categoryId) {
     removeProductCategoryUsecase.execute(productId, categoryId);
     return ResponseEntity.noContent().build();
   }
 
   @GetMapping("/{productId}/categories")
-  public List<CategoryResponseDTO> getCategories(
-      @PathVariable UUID productId) {
+  public List<CategoryResponseDTO> getCategories(@PathVariable UUID productId) {
 
     return findProductCategoriesUsecase.execute(productId);
   }

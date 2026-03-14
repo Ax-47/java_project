@@ -12,5 +12,4 @@ public interface DatabaseProductCategoryRepository {
   public void delete(ProductCategory relation);
 
   List<Category> findCategoriesByProductId(UUID productId);
-
 }

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.restservice.ProductCategories.models.ProductCategoryId;
 import com.example.restservice.ProductCategories.models.ProductCategoryModel;
 
-public interface JpaProductCategoryRepository extends JpaRepository<ProductCategoryModel, ProductCategoryId> {
+public interface JpaProductCategoryRepository
+    extends JpaRepository<ProductCategoryModel, ProductCategoryId> {
   List<ProductCategoryModel> findByProductId(UUID productId);
 }

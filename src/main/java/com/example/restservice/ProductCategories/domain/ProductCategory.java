@@ -27,10 +27,8 @@ public class ProductCategory {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o)
-      return true;
-    if (!(o instanceof ProductCategory))
-      return false;
+    if (this == o) return true;
+    if (!(o instanceof ProductCategory)) return false;
     ProductCategory that = (ProductCategory) o;
     return productId.equals(that.productId) && categoryId.equals(that.categoryId);
   }
