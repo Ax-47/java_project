@@ -30,9 +30,6 @@ public class ProductModel {
   @Column(nullable = false)
   private UUID createdBy;
 
-  @Column(nullable = false)
-  private UUID categoryId;
-
   @CreationTimestamp
   @Column(updatable = false)
   private Instant createdAt;
@@ -69,10 +66,6 @@ public class ProductModel {
     return updatedAt;
   }
 
-  public UUID getCategoryId() {
-    return categoryId;
-  }
-
   public Product toDomain() {
     return Product.rehydrate(
         this.id,
@@ -80,7 +73,6 @@ public class ProductModel {
         Price.of(this.productPrice),
         this.productDescription,
         this.createdBy,
-        this.categoryId,
         this.createdAt,
         this.updatedAt);
   }
