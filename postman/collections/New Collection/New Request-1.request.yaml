@@ -1,4 +1,5 @@
 $kind: http-request
+name: New Request
 url: ""
 method: GET
-order: 1000
+order: 2000
