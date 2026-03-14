@@ -8,9 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.restservice.Categories.dto.CategoryResponseDTO;
 import com.example.restservice.Images.domain.ImageResourceType;
 import com.example.restservice.Images.dto.*;
 import com.example.restservice.Images.usecases.*;
+import com.example.restservice.ProductCategories.usecases.*;
 import com.example.restservice.Products.dto.*;
 import com.example.restservice.Products.usecases.*;
 import com.example.restservice.common.PageQuery;
@@ -30,6 +32,9 @@ public class ProductController {
   private final FindProductsUsecase findProductsUsecase;
   private final FindProductUsecase findProductUsecase;
   private final UpdateProductUsecase updateProductUsecase;
+  private final AddProductCategoriesUsecase addProductCategoriesUsecase;
+  private final RemoveProductCategoryUsecase removeProductCategoryUsecase;
+  private final FindProductCategoriesUsecase findProductCategoriesUsecase;
 
   public ProductController(
       CreateProductUsecase createProductUsecase,
@@ -40,6 +45,9 @@ public class ProductController {
       FindProductsUsecase findProductsUsecase,
       FindProductUsecase findProductUsecase,
       UpdateProductUsecase updateProductUsecase,
+      AddProductCategoriesUsecase addProductCategoriesUsecase,
+      RemoveProductCategoryUsecase removeProductCategoryUsecase,
+      FindProductCategoriesUsecase findProductCategoriesUsecase,
       ReorderImageUsecase reorderImageUsecase) {
 
     this.createProductUsecase = createProductUsecase;
@@ -51,6 +59,9 @@ public class ProductController {
     this.reorderImageUsecase = reorderImageUsecase;
     this.updateProductUsecase = updateProductUsecase;
     this.findProductsUsecase = findProductsUsecase;
+    this.addProductCategoriesUsecase = addProductCategoriesUsecase;
+    this.removeProductCategoryUsecase = removeProductCategoryUsecase;
+    this.findProductCategoriesUsecase = findProductCategoriesUsecase;
   }
 
   // HELLLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
@@ -116,8 +127,24 @@ public class ProductController {
     return ResponseEntity.ok(updateProductUsecase.execute(id, request));
   }
 
+  @PostMapping("/{productId}/categories/{categoryId}")
+  public void addCategory(@PathVariable UUID productId, @PathVariable UUID categoryId) {
+    addProductCategoriesUsecase.execute(productId, categoryId);
+  }
+
+  @DeleteMapping("/{productId}/categories/{categoryId}")
+  public ResponseEntity<Void> removeCategory(
+      @PathVariable UUID productId,
+      @PathVariable UUID categoryId) {
+    removeProductCategoryUsecase.execute(productId, categoryId);
+    return ResponseEntity.noContent().build();
+  }
+
+  @GetMapping("/{productId}/categories")
+  public List<CategoryResponseDTO> getCategories(
+      @PathVariable UUID productId) {
+
+    return findProductCategoriesUsecase.execute(productId);
+  }
   // POST /api/products/{productId}/purchase
-  // GET /api/products/{productId}/categories
-  // POST /api/products/{productId}/categories/{categoryId}
-  // DELETE /api/products/{productId}/categories/{categoryId}
 }

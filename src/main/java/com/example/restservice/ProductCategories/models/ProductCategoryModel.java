@@ -1,6 +1,9 @@
 package com.example.restservice.ProductCategories.models;
 
+import com.example.restservice.Categories.domain.Category;
 import com.example.restservice.Categories.models.CategoryModel;
+import com.example.restservice.ProductCategories.domain.ProductCategory;
+import com.example.restservice.Products.domain.Product;
 import com.example.restservice.Products.models.ProductModel;
 
 import jakarta.persistence.*;
@@ -9,7 +12,8 @@ import jakarta.persistence.*;
 @Table(name = "product_categories")
 public class ProductCategoryModel {
 
-  @EmbeddedId private ProductCategoryId id;
+  @EmbeddedId
+  private ProductCategoryId id;
 
   @ManyToOne
   @MapsId("productId")
@@ -21,12 +25,17 @@ public class ProductCategoryModel {
   @JoinColumn(name = "category_id")
   private CategoryModel category;
 
-  protected ProductCategoryModel() {}
+  protected ProductCategoryModel() {
+  }
 
   public ProductCategoryModel(ProductModel product, CategoryModel category) {
     this.product = product;
     this.category = category;
     this.id = new ProductCategoryId(product.getId(), category.getId());
+  }
+
+  public ProductCategory toDomain() {
+    return ProductCategory.of(this.id.getProductId(), this.id.getCategoryId());
   }
 
   public ProductCategoryId getId() {
