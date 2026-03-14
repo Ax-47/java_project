@@ -15,7 +15,8 @@ import jakarta.persistence.*;
 @Table(name = "products")
 public class ProductModel {
 
-  @Id private UUID id;
+  @Id
+  private UUID id;
 
   @Column(length = 255, nullable = false, unique = true)
   private String productName;
@@ -29,13 +30,18 @@ public class ProductModel {
   @Column(nullable = false)
   private UUID createdBy;
 
+  @Column(nullable = false)
+  private UUID categoryId;
+
   @CreationTimestamp
   @Column(updatable = false)
   private Instant createdAt;
 
-  @UpdateTimestamp private Instant updatedAt;
+  @UpdateTimestamp
+  private Instant updatedAt;
 
-  protected ProductModel() {}
+  protected ProductModel() {
+  }
 
   public UUID getId() {
     return id;
@@ -65,6 +71,10 @@ public class ProductModel {
     return updatedAt;
   }
 
+  public UUID getCategoryId() {
+    return categoryId;
+  }
+
   public Product toDomain() {
     return Product.rehydrate(
         this.id,
@@ -72,6 +82,7 @@ public class ProductModel {
         this.productPrice,
         this.productDescription,
         this.createdBy,
+        this.categoryId,
         this.createdAt,
         this.updatedAt);
   }

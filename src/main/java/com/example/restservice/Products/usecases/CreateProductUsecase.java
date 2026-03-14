@@ -18,7 +18,7 @@ public class CreateProductUsecase {
   @Transactional
   public CreateProductResponseDTO execute(CreateProductRequestDTO request) {
     Product newProduct =
-        Product.create(request.name(), request.price(), request.description(), request.createdBy());
+        Product.create(request.name(), request.price(), request.description(), request.createdBy(),request.categoryId());
 
     productRepository.save(newProduct);
 
