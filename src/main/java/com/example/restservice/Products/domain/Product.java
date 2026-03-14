@@ -54,7 +54,6 @@ public class Product {
       Price price,
       String description,
       UUID createdBy,
-      UUID categoryId,
       Instant createdAt,
       Instant updatedAt) {
 
@@ -124,5 +123,4 @@ public class Product {
   public Instant getUpdatedAt() {
     return updatedAt;
   }
-
 }
