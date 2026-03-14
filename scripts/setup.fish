@@ -14,8 +14,10 @@ echo "Generating RSA keys..."
 
 mkdir -p src/main/resources/keys
 
-openssl genpkey -algorithm RSA -out src/main/resources/keys/private_key_pkcs8.pem -pkeyopt rsa_keygen_bits:2048
+# generate private key
+openssl genpkey -algorithm RSA -out src/main/resources/private_key_pkcs8.pem -pkeyopt rsa_keygen_bits:2048
 
-openssl rsa -pubout -in src/main/resources/keys/private_key_pkcs8.pem -out src/main/resources/keys/public_key.pem
+# generate public key
+openssl rsa -pubout -in src/main/resources/private_key_pkcs8.pem -out src/main/resources/public_key.pem
 
 echo "Keys generated in src/main/resources/keys"
