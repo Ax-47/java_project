@@ -5,8 +5,8 @@ import java.util.UUID;
 
 public class ProductCategory {
 
-  private UUID productId;
-  private UUID categoryId;
+  private final UUID productId;
+  private final UUID categoryId;
 
   private ProductCategory(UUID productId, UUID categoryId) {
     this.productId = productId;
@@ -27,8 +27,10 @@ public class ProductCategory {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof ProductCategory)) return false;
+    if (this == o)
+      return true;
+    if (!(o instanceof ProductCategory))
+      return false;
     ProductCategory that = (ProductCategory) o;
     return productId.equals(that.productId) && categoryId.equals(that.categoryId);
   }
