@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.restservice.Auth.dto.UserPrincipalDTO;
 import com.example.restservice.Categories.dto.CategoryResponseDTO;
 import com.example.restservice.Images.domain.ImageResourceType;
 import com.example.restservice.Images.dto.*;
@@ -35,6 +37,7 @@ public class ProductController {
   private final AddProductCategoriesUsecase addProductCategoriesUsecase;
   private final RemoveProductCategoryUsecase removeProductCategoryUsecase;
   private final FindProductCategoriesUsecase findProductCategoriesUsecase;
+  private final PurchaseProductUsecase purchaseProductUsecase;
 
   public ProductController(
       CreateProductUsecase createProductUsecase,
@@ -48,6 +51,7 @@ public class ProductController {
       AddProductCategoriesUsecase addProductCategoriesUsecase,
       RemoveProductCategoryUsecase removeProductCategoryUsecase,
       FindProductCategoriesUsecase findProductCategoriesUsecase,
+      PurchaseProductUsecase purchaseProductUsecase,
       ReorderImageUsecase reorderImageUsecase) {
 
     this.createProductUsecase = createProductUsecase;
@@ -62,6 +66,7 @@ public class ProductController {
     this.addProductCategoriesUsecase = addProductCategoriesUsecase;
     this.removeProductCategoryUsecase = removeProductCategoryUsecase;
     this.findProductCategoriesUsecase = findProductCategoriesUsecase;
+    this.purchaseProductUsecase = purchaseProductUsecase;
   }
 
   // HELLLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
@@ -144,5 +149,14 @@ public class ProductController {
 
     return findProductCategoriesUsecase.execute(productId);
   }
+
   // POST /api/products/{productId}/purchase
+  @PostMapping("/api/products/{productId}/purchase")
+  public ResponseEntity<Void> purchase(
+      @PathVariable UUID productId, @AuthenticationPrincipal UserPrincipalDTO user) {
+
+    purchaseProductUsecase.execute(user.id(), productId);
+
+    return ResponseEntity.ok().build();
+  }
 }
