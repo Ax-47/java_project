@@ -28,7 +28,7 @@ public record GetTransactionStatementsByUserResponseDTO(
 
     UUID extractedOrderId = null;
     if (statement instanceof PurchaseStatement purchase) {
-        extractedOrderId = purchase.getOrderId();
+      extractedOrderId = purchase.getOrderId();
     }
 
     return new GetTransactionStatementsByUserResponseDTO(
@@ -40,7 +40,6 @@ public record GetTransactionStatementsByUserResponseDTO(
         statement.getMethod(),
         statement.getStatus(),
         statement.getReferenceId(),
-        statement.getCreatedAt()
-    );
+        statement.getCreatedAt());
   }
 }

@@ -32,9 +32,8 @@ public abstract class TransactionStatement {
     this.method = Objects.requireNonNull(method, "method is required");
     this.status = Objects.requireNonNull(status, "status is required");
     this.createdAt = Objects.requireNonNull(createdAt, "createdAt is required");
-    
-    this.referenceId = requireNonBlank("referenceId", referenceId, "Reference ID is required");
 
+    this.referenceId = requireNonBlank("referenceId", referenceId, "Reference ID is required");
   }
 
   private String requireNonBlank(String field, String value, String message) {
@@ -46,11 +45,31 @@ public abstract class TransactionStatement {
 
   public abstract TransactionStatementsType getType();
 
-  public UUID getId() { return id; }
-  public UUID getUserId() { return userId; }
-  public Credit getAmount() { return amount; }
-  public TransactionStatementsMethod getMethod() { return method; }
-  public TransactionStatementsStatus getStatus() { return status; }
-  public String getReferenceId() { return referenceId; }
-  public LocalDateTime getCreatedAt() { return createdAt; }
+  public UUID getId() {
+    return id;
+  }
+
+  public UUID getUserId() {
+    return userId;
+  }
+
+  public Credit getAmount() {
+    return amount;
+  }
+
+  public TransactionStatementsMethod getMethod() {
+    return method;
+  }
+
+  public TransactionStatementsStatus getStatus() {
+    return status;
+  }
+
+  public String getReferenceId() {
+    return referenceId;
+  }
+
+  public LocalDateTime getCreatedAt() {
+    return createdAt;
+  }
 }

@@ -7,6 +7,7 @@ public interface DatabaseUserRepository {
   public User save(User user);
 
   public boolean existsByUsername(String username);
+
   public boolean existsByUserId(UUID userid);
 
   public User findUserByUsername(String username);
