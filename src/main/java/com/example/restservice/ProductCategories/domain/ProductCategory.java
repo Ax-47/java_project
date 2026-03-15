@@ -5,8 +5,8 @@ import java.util.UUID;
 
 public class ProductCategory {
 
-  private UUID productId;
-  private UUID categoryId;
+  private final UUID productId;
+  private final UUID categoryId;
 
   private ProductCategory(UUID productId, UUID categoryId) {
     this.productId = productId;

@@ -5,14 +5,20 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.restservice.Auth.dto.UserPrincipalDTO;
+import com.example.restservice.Categories.dto.CategoryResponseDTO;
 import com.example.restservice.Images.domain.ImageResourceType;
 import com.example.restservice.Images.dto.*;
 import com.example.restservice.Images.usecases.*;
+import com.example.restservice.ProductCategories.usecases.*;
 import com.example.restservice.Products.dto.*;
 import com.example.restservice.Products.usecases.*;
+import com.example.restservice.common.PageQuery;
+import com.example.restservice.common.PageResponse;
 
 import jakarta.validation.Valid;
 
@@ -25,6 +31,13 @@ public class ProductController {
   private final FindImageUsecase findImageUsecase;
   private final ReorderImageUsecase reorderImageUsecase;
   private final DeleteImageUsecase deleteImageUsecase;
+  private final FindProductsUsecase findProductsUsecase;
+  private final FindProductUsecase findProductUsecase;
+  private final UpdateProductUsecase updateProductUsecase;
+  private final AddProductCategoriesUsecase addProductCategoriesUsecase;
+  private final RemoveProductCategoryUsecase removeProductCategoryUsecase;
+  private final FindProductCategoriesUsecase findProductCategoriesUsecase;
+  private final PurchaseProductUsecase purchaseProductUsecase;
 
   public ProductController(
       CreateProductUsecase createProductUsecase,
@@ -32,6 +45,13 @@ public class ProductController {
       UploadImageUsecase uploadImageUsecase,
       FindImageUsecase findImageUsecase,
       DeleteImageUsecase deleteImageUsecase,
+      FindProductsUsecase findProductsUsecase,
+      FindProductUsecase findProductUsecase,
+      UpdateProductUsecase updateProductUsecase,
+      AddProductCategoriesUsecase addProductCategoriesUsecase,
+      RemoveProductCategoryUsecase removeProductCategoryUsecase,
+      FindProductCategoriesUsecase findProductCategoriesUsecase,
+      PurchaseProductUsecase purchaseProductUsecase,
       ReorderImageUsecase reorderImageUsecase) {
 
     this.createProductUsecase = createProductUsecase;
@@ -39,7 +59,14 @@ public class ProductController {
     this.deleteImageUsecase = deleteImageUsecase;
     this.uploadImageUsecase = uploadImageUsecase;
     this.findImageUsecase = findImageUsecase;
+    this.findProductUsecase = findProductUsecase;
     this.reorderImageUsecase = reorderImageUsecase;
+    this.updateProductUsecase = updateProductUsecase;
+    this.findProductsUsecase = findProductsUsecase;
+    this.addProductCategoriesUsecase = addProductCategoriesUsecase;
+    this.removeProductCategoryUsecase = removeProductCategoryUsecase;
+    this.findProductCategoriesUsecase = findProductCategoriesUsecase;
+    this.purchaseProductUsecase = purchaseProductUsecase;
   }
 
   // HELLLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
@@ -82,11 +109,54 @@ public class ProductController {
 
     deleteImageUsecase.execute(productId, imageId);
   }
-  // GET /api/products
-  // GET /api/products/{productId}
+
+  @GetMapping
+  public ResponseEntity<PageResponse<ProductResponseDTO>> findAllProducts(
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size,
+      @RequestParam(defaultValue = "productName") String sortBy,
+      @RequestParam(defaultValue = "true") boolean asc) {
+
+    PageQuery query = new PageQuery(page, size, sortBy, asc);
+    return ResponseEntity.ok(PageResponse.from(findProductsUsecase.execute(query)));
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<ProductResponseDTO> findById(@PathVariable UUID id) {
+    return ResponseEntity.ok(findProductUsecase.execute(id));
+  }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<ProductResponseDTO> putById(
+      @PathVariable UUID id, @Valid @RequestBody UpdateProductRequestDTO request) {
+    return ResponseEntity.ok(updateProductUsecase.execute(id, request));
+  }
+
+  @PostMapping("/{productId}/categories/{categoryId}")
+  public void addCategory(@PathVariable UUID productId, @PathVariable UUID categoryId) {
+    addProductCategoriesUsecase.execute(productId, categoryId);
+  }
+
+  @DeleteMapping("/{productId}/categories/{categoryId}")
+  public ResponseEntity<Void> removeCategory(
+      @PathVariable UUID productId, @PathVariable UUID categoryId) {
+    removeProductCategoryUsecase.execute(productId, categoryId);
+    return ResponseEntity.noContent().build();
+  }
+
+  @GetMapping("/{productId}/categories")
+  public List<CategoryResponseDTO> getCategories(@PathVariable UUID productId) {
+
+    return findProductCategoriesUsecase.execute(productId);
+  }
+
   // POST /api/products/{productId}/purchase
-  // GET /api/products/{productId}/categories
-  // POST /api/products/{productId}/categories/{categoryId}
-  // DELETE /api/products/{productId}/categories/{categoryId}
-  // PUT /api/products{productId}
+  @PostMapping("/api/products/{productId}/purchase")
+  public ResponseEntity<Void> purchase(
+      @PathVariable UUID productId, @AuthenticationPrincipal UserPrincipalDTO user) {
+
+    purchaseProductUsecase.execute(user.id(), productId);
+
+    return ResponseEntity.ok().build();
+  }
 }

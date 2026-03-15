@@ -30,15 +30,14 @@ public final class Credit {
     return new Credit(amount);
   }
 
-  public Credit add(BigDecimal amount) {
-    validatePositive(amount);
-    return new Credit(this.value.add(amount));
+  public Credit add(Credit amount) {
+    return new Credit(this.value.add(amount.value));
   }
 
-  public Credit subtract(BigDecimal amount) {
-    validatePositive(amount);
+  public Credit subtract(Credit amount) {
+    Objects.requireNonNull(amount);
 
-    BigDecimal result = this.value.subtract(amount);
+    BigDecimal result = this.value.subtract(amount.value);
 
     if (result.compareTo(BigDecimal.ZERO) < 0) {
       throw new InsufficientCreditException();
@@ -49,14 +48,6 @@ public final class Credit {
 
   public BigDecimal getValue() {
     return value;
-  }
-
-  private void validatePositive(BigDecimal amount) {
-    Objects.requireNonNull(amount);
-
-    if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-      throw new InvalidCreditAmountException();
-    }
   }
 
   private BigDecimal normalize(BigDecimal value) {

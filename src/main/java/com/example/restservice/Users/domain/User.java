@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
+import com.example.restservice.Products.domain.Price;
 import com.example.restservice.Users.exceptions.*;
 
 public class User {
@@ -70,6 +71,11 @@ public class User {
       throw new InvalidPasswordException("Password too short");
     }
     this.password = newHashedPassword;
+    this.updatedAt = LocalDateTime.now();
+  }
+
+  public void purchase(Price price) {
+    this.credit = credit.subtract(Credit.of(price.getValue()));
     this.updatedAt = LocalDateTime.now();
   }
 
