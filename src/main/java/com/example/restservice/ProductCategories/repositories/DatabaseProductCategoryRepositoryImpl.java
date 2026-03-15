@@ -58,19 +58,13 @@ public class DatabaseProductCategoryRepositoryImpl implements DatabaseProductCat
         .toList();
   }
 
-  // @Override
-  // public Optional<Category> findById(UUID id) {
-  // return jpaCategoryRepository.findById(id).map(CategoryModel::toDomain);
-  // }
-  //
-  //
   @Override
   public Page<Product> findProductsByCategoryId(UUID categoryId, PageQuery query) {
 
     Sort sort =
         query.ascending()
-            ? Sort.by(query.sortBy()).ascending()
-            : Sort.by(query.sortBy()).descending();
+            ? Sort.by("product." + query.sortBy()).ascending()
+            : Sort.by("product." + query.sortBy()).descending();
 
     Pageable pageable = PageRequest.of(query.page(), query.size(), sort);
 
