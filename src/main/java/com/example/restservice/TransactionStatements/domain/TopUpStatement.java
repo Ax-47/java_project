@@ -1,6 +1,7 @@
 package com.example.restservice.TransactionStatements.domain;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 import com.example.restservice.Users.domain.Credit;
@@ -22,5 +23,9 @@ public class TopUpStatement extends TransactionStatement {
   @Override
   public TransactionStatementsType getType() {
     return TransactionStatementsType.TOPUP;
+  }
+  @Override
+  public Optional<UUID> getOrderId() {
+    return Optional.empty();
   }
 }

@@ -2,6 +2,7 @@ package com.example.restservice.TransactionStatements.domain;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 import com.example.restservice.TransactionStatements.execeptions.TransactionValidationException;
@@ -44,6 +45,7 @@ public abstract class TransactionStatement {
   }
 
   public abstract TransactionStatementsType getType();
+  public abstract Optional<UUID> getOrderId();
 
   public UUID getId() {
     return id;

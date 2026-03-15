@@ -2,6 +2,7 @@ package com.example.restservice.TransactionStatements.domain;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 import com.example.restservice.Users.domain.Credit;
@@ -25,8 +26,9 @@ public class PurchaseStatement extends TransactionStatement {
         Objects.requireNonNull(orderId, "Order ID is required for purchase transactions");
   }
 
-  public UUID getOrderId() {
-    return orderId;
+  @Override
+  public Optional<UUID> getOrderId() {
+    return Optional.of(orderId);
   }
 
   @Override

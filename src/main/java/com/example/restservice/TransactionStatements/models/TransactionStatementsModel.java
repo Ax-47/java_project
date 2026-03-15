@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.example.restservice.TransactionStatements.domain.PurchaseStatement;
 import com.example.restservice.TransactionStatements.domain.TransactionStatement;
 import com.example.restservice.TransactionStatements.domain.TransactionStatementFactory;
 import com.example.restservice.TransactionStatements.domain.TransactionStatementsMethod;
@@ -76,11 +75,7 @@ public class TransactionStatementsModel {
     }
 
     model.userId = domain.getUserId();
-    if (domain instanceof PurchaseStatement purchase) {
-      model.orderId = purchase.getOrderId();
-    } else {
-      model.orderId = null;
-    }
+    model.orderId = domain.getOrderId().orElse(null);
     model.amount = domain.getAmount().getValue();
     model.type = domain.getType();
     model.method = domain.getMethod();

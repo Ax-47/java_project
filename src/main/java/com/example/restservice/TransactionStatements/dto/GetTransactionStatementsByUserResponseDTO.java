@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import com.example.restservice.TransactionStatements.domain.PurchaseStatement;
 import com.example.restservice.TransactionStatements.domain.TransactionStatement;
 import com.example.restservice.TransactionStatements.domain.TransactionStatementsMethod;
 import com.example.restservice.TransactionStatements.domain.TransactionStatementsStatus;
@@ -26,15 +25,11 @@ public record GetTransactionStatementsByUserResponseDTO(
   public static GetTransactionStatementsByUserResponseDTO from(TransactionStatement statement) {
     if (statement == null) return null;
 
-    UUID extractedOrderId = null;
-    if (statement instanceof PurchaseStatement purchase) {
-      extractedOrderId = purchase.getOrderId();
-    }
 
     return new GetTransactionStatementsByUserResponseDTO(
         statement.getId(),
         statement.getUserId(),
-        extractedOrderId,
+        statement.getOrderId().orElse(null),
         statement.getAmount().getValue(),
         statement.getType(),
         statement.getMethod(),
