@@ -72,7 +72,7 @@ public class AuthenticationController {
         @ApiResponse(responseCode = "401", description = "Invalid credentials")
       })
   public ResponseEntity<TokenResponseDTO> signin(
-      @RequestBody @Validated SignInRequestDTO request, HttpServletResponse response) {
+      @ModelAttribute @Validated SignInRequestDTO request, HttpServletResponse response) {
 
     TokenResponseDTO tokens = signInUsecase.execute(request);
 
