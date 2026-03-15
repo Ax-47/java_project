@@ -1,6 +1,7 @@
 package com.example.restservice.Images.models;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -72,6 +73,10 @@ public class ImageModel {
         ImageResource.of(model.getResourceId(), model.getResourceType()),
         model.getSortOrder(),
         model.getCreatedAt());
+  }
+
+  public static List<Image> toDomain(List<ImageModel> models) {
+    return models.stream().map(ImageModel::toDomain).toList();
   }
 
   public static ImageModel fromDomain(Image image) {

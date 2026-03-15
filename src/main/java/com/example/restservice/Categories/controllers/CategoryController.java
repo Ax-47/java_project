@@ -6,9 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.restservice.Categories.dto.*;
+import com.example.restservice.Categories.models.CategorySortField;
 import com.example.restservice.Categories.usecases.*;
 import com.example.restservice.ProductCategories.usecases.FindProductsByCategoryIdUsecase;
 import com.example.restservice.Products.dto.ProductResponseDTO;
+import com.example.restservice.Products.models.ProductSortField;
 import com.example.restservice.common.*;
 
 import jakarta.validation.Valid;
@@ -59,9 +61,9 @@ public class CategoryController {
   public ResponseEntity<PageResponse<CategoryResponseDTO>> findAllUsers(
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size,
-      @RequestParam(defaultValue = "categoryName") String sortBy,
+      @RequestParam(defaultValue = "categoryName") CategorySortField sortBy,
       @RequestParam(defaultValue = "true") boolean asc) {
-    PageQuery query = new PageQuery(page, size, sortBy, asc);
+    PageQuery query = new PageQuery(page, size, sortBy.name(), asc);
     return ResponseEntity.ok(PageResponse.from(findCategoriesUsecase.execute(query)));
   }
 
@@ -81,14 +83,14 @@ public class CategoryController {
   }
 
   // GET /api/categories/{categoryId}/products
-  @GetMapping("/api/categories/{categoryId}/products")
+  @GetMapping("/{categoryId}/products")
   public ResponseEntity<PageResponse<ProductResponseDTO>> findProductsByCategoryId(
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size,
-      @RequestParam(defaultValue = "categoryName") String sortBy,
+      @RequestParam(defaultValue = "productName") ProductSortField sortBy,
       @RequestParam(defaultValue = "true") boolean asc,
       @PathVariable UUID categoryId) {
-    PageQuery query = new PageQuery(page, size, sortBy, asc);
+    PageQuery query = new PageQuery(page, size, sortBy.name(), asc);
     return ResponseEntity.ok(
         PageResponse.from(findProductsByCategoryIdUsecase.execute(categoryId, query)));
   }

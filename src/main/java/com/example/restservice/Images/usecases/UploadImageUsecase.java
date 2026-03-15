@@ -44,12 +44,13 @@ public class UploadImageUsecase {
 
   @Transactional
   public UploadImageResponseDTO execute(
-      MultipartFile file, UUID userId, ImageResourceType resourceType, int sortOrder)
+      MultipartFile file, UUID resourseId, ImageResourceType resourceType, int sortOrder)
       throws IOException {
 
     byte[] original = file.getBytes();
 
-    ImageResource resource = ImageResource.of(userId, resourceType);
+    ImageResource resource = ImageResource.of(resourseId, resourceType);
+
     Image image = Image.create(resource, sortOrder);
     Map<ImageSize, byte[]> processedImages = imageProcessingRepository.process(original);
     Map<ImageSize, CompletableFuture<String>> uploads = new HashMap<>();

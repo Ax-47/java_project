@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.example.restservice.Images.domain.DatabaseImageRepository;
 import com.example.restservice.Images.domain.Image;
 import com.example.restservice.Images.domain.ImageResource;
+import com.example.restservice.Images.domain.ImageResourceType;
 import com.example.restservice.Images.models.ImageModel;
 
 @Repository
@@ -39,10 +40,23 @@ public class DatabaseImageRepositoryImpl implements DatabaseImageRepository {
   @Override
   public List<Image> findByResource(ImageResource resource) {
     return jpaImageRepository
-        .findByResourceIdAndResourceTypeOrderBySortOrderAsc(
+        .findAllByResourceIdAndResourceTypeOrderBySortOrderAsc(
             resource.getResourceId(), resource.getResourceType())
         .stream()
         .map(ImageModel::toDomain)
         .toList();
+  }
+
+  @Override
+  public List<Image> findProductImages(List<UUID> productIds) {
+
+    if (productIds.isEmpty()) {
+      return List.of();
+    }
+    List<ImageModel> models =
+        jpaImageRepository.findAllByResourceTypeAndResourceIdInOrderBySortOrderAsc(
+            ImageResourceType.PRODUCT, productIds);
+
+    return models.stream().map(ImageModel::toDomain).toList();
   }
 }

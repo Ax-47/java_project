@@ -12,4 +12,6 @@ public interface DatabaseImageRepository {
   void delete(UUID imageId);
 
   List<Image> findByResource(ImageResource resource);
+
+  public List<Image> findProductImages(List<UUID> productIds);
 }
