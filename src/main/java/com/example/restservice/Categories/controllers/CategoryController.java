@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.restservice.Categories.dto.*;
 import com.example.restservice.Categories.usecases.*;
+import com.example.restservice.ProductCategories.usecases.FindProductsByCategoryIdUsecase;
+import com.example.restservice.Products.dto.ProductResponseDTO;
 import com.example.restservice.common.*;
 
 import jakarta.validation.Valid;
@@ -20,17 +22,20 @@ public class CategoryController {
   private final DeleteCategoryUsecase deleteCategoryUsecase;
   private final GetCategoryUsecase getCategoryUsecase;
   private final FindCategoriesUsecase findCategoriesUsecase;
+  private final FindProductsByCategoryIdUsecase findProductsByCategoryIdUsecase;
 
   public CategoryController(
       CreateCategoryUsecase createCategoryUsecase,
       UpdateCategoryUsecase updateCategoryUsecase,
       GetCategoryUsecase getCategoryUsecase,
       FindCategoriesUsecase findCategoriesUsecase,
+      FindProductsByCategoryIdUsecase findProductsByCategoryIdUsecase,
       DeleteCategoryUsecase deleteCategoryUsecase) {
     this.createCategoryUsecase = createCategoryUsecase;
     this.updateCategoryUsecase = updateCategoryUsecase;
     this.deleteCategoryUsecase = deleteCategoryUsecase;
     this.getCategoryUsecase = getCategoryUsecase;
+    this.findProductsByCategoryIdUsecase = findProductsByCategoryIdUsecase;
     this.findCategoriesUsecase = findCategoriesUsecase;
   }
 
@@ -56,7 +61,6 @@ public class CategoryController {
       @RequestParam(defaultValue = "10") int size,
       @RequestParam(defaultValue = "categoryName") String sortBy,
       @RequestParam(defaultValue = "true") boolean asc) {
-
     PageQuery query = new PageQuery(page, size, sortBy, asc);
     return ResponseEntity.ok(PageResponse.from(findCategoriesUsecase.execute(query)));
   }
@@ -75,5 +79,17 @@ public class CategoryController {
     deleteCategoryUsecase.execute(id);
     return ResponseEntity.noContent().build();
   }
+
   // GET /api/categories/{categoryId}/products
+  @GetMapping("/api/categories/{categoryId}/products")
+  public ResponseEntity<PageResponse<ProductResponseDTO>> findProductsByCategoryId(
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size,
+      @RequestParam(defaultValue = "categoryName") String sortBy,
+      @RequestParam(defaultValue = "true") boolean asc,
+      @PathVariable UUID categoryId) {
+    PageQuery query = new PageQuery(page, size, sortBy, asc);
+    return ResponseEntity.ok(
+        PageResponse.from(findProductsByCategoryIdUsecase.execute(categoryId, query)));
+  }
 }
