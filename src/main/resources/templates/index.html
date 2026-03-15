@@ -1,120 +1,65 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
+  <head>
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Khula:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Khula:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+
     <style>
-        body { font-family: 'Khula', sans-serif; }
+      body {
+        font-family: "Khula", sans-serif;
+      }
     </style>
-    
+
     <title>Home - I BUILD CPU</title>
-</head>
-<body class="bg-white text-black m-0 p-0">
+  </head>
 
+  <body class="bg-white text-black m-0 p-0">
     <div th:replace="~{fragments/header :: navbar}"></div>
-    
-    <div class="px-12 pt-8 pb-4">
-        <h2 class="text-2xl font-bold flex items-center gap-3 mb-6">
-            <img th:src="@{/images/category-icon.png}" alt="Category Icon" class="w-6 h-6 object-contain">
-            หมวดหมู่สินค้า
-        </h2>
-        
-        <div class="flex gap-4 mb-8">
-            <a href="#" class="bg-[#0175CC] text-white font-bold px-8 py-2 rounded-full hover:opacity-90 transition shadow-sm">โน๊ตบุ๊ค</a>
-            <a href="#" class="bg-[#0175CC] text-white font-bold px-8 py-2 rounded-full hover:opacity-90 transition shadow-sm">เมาส์</a>
-        </div>
+
+    <!-- CATEGORY CHIPS -->
+    <div class="px-12 pt-8 pb-4" th:if="${categories != null}">
+      <h2 class="text-2xl font-bold flex items-center gap-3 mb-6">
+        <img th:src="@{/images/category-icon.png}" class="w-6 h-6" />
+        หมวดหมู่สินค้า
+      </h2>
+
+      <div class="flex gap-4 mb-8">
+        <div
+          th:each="category : ${categories}"
+          th:if="${category != null}"
+          th:replace="~{fragments/productCard :: category-chip(${category?.name})}"
+        ></div>
+      </div>
     </div>
 
-    <div class="px-12 py-4">
-        <h3 class="text-2xl font-semibold mb-6">โน๊ตบุ๊ค</h3>
-        
+    <!-- CATEGORY + PRODUCTS -->
+    <div th:if="${categories != null}">
+      <div
+        th:each="category : ${categories}"
+        th:if="${category != null}"
+        class="px-12 py-8"
+      >
+        <!-- CATEGORY TITLE -->
+        <div
+          th:replace="~{fragments/productCard :: category-title(${category?.name})}"
+        ></div>
+
+        <!-- PRODUCTS GRID -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            
-            <div class="bg-[#FCF2D9] rounded-2xl p-6 shadow-sm flex flex-col">
-                <div class="bg-white rounded-lg p-4 mb-6 flex justify-center items-center h-[250px]">
-                    <img th:src="@{/images/product-mac.png}" alt="Notebook" class="max-h-full object-contain">
-                </div>
-                
-                <h4 class="text-xl font-normal mb-1">ProductName</h4>
-                <p class="text-xs text-gray-400 mb-8">ProductDescription</p>
-                
-                <div class="flex justify-between items-center mt-auto">
-                    <span class="text-2xl font-normal">ProductPrice</span>
-                    <img th:src="@{/images/ming-coin.png}" alt="Ming Coin" class="w-10 h-10 rounded-full object-cover shadow-sm">
-                </div>
-            </div>
-
-            <div class="bg-[#FCF2D9] rounded-2xl p-6 shadow-sm flex flex-col">
-                <div class="bg-white rounded-lg p-4 mb-6 flex justify-center items-center h-[250px]">
-                    <img th:src="@{/images/product-mac.png}" alt="Notebook" class="max-h-full object-contain">
-                </div>
-                <h4 class="text-xl font-normal mb-1">ProductName</h4>
-                <p class="text-xs text-gray-400 mb-8">ProductDescription</p>
-                <div class="flex justify-between items-center mt-auto">
-                    <span class="text-2xl font-normal">ProductPrice</span>
-                    <img th:src="@{/images/ming-coin.png}" alt="Ming Coin" class="w-10 h-10 rounded-full object-cover shadow-sm">
-                </div>
-            </div>
-
-            <div class="bg-[#FCF2D9] rounded-2xl p-6 shadow-sm flex flex-col">
-                <div class="bg-white rounded-lg p-4 mb-6 flex justify-center items-center h-[250px]">
-                    <img th:src="@{/images/product-mac.png}" alt="Notebook" class="max-h-full object-contain">
-                </div>
-                <h4 class="text-xl font-normal mb-1">ProductName</h4>
-                <p class="text-xs text-gray-400 mb-8">ProductDescription</p>
-                <div class="flex justify-between items-center mt-auto">
-                    <span class="text-2xl font-normal">ProductPrice</span>
-                    <img th:src="@{/images/ming-coin.png}" alt="Ming Coin" class="w-10 h-10 rounded-full object-cover shadow-sm">
-                </div>
-            </div>
-
+          <div th:each="product : ${category.products}">
+            <div
+              th:with="img=${(product.images != null and !#lists.isEmpty(product.images))
+        ? '/api/images/' + product.images[0].id
+        : '/images/product-mac.png'}"
+              th:replace="~{fragments/productCard :: product-card(${product}, ${img})}"
+            ></div>
+          </div>
         </div>
+      </div>
     </div>
-
-    <div class="px-12 py-10 mb-10">
-        <h3 class="text-2xl font-semibold mb-6">เมาส์</h3>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            
-            <div class="bg-[#FCF2D9] rounded-2xl p-6 shadow-sm flex flex-col">
-                <div class="bg-white rounded-lg p-4 mb-6 flex justify-center items-center h-[250px]">
-                    <img th:src="@{/images/product-mac.png}" alt="Mouse" class="max-h-full object-contain">
-                </div>
-                <h4 class="text-xl font-normal mb-1">ProductName</h4>
-                <p class="text-xs text-gray-400 mb-8">ProductDescription</p>
-                <div class="flex justify-between items-center mt-auto">
-                    <span class="text-2xl font-normal">ProductPrice</span>
-                    <img th:src="@{/images/ming-coin.png}" alt="Ming Coin" class="w-10 h-10 rounded-full object-cover shadow-sm">
-                </div>
-            </div>
-
-            <div class="bg-[#FCF2D9] rounded-2xl p-6 shadow-sm flex flex-col">
-                <div class="bg-white rounded-lg p-4 mb-6 flex justify-center items-center h-[250px]">
-                    <img th:src="@{/images/product-mac.png}" alt="Mouse" class="max-h-full object-contain">
-                </div>
-                <h4 class="text-xl font-normal mb-1">ProductName</h4>
-                <p class="text-xs text-gray-400 mb-8">ProductDescription</p>
-                <div class="flex justify-between items-center mt-auto">
-                    <span class="text-2xl font-normal">ProductPrice</span>
-                    <img th:src="@{/images/ming-coin.png}" alt="Ming Coin" class="w-10 h-10 rounded-full object-cover shadow-sm">
-                </div>
-            </div>
-
-            <div class="bg-[#FCF2D9] rounded-2xl p-6 shadow-sm flex flex-col">
-                <div class="bg-white rounded-lg p-4 mb-6 flex justify-center items-center h-[250px]">
-                    <img th:src="@{/images/product-mac.png}" alt="Mouse" class="max-h-full object-contain">
-                </div>
-                <h4 class="text-xl font-normal mb-1">ProductName</h4>
-                <p class="text-xs text-gray-400 mb-8">ProductDescription</p>
-                <div class="flex justify-between items-center mt-auto">
-                    <span class="text-2xl font-normal">ProductPrice</span>
-                    <img th:src="@{/images/ming-coin.png}" alt="Ming Coin" class="w-10 h-10 rounded-full object-cover shadow-sm">
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-</body>
+  </body>
 </html>

@@ -40,6 +40,12 @@ public class DatabaseCategoryRepositoryImpl implements DatabaseCategoryRepositor
   }
 
   @Override
+  public List<Category> findAll() {
+
+    return jpaCategoryRepository.findAll().stream().map(CategoryModel::toDomain).toList();
+  }
+
+  @Override
   public Page<Category> findAllCategories(PageQuery query) {
 
     Sort sort =
