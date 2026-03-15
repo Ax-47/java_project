@@ -43,7 +43,6 @@ public class TransactionStatementFactory {
         }
         yield new TopUpStatement(id, userId, amount, method, status, referenceId, now);
       }
-      default -> throw new IllegalArgumentException("Unsupported transaction type: " + type);
     };
   }
 
@@ -79,8 +78,6 @@ public class TransactionStatementFactory {
         yield new TopUpStatement(id, userId, amount, method, status, referenceId, createdAt);
       }
 
-      default ->
-          throw new IllegalStateException("Corrupted data: Unknown transaction type: " + type);
     };
   }
 }
