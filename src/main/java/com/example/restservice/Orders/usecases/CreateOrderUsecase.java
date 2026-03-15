@@ -5,7 +5,10 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.restservice.Address.domain.Address;
+import com.example.restservice.Address.domain.DatabaseAddressRepository;
 import com.example.restservice.Address.domain.PhoneNumber;
+import com.example.restservice.Address.exceptions.AddressNotFoundException;
 import com.example.restservice.Orders.domain.*;
 import com.example.restservice.Orders.dto.*;
 import com.example.restservice.Orders.exceptions.OrderProductNotFoundException;
@@ -16,11 +19,13 @@ public class CreateOrderUsecase {
 
   private final DatabaseOrderRepository orderRepository;
   private final DatabaseProductRepository productRepository;
+   private final DatabaseAddressRepository databaseAddressRepository; 
 
   public CreateOrderUsecase(
-      DatabaseOrderRepository orderRepository, DatabaseProductRepository productRepository) {
+      DatabaseOrderRepository orderRepository, DatabaseProductRepository productRepository,DatabaseAddressRepository databaseAddressRepository) {
     this.orderRepository = orderRepository;
     this.productRepository = productRepository;
+    this.databaseAddressRepository = databaseAddressRepository;
   }
 
   @Transactional
@@ -33,20 +38,21 @@ public class CreateOrderUsecase {
     ProductSnapshot snapshot =
         new ProductSnapshot(product.getId(), product.getName(), product.getPrice());
 
-    PhoneNumber phoneNumber = PhoneNumber.of(request.phoneNumber());
+    Address dbAddress = databaseAddressRepository
+            .findByUserId(userId)
+            .orElseThrow(() -> new AddressNotFoundException("Not Found Address by userId: " + userId));
 
     OrderAddress address =
         new OrderAddress(
-            request.fullName(),
-            phoneNumber,
-            request.addressLine1(),
-            request.addressLine2(),
-            request.subDistrict(),
-            request.district(),
-            request.province(),
-            request.postalCode(),
-            request.country());
-
+            dbAddress.getFullName(),
+            dbAddress.getPhoneNumber(),
+            dbAddress.getAddressLine1(),
+            dbAddress.getAddressLine2(),
+            dbAddress.getSubDistrict(),
+            dbAddress.getDistrict(),
+            dbAddress.getProvince(),
+            dbAddress.getPostalCode(),
+            dbAddress.getCountry());
     Order order = Order.create(userId, snapshot, address);
 
     orderRepository.save(order);

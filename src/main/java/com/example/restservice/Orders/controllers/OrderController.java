@@ -1,6 +1,5 @@
 package com.example.restservice.Orders.controllers;
 
-import java.net.URI;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
@@ -32,12 +31,15 @@ public class OrderController {
   }
 
   // POST /api/orders
-  @PostMapping
+  @PostMapping("/orders")
   public ResponseEntity<CreateOrderResponseDTO> createOrder(
-      @Valid @RequestBody CreateOrderRequestDTO request, Authentication authentication) {
-    UUID userId = UUID.fromString(authentication.getName());
-    CreateOrderResponseDTO response = createOrderUsecase.execute(request, userId);
-    return ResponseEntity.created(URI.create("/api/orders")).body(response);
+      @RequestBody @Valid CreateOrderRequestDTO request) {
+
+    UUID mockUserId = UUID.fromString("123e4567-e89b-12d3-a456-426614174000");
+
+    CreateOrderResponseDTO response = createOrderUsecase.execute(request, mockUserId);
+
+    return ResponseEntity.ok(response);
   }
 
   // Patch /api/orders
@@ -54,20 +56,21 @@ public class OrderController {
   // GET /api/orders
   // @GetMapping
   // public ResponseEntity<PageResponse<CreateOrderResponseDTO>> findAllUsers(
-  //     @RequestParam(defaultValue = "0") int page,
-  //     @RequestParam(defaultValue = "10") int size,
-  //     @RequestParam(defaultValue = "categoryName") String sortBy,
-  //     @RequestParam(defaultValue = "true") boolean asc) {
+  // @RequestParam(defaultValue = "0") int page,
+  // @RequestParam(defaultValue = "10") int size,
+  // @RequestParam(defaultValue = "categoryName") String sortBy,
+  // @RequestParam(defaultValue = "true") boolean asc) {
 
-  //   PageQuery query = new PageQuery(page, size, sortBy, asc);
-  //   return ResponseEntity.ok(PageResponse.from(findOdersUsecase.execute(query)));
+  // PageQuery query = new PageQuery(page, size, sortBy, asc);
+  // return ResponseEntity.ok(PageResponse.from(findOdersUsecase.execute(query)));
   // }
 
   // GET /api/orders/{orderId}
   // @GetMapping("/{orderId}")
-  // public ResponseEntity<CreateOrderResponseDTO> findById(@PathVariable UUID id) {
+  // public ResponseEntity<CreateOrderResponseDTO> findById(@PathVariable UUID id)
+  // {
 
-  //   return ResponseEntity.ok(getOrdersUsecase.execute(id));
+  // return ResponseEntity.ok(getOrdersUsecase.execute(id));
   // }
   // PATCH /api/orders/{orderId}/complete
   @PatchMapping("/{orderId}/complete")
