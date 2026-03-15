@@ -1,53 +1,45 @@
 package com.example.restservice.TransactionStatements.usecases;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import com.example.restservice.TransactionStatements.domain.DatabaseTransactionStatementsRepository;
-import com.example.restservice.TransactionStatements.domain.TransactionStatements;
-import com.example.restservice.TransactionStatements.domain.TransactionStatementsType;
+import com.example.restservice.TransactionStatements.domain.TransactionStatement;
+import com.example.restservice.TransactionStatements.domain.TransactionStatementFactory;
 import com.example.restservice.TransactionStatements.dto.CreateTransactionStatementsRequestDTO;
 import com.example.restservice.TransactionStatements.dto.CreateTransactionStatementsResponseDTO;
-import com.example.restservice.TransactionStatements.execeptions.TransactionValidationException;
 import com.example.restservice.TransactionStatements.execeptions.UserNotFoundException;
-import com.example.restservice.Users.repositories.JpaUserRepository;
+import com.example.restservice.Users.domain.Credit;
+import com.example.restservice.Users.domain.DatabaseUserRepository;
 
 import jakarta.transaction.Transactional;
 
 @Service
 public class CreateTransactionStatementsUsecase {
   private final DatabaseTransactionStatementsRepository databaseTransactionStatementsRepository;
-  private final JpaUserRepository jpaUserRepository;
+  private final DatabaseUserRepository databaseUserRepository;
 
   CreateTransactionStatementsUsecase(
       DatabaseTransactionStatementsRepository databaseTransactionStatementsRepository,
-      JpaUserRepository jpaUserRepository) {
+      DatabaseUserRepository databaseUserRepository) {
     this.databaseTransactionStatementsRepository = databaseTransactionStatementsRepository;
-    this.jpaUserRepository = jpaUserRepository;
+    this.databaseUserRepository = databaseUserRepository;
   }
 
   @Transactional
   public CreateTransactionStatementsResponseDTO execute(
       CreateTransactionStatementsRequestDTO request) {
 
-    if (!jpaUserRepository.existsById(request.userId())) {
+    if (!databaseUserRepository.existsByUserId(request.userId())) {
       throw new UserNotFoundException("User with ID " + request.userId() + " not found");
     }
 
-    if (request.type() == TransactionStatementsType.PURCHASE && request.orderId() == null) {
-      throw new TransactionValidationException(
-          "orderId", "Order ID is required for purchase transactions");
-    }
-
-    if (request.type() == TransactionStatementsType.TOPUP && request.orderId() != null) {
-      throw new TransactionValidationException(
-          "orderId", "Order ID must be null for top-up transactions");
-    }
-
-    TransactionStatements newTransaction =
-        TransactionStatements.create(
+    TransactionStatement newTransaction =
+        TransactionStatementFactory.create(
             request.userId(),
-            request.orderId(),
-            request.amount(),
+            Optional.ofNullable(request.orderId()),
+            Credit.of(request.amount()),
             request.type(),
             request.method(),
             request.status(),
