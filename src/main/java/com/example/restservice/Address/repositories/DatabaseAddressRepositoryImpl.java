@@ -36,6 +36,11 @@ public class DatabaseAddressRepositoryImpl implements DatabaseAddressRepository 
   }
 
   @Override
+  public Optional<Address> findByUserId(UUID userId) {
+    return jpaAddressRepository.findByUserId(userId).map(AddressModel::toDomain);
+  }
+
+  @Override
   public Address delete(Address address) {
     jpaAddressRepository.deleteById(address.getId());
     return address;
