@@ -67,11 +67,17 @@ public class AuthorizeFilter extends OncePerRequestFilter {
 
     } else if (refreshToken != null) {
 
-      TokenResponseDTO tokens = refreshTokenUsecase.execute(refreshToken);
-      setCookies(response, tokens);
+      try {
 
-      DecodedToken newToken = decode(tokens.access_token());
-      authenticate(newToken);
+        TokenResponseDTO tokens = refreshTokenUsecase.execute(refreshToken);
+        setCookies(response, tokens);
+
+        DecodedToken newToken = decode(tokens.access_token());
+        authenticate(newToken);
+
+      } catch (Exception e) {
+        clearCookies(response);
+      }
     }
 
     filterChain.doFilter(request, response);
@@ -124,6 +130,19 @@ public class AuthorizeFilter extends OncePerRequestFilter {
     refresh.setHttpOnly(true);
     refresh.setPath("/");
     refresh.setMaxAge((int) refreshTokenExpiredInSeconds);
+    response.addCookie(refresh);
+  }
+
+  private void clearCookies(HttpServletResponse response) {
+
+    Cookie access = new Cookie("access_token", null);
+    access.setPath("/");
+    access.setMaxAge(0);
+    response.addCookie(access);
+
+    Cookie refresh = new Cookie("refresh_token", null);
+    refresh.setPath("/");
+    refresh.setMaxAge(0);
     response.addCookie(refresh);
   }
 
