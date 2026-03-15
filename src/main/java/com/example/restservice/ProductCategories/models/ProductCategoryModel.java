@@ -1,6 +1,7 @@
 package com.example.restservice.ProductCategories.models;
 
 import com.example.restservice.Categories.models.CategoryModel;
+import com.example.restservice.ProductCategories.domain.ProductCategory;
 import com.example.restservice.Products.models.ProductModel;
 
 import jakarta.persistence.*;
@@ -27,6 +28,10 @@ public class ProductCategoryModel {
     this.product = product;
     this.category = category;
     this.id = new ProductCategoryId(product.getId(), category.getId());
+  }
+
+  public ProductCategory toDomain() {
+    return ProductCategory.of(this.id.getProductId(), this.id.getCategoryId());
   }
 
   public ProductCategoryId getId() {
