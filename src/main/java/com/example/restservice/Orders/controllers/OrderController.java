@@ -54,20 +54,21 @@ public class OrderController {
   // GET /api/orders
   // @GetMapping
   // public ResponseEntity<PageResponse<CreateOrderResponseDTO>> findAllUsers(
-  //     @RequestParam(defaultValue = "0") int page,
-  //     @RequestParam(defaultValue = "10") int size,
-  //     @RequestParam(defaultValue = "categoryName") String sortBy,
-  //     @RequestParam(defaultValue = "true") boolean asc) {
+  // @RequestParam(defaultValue = "0") int page,
+  // @RequestParam(defaultValue = "10") int size,
+  // @RequestParam(defaultValue = "categoryName") String sortBy,
+  // @RequestParam(defaultValue = "true") boolean asc) {
 
-  //   PageQuery query = new PageQuery(page, size, sortBy, asc);
-  //   return ResponseEntity.ok(PageResponse.from(findOdersUsecase.execute(query)));
+  // PageQuery query = new PageQuery(page, size, sortBy, asc);
+  // return ResponseEntity.ok(PageResponse.from(findOdersUsecase.execute(query)));
   // }
 
   // GET /api/orders/{orderId}
   // @GetMapping("/{orderId}")
-  // public ResponseEntity<CreateOrderResponseDTO> findById(@PathVariable UUID id) {
+  // public ResponseEntity<CreateOrderResponseDTO> findById(@PathVariable UUID id)
+  // {
 
-  //   return ResponseEntity.ok(getOrdersUsecase.execute(id));
+  // return ResponseEntity.ok(getOrdersUsecase.execute(id));
   // }
   // PATCH /api/orders/{orderId}/complete
   @PatchMapping("/{orderId}/complete")
