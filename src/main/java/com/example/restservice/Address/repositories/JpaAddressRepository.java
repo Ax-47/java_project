@@ -1,5 +1,6 @@
 package com.example.restservice.Address.repositories;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,4 +28,6 @@ public interface JpaAddressRepository extends JpaRepository<AddressModel, UUID> 
                             WHERE a.id = :addressId AND a.userId = :userId
                         """)
   void setDefault(@Param("userId") UUID userId, @Param("addressId") UUID addressId);
+
+  Optional<AddressModel> findByUserId(UUID userId);
 }
