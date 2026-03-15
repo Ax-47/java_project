@@ -34,8 +34,9 @@ public class DatabaseAddressRepositoryImpl implements DatabaseAddressRepository 
   public Optional<Address> findById(UUID id) {
     return jpaAddressRepository.findById(id).map(AddressModel::toDomain);
   }
+
   @Override
-  public Optional<Address> findByUserId(UUID userId){
+  public Optional<Address> findByUserId(UUID userId) {
     return jpaAddressRepository.findByUserId(userId).map(AddressModel::toDomain);
   }
 

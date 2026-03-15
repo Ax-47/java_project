@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.restservice.Address.domain.Address;
 import com.example.restservice.Address.domain.DatabaseAddressRepository;
-import com.example.restservice.Address.domain.PhoneNumber;
 import com.example.restservice.Address.exceptions.AddressNotFoundException;
 import com.example.restservice.Orders.domain.*;
 import com.example.restservice.Orders.dto.*;
@@ -19,10 +18,12 @@ public class CreateOrderUsecase {
 
   private final DatabaseOrderRepository orderRepository;
   private final DatabaseProductRepository productRepository;
-   private final DatabaseAddressRepository databaseAddressRepository; 
+  private final DatabaseAddressRepository databaseAddressRepository;
 
   public CreateOrderUsecase(
-      DatabaseOrderRepository orderRepository, DatabaseProductRepository productRepository,DatabaseAddressRepository databaseAddressRepository) {
+      DatabaseOrderRepository orderRepository,
+      DatabaseProductRepository productRepository,
+      DatabaseAddressRepository databaseAddressRepository) {
     this.orderRepository = orderRepository;
     this.productRepository = productRepository;
     this.databaseAddressRepository = databaseAddressRepository;
@@ -38,9 +39,11 @@ public class CreateOrderUsecase {
     ProductSnapshot snapshot =
         new ProductSnapshot(product.getId(), product.getName(), product.getPrice());
 
-    Address dbAddress = databaseAddressRepository
+    Address dbAddress =
+        databaseAddressRepository
             .findByUserId(userId)
-            .orElseThrow(() -> new AddressNotFoundException("Not Found Address by userId: " + userId));
+            .orElseThrow(
+                () -> new AddressNotFoundException("Not Found Address by userId: " + userId));
 
     OrderAddress address =
         new OrderAddress(

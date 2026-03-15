@@ -1,5 +1,6 @@
 package com.example.restservice.Orders.controllers;
 
+import java.net.URI;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
@@ -31,15 +32,12 @@ public class OrderController {
   }
 
   // POST /api/orders
-  @PostMapping("/orders")
+  @PostMapping
   public ResponseEntity<CreateOrderResponseDTO> createOrder(
-      @RequestBody @Valid CreateOrderRequestDTO request) {
-
-    UUID mockUserId = UUID.fromString("123e4567-e89b-12d3-a456-426614174000");
-
-    CreateOrderResponseDTO response = createOrderUsecase.execute(request, mockUserId);
-
-    return ResponseEntity.ok(response);
+      @Valid @RequestBody CreateOrderRequestDTO request, Authentication authentication) {
+    UUID userId = UUID.fromString(authentication.getName());
+    CreateOrderResponseDTO response = createOrderUsecase.execute(request, userId);
+    return ResponseEntity.created(URI.create("/api/orders")).body(response);
   }
 
   // Patch /api/orders
