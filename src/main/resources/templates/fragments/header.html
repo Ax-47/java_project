@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:fragment="navbar" class="bg-[#0175CC] px-12 py-4 flex justify-between items-center text-white">
+        <a th:href="@{/}" class="text-3xl font-extrabold text-white no-underline">I BUILD CPU</a>
+        <div class="flex gap-8 items-center font-semibold text-lg">
+            <a th:href="@{/}" class="text-white hover:text-[#FCF2D9] transition">หน้าแรก</a>
+            <a th:href="@{/order}" class="text-white hover:text-[#FCF2D9] transition">คำสั่งซื้อ</a>
+            <a th:href="@{/profile}" class="text-white hover:text-[#FCF2D9] transition">โปรไฟล์</a>
+            
+            <a th:href="@{/address}" class="hover:opacity-80 transition flex items-center">
+                <img th:src="@{/images/location-pin.png}" alt="Address" class="w-6 h-6 object-contain">
+            </a>
+        </div>
+    </div>
+</body>
+</html>
