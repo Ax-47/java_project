@@ -1,27 +1,26 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
+  <head>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Khula:wght@400;600;800&display=swap" rel="stylesheet">
-    <style>body { font-family: 'Khula', sans-serif; }</style>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Khula:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Khula", sans-serif;
+      }
+    </style>
     <title>Sign In</title>
-</head>
-<body class="bg-white text-black m-0 p-0">
+  </head>
+  <body class="bg-white text-black m-0 p-0">
     <div th:replace="~{fragments/header :: navbar}"></div>
 
-    <div class="bg-[#FCF2D9] rounded-2xl p-10 max-w-md mx-auto mt-20 shadow-lg text-center">
-        <h2 class="text-3xl font-extrabold mb-8">เข้าสู่ระบบ</h2>
-        <form action="/login" method="post" class="space-y-5">
-            <input type="email" class="w-full p-4 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#0175CC]" placeholder="Email" required>
-            <input type="password" class="w-full p-4 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#0175CC]" placeholder="Password" required>
-            <div class="pt-4">
-                <div th:replace="~{fragments/components :: btn-submit('เข้าสู่ระบบ', 'bg-[#FF6A00]')}"></div>
-            </div>
-        </form>
+    <div
+      class="bg-[#FCF2D9] rounded-2xl p-10 max-w-md mx-auto mt-20 shadow-lg text-center"
+    >
+      <h2 class="text-3xl font-extrabold mb-8">เข้าสู่ระบบ</h2>
+      <div th:replace="~{fragments/components :: login-form}"></div>
     </div>
-    <div class="text-center mt-6 font-semibold">
-        <span>หรือ</span> 
-        <a th:href="@{/sign-up}" class="text-[#0175CC] hover:underline ml-1">สมัครสมาชิก</a>
-    </div>
-</body>
+  </body>
 </html>
