@@ -18,9 +18,9 @@ public interface JpaProductCategoryRepository
 
   @Query(
       """
-      SELECT p FROM ProductModel p
-      JOIN ProductCategoryModel pc ON pc.productId = p.id
-      WHERE pc.categoryId = :categoryId
+      SELECT pc.product
+      FROM ProductCategoryModel pc
+      WHERE pc.category.id = :categoryId
       """)
   Page<ProductModel> findProductsByCategoryId(UUID categoryId, Pageable pageable);
 }
