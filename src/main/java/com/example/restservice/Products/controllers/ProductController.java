@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import com.example.restservice.Images.dto.*;
 import com.example.restservice.Images.usecases.*;
 import com.example.restservice.ProductCategories.usecases.*;
 import com.example.restservice.Products.dto.*;
+import com.example.restservice.Products.models.ProductSortField;
 import com.example.restservice.Products.usecases.*;
 import com.example.restservice.common.PageQuery;
 import com.example.restservice.common.PageResponse;
@@ -84,7 +86,7 @@ public class ProductController {
     return ResponseEntity.ok(response);
   }
 
-  @PostMapping("/{productId}/images")
+  @PostMapping(value = "/{productId}/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public UploadImageResponseDTO uploadProductImage(
       @PathVariable UUID productId, @RequestParam MultipartFile file, @RequestParam int sortOrder)
       throws IOException {
@@ -114,10 +116,10 @@ public class ProductController {
   public ResponseEntity<PageResponse<ProductResponseDTO>> findAllProducts(
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size,
-      @RequestParam(defaultValue = "productName") String sortBy,
+      @RequestParam(defaultValue = "productName") ProductSortField sortBy,
       @RequestParam(defaultValue = "true") boolean asc) {
 
-    PageQuery query = new PageQuery(page, size, sortBy, asc);
+    PageQuery query = new PageQuery(page, size, sortBy.name(), asc);
     return ResponseEntity.ok(PageResponse.from(findProductsUsecase.execute(query)));
   }
 

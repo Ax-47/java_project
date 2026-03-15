@@ -2,6 +2,8 @@ package com.example.restservice.Products.usecases;
 
 import java.util.UUID;
 
+import org.springframework.stereotype.Service;
+
 import com.example.restservice.Products.domain.DatabaseProductRepository;
 import com.example.restservice.Products.domain.Product;
 import com.example.restservice.Products.exceptions.ProductNotFoundException;
@@ -9,6 +11,7 @@ import com.example.restservice.Users.domain.DatabaseUserRepository;
 import com.example.restservice.Users.domain.User;
 import com.example.restservice.Users.exceptions.UserNotFoundException;
 
+@Service
 public class PurchaseProductUsecase {
   private final DatabaseUserRepository databaseUserRepository;
   private final DatabaseProductRepository databaseProductRepository;
