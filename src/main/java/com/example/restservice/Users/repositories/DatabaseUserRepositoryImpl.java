@@ -35,6 +35,11 @@ public class DatabaseUserRepositoryImpl implements DatabaseUserRepository {
   }
 
   @Override
+  public boolean existsByUserId(UUID userid) {
+    return jpaUserRepository.existsById(userid);
+  }
+
+  @Override
   public Optional<User> findUserByUserId(UUID userId) {
     return jpaUserRepository.findById(userId).map(UserModel::toDomain);
   }

@@ -9,7 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import com.example.restservice.TransactionStatements.domain.DatabaseTransactionStatementsRepository;
-import com.example.restservice.TransactionStatements.domain.TransactionStatements;
+import com.example.restservice.TransactionStatements.domain.TransactionStatement;
 import com.example.restservice.TransactionStatements.models.TransactionStatementsModel;
 import com.example.restservice.common.Page;
 import com.example.restservice.common.PageQuery;
@@ -24,14 +24,14 @@ public class DatabaseTransactionStatementsRepositoryImpl
   }
 
   @Override
-  public TransactionStatements save(TransactionStatements transactionStatements) {
+  public TransactionStatement save(TransactionStatement transactionStatements) {
     TransactionStatementsModel model = TransactionStatementsModel.fromDomain(transactionStatements);
     TransactionStatementsModel saved = jpaTransactionRepository.save(model);
     return saved.toDomain();
   }
 
   @Override
-  public Page<TransactionStatements> findByUserId(UUID userId, PageQuery query) {
+  public Page<TransactionStatement> findByUserId(UUID userId, PageQuery query) {
 
     Sort sort =
         query.ascending()
@@ -43,7 +43,7 @@ public class DatabaseTransactionStatementsRepositoryImpl
     org.springframework.data.domain.Page<TransactionStatementsModel> page =
         jpaTransactionRepository.findByUserId(userId, pageable);
 
-    List<TransactionStatements> statements =
+    List<TransactionStatement> statements =
         page.getContent().stream().map(TransactionStatementsModel::toDomain).toList();
 
     return new Page<>(
