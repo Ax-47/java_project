@@ -4,11 +4,14 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import com.example.restservice.TransactionStatements.domain.TransactionStatements;
+import com.example.restservice.TransactionStatements.domain.PurchaseStatement;
+import com.example.restservice.TransactionStatements.domain.TransactionStatement;
 import com.example.restservice.TransactionStatements.domain.TransactionStatementsMethod;
 import com.example.restservice.TransactionStatements.domain.TransactionStatementsStatus;
 import com.example.restservice.TransactionStatements.domain.TransactionStatementsType;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record GetTransactionStatementsByUserResponseDTO(
     UUID id,
     UUID userId,
@@ -20,18 +23,24 @@ public record GetTransactionStatementsByUserResponseDTO(
     String referenceId,
     LocalDateTime createdAt) {
 
-  public static GetTransactionStatementsByUserResponseDTO from(TransactionStatements statement) {
+  public static GetTransactionStatementsByUserResponseDTO from(TransactionStatement statement) {
     if (statement == null) return null;
+
+    UUID extractedOrderId = null;
+    if (statement instanceof PurchaseStatement purchase) {
+        extractedOrderId = purchase.getOrderId();
+    }
 
     return new GetTransactionStatementsByUserResponseDTO(
         statement.getId(),
         statement.getUserId(),
-        statement.getOrderId(),
-        statement.getAmount(),
+        extractedOrderId,
+        statement.getAmount().getValue(),
         statement.getType(),
         statement.getMethod(),
         statement.getStatus(),
         statement.getReferenceId(),
-        statement.getCreatedAt());
+        statement.getCreatedAt()
+    );
   }
 }

@@ -35,16 +35,20 @@ public class DatabaseUserRepositoryImpl implements DatabaseUserRepository {
   }
 
   @Override
+  public boolean existsByUserId(UUID userid) {
+    return jpaUserRepository.existsById(userid);
+  }
+
+  @Override
   public Optional<User> findUserByUserId(UUID userId) {
     return jpaUserRepository.findById(userId).map(UserModel::toDomain);
   }
 
   @Override
   public User findUserByUsername(String username) {
-    UserModel user =
-        jpaUserRepository
-            .findByUsername(username)
-            .orElseThrow(() -> new UserNotFoundException("User not found"));
+    UserModel user = jpaUserRepository
+        .findByUsername(username)
+        .orElseThrow(() -> new UserNotFoundException("User not found"));
     return User.rehydrate(
         user.getId(),
         user.getUsername(),
@@ -58,27 +62,24 @@ public class DatabaseUserRepositoryImpl implements DatabaseUserRepository {
   @Override
   public Page<User> findAllUsers(PageQuery query) {
 
-    Sort sort =
-        query.ascending()
-            ? Sort.by(query.sortBy()).ascending()
-            : Sort.by(query.sortBy()).descending();
+    Sort sort = query.ascending()
+        ? Sort.by(query.sortBy()).ascending()
+        : Sort.by(query.sortBy()).descending();
 
     Pageable pageable = PageRequest.of(query.page(), query.size(), sort);
 
     org.springframework.data.domain.Page<UserModel> page = jpaUserRepository.findAll(pageable);
-    List<User> users =
-        page.getContent().stream()
-            .map(
-                user ->
-                    User.rehydrate(
-                        user.getId(),
-                        user.getUsername(),
-                        user.getPassword(),
-                        user.getCredit(),
-                        user.isAdmin(),
-                        user.getCreatedAt(),
-                        user.getUpdatedAt()))
-            .toList();
+    List<User> users = page.getContent().stream()
+        .map(
+            user -> User.rehydrate(
+                user.getId(),
+                user.getUsername(),
+                user.getPassword(),
+                user.getCredit(),
+                user.isAdmin(),
+                user.getCreatedAt(),
+                user.getUpdatedAt()))
+        .toList();
 
     return new Page<>(
         users, page.getTotalElements(), page.getTotalPages(), page.getNumber(), page.getSize());

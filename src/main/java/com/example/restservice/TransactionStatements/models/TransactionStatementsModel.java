@@ -2,14 +2,18 @@ package com.example.restservice.TransactionStatements.models;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.example.restservice.TransactionStatements.domain.TransactionStatements;
+import com.example.restservice.TransactionStatements.domain.PurchaseStatement;
+import com.example.restservice.TransactionStatements.domain.TransactionStatement;
+import com.example.restservice.TransactionStatements.domain.TransactionStatementFactory;
 import com.example.restservice.TransactionStatements.domain.TransactionStatementsMethod;
 import com.example.restservice.TransactionStatements.domain.TransactionStatementsStatus;
 import com.example.restservice.TransactionStatements.domain.TransactionStatementsType;
+import com.example.restservice.Users.domain.Credit;
 
 import jakarta.persistence.*;
 
@@ -49,12 +53,12 @@ public class TransactionStatementsModel {
 
   protected TransactionStatementsModel() {}
 
-  public TransactionStatements toDomain() {
-    return new TransactionStatements(
+  public TransactionStatement toDomain() {
+    return TransactionStatementFactory.rehydrate(
         this.id,
         this.userId,
-        this.orderId,
-        this.amount,
+        Optional.ofNullable(this.orderId),
+        Credit.of(this.amount),
         this.type,
         this.method,
         this.status,
@@ -62,7 +66,7 @@ public class TransactionStatementsModel {
         this.createdAt);
   }
 
-  public static TransactionStatementsModel fromDomain(TransactionStatements domain) {
+  public static TransactionStatementsModel fromDomain(TransactionStatement domain) {
     if (domain == null) return null;
 
     TransactionStatementsModel model = new TransactionStatementsModel();
@@ -72,8 +76,12 @@ public class TransactionStatementsModel {
     }
 
     model.userId = domain.getUserId();
-    model.orderId = domain.getOrderId();
-    model.amount = domain.getAmount();
+    if (domain instanceof PurchaseStatement purchase) {
+      model.orderId = purchase.getOrderId();
+    } else {
+      model.orderId = null;
+    }
+    model.amount = domain.getAmount().getValue();
     model.type = domain.getType();
     model.method = domain.getMethod();
     model.status = domain.getStatus();
