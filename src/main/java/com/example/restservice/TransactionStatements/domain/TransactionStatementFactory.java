@@ -77,7 +77,6 @@ public class TransactionStatementFactory {
         }
         yield new TopUpStatement(id, userId, amount, method, status, referenceId, createdAt);
       }
-
     };
   }
 }
