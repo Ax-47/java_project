@@ -1,0 +1,33 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <!-- CATEGORY CHIP -->
+    <div
+      th:fragment="category-chip(name)"
+      class="px-4 py-2 bg-gray-200 rounded-full text-sm font-semibold"
+    >
+      <span th:text="${name}"></span>
+    </div>
+
+    <!-- CATEGORY TITLE -->
+    <div
+      th:fragment="category-title(name)"
+      class="flex items-center gap-3 mb-6"
+    >
+      <img th:src="@{/images/category-icon.png}" class="w-6 h-6" />
+
+      <h2 class="text-2xl font-bold" th:text="${name}"></h2>
+    </div>
+
+    <!-- PRODUCT CARD -->
+    <div
+      th:fragment="product-card(product, image)"
+      class="border rounded-xl p-4 shadow"
+    >
+      <img th:src="${image}" class="w-full h-48 object-cover rounded" />
+      <h3 class="font-bold text-lg mt-2" th:text="${product.name}"></h3>
+      <p class="text-gray-500 text-sm" th:text="${product.description}"></p>
+      <p class="text-red-500 font-bold mt-2" th:text="${product.price}"></p>
+    </div>
+  </body>
+</html>
