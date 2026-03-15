@@ -24,6 +24,7 @@ public class TopUpStatement extends TransactionStatement {
   public TransactionStatementsType getType() {
     return TransactionStatementsType.TOPUP;
   }
+
   @Override
   public Optional<UUID> getOrderId() {
     return Optional.empty();

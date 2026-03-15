@@ -25,7 +25,6 @@ public record GetTransactionStatementsByUserResponseDTO(
   public static GetTransactionStatementsByUserResponseDTO from(TransactionStatement statement) {
     if (statement == null) return null;
 
-
     return new GetTransactionStatementsByUserResponseDTO(
         statement.getId(),
         statement.getUserId(),

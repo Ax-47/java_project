@@ -45,6 +45,7 @@ public abstract class TransactionStatement {
   }
 
   public abstract TransactionStatementsType getType();
+
   public abstract Optional<UUID> getOrderId();
 
   public UUID getId() {
