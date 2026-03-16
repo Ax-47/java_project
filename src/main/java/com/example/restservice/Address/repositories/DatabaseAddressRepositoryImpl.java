@@ -69,27 +69,23 @@ public class DatabaseAddressRepositoryImpl implements DatabaseAddressRepository 
     org.springframework.data.domain.Page<AddressModel> page =
         jpaAddressRepository.findAll(pageable);
 
-    List<Address> addresses =
-        page.getContent().stream()
-            .map(
-                model ->
-                    Address.rehydrate(
-                        model.getId(),
-                        model.getUserId(),
-                        model.getFullName(),
-                        model.getPhoneNumber(),
-                        model.getAddressLine1(),
-                        model.getAddressLine2(),
-                        model.getSubDistrict(),
-                        model.getDistrict(),
-                        model.getProvince(),
-                        model.getPostalCode(),
-                        model.getCountry(),
-                        model.getLabel(),
-                        model.isDefault(),
-                        model.getCreatedAt(),
-                        model.getUpdatedAt()))
-            .toList();
+    List<Address> addresses = page.getContent().stream().map(AddressModel::toDomain).toList();
+
+    return new Page<>(
+        addresses, page.getTotalElements(), page.getTotalPages(), page.getNumber(), page.getSize());
+  }
+
+  @Override
+  public Page<Address> findAllAddressesByUserId(UUID userId, PageQuery query) {
+
+    Sort sort =
+        query.ascending()
+            ? Sort.by(query.sortBy()).ascending()
+            : Sort.by(query.sortBy()).descending();
+
+    Pageable pageable = PageRequest.of(query.page(), query.size(), sort);
+    var page = jpaAddressRepository.findAllByUserId(userId, pageable);
+    List<Address> addresses = page.getContent().stream().map(AddressModel::toDomain).toList();
 
     return new Page<>(
         addresses, page.getTotalElements(), page.getTotalPages(), page.getNumber(), page.getSize());

@@ -42,89 +42,56 @@ public class GetHomePageUsecase {
   }
 
   public List<CategorySectionDTO> execute(UUID activeCategoryId, PageQuery query) {
-
-    PageQuery categoryQuery = new PageQuery(0, 50, "categoryName", true);
-    Page<Category> categoriesPage = databaseCategoryRepository.findAllCategories(categoryQuery);
-    List<Category> categories = categoriesPage.content();
-
-    List<UUID> targetCategoryIds;
-    if (activeCategoryId != null) {
-      targetCategoryIds = List.of(activeCategoryId);
-    } else {
-      targetCategoryIds = categories.stream().map(Category::getId).toList();
-    }
-
-    PageQuery productCategoryQuery = new PageQuery(0, 50, "Id", true);
-    Page<ProductCategory> productCategoryPage =
-        databaseProductCategoryRepository.findByCategoryIds(
-            targetCategoryIds, productCategoryQuery);
-    List<ProductCategory> productCategory = productCategoryPage.content();
-
-    List<UUID> productIds =
-        productCategory.stream().map(ProductCategory::getProductId).distinct().toList();
-
-    List<Image> images = new ArrayList<>();
-    List<Product> products = new ArrayList<>();
-    PageQuery productQuery = new PageQuery(0, 50, "productName", true);
-
-    if (!productIds.isEmpty()) {
-      products = databaseProductRepository.findByIds(productIds, productQuery).content();
-      images = databaseImageRepository.findProductImages(productIds);
-    }
-
-    Map<UUID, Product> productMap =
-        products.stream().collect(Collectors.toMap(Product::getId, p -> p));
-
-    Map<UUID, List<Image>> imagesByProductId =
-        images.stream()
-            .collect(Collectors.groupingBy(image -> image.getResource().getResourceId()));
-
-    Map<UUID, List<Product>> productsByCategoryId =
-        productCategory.stream()
-            .filter(pc -> productMap.containsKey(pc.getProductId()))
-            .collect(
-                Collectors.groupingBy(
-                    ProductCategory::getCategoryId,
-                    Collectors.mapping(
-                        pc -> productMap.get(pc.getProductId()), Collectors.toList())));
+    PageQuery categoryQuery = new PageQuery(0, 100, "categoryName", true);
+    List<Category> categories =
+        databaseCategoryRepository.findAllCategories(categoryQuery).content();
 
     List<CategorySectionDTO> result = new ArrayList<>();
 
     for (Category category : categories) {
-      if (activeCategoryId == null || category.getId().equals(activeCategoryId)) {
-        List<Product> catProducts = productsByCategoryId.getOrDefault(category.getId(), List.of());
-        List<ProductCardDTO> productDTOs =
-            catProducts.stream()
-                .map(
-                    p -> {
-                      List<Image> pImages = imagesByProductId.getOrDefault(p.getId(), List.of());
 
-                      String thumbnail =
-                          !pImages.isEmpty()
-                              ? "/images"
-                                  + pImages
-                                      .getFirst()
-                                      .getResource()
-                                      .genFilename(pImages.getFirst().getId(), ImageSize.THUMBNAIL)
-                              : "/images/product-mac.png";
-
-                      return new ProductCardDTO(
-                          p.getId(),
-                          p.getName(),
-                          p.getDescription(),
-                          p.getPrice().getValue(),
-                          thumbnail);
-                    })
-                .toList();
-
-        result.add(
-            new CategorySectionDTO(category.getId(), category.getCategoryName(), productDTOs));
-
-      } else {
+      if (activeCategoryId != null && !category.getId().equals(activeCategoryId)) {
         result.add(new CategorySectionDTO(category.getId(), category.getCategoryName(), List.of()));
+        continue;
       }
+
+      Page<ProductCategory> productCategoryPage =
+          databaseProductCategoryRepository.findByCategoryIds(List.of(category.getId()), query);
+      List<UUID> productIds =
+          productCategoryPage.content().stream().map(ProductCategory::getProductId).toList();
+      List<ProductCardDTO> productDTOs = new ArrayList<>();
+      if (!productIds.isEmpty()) {
+        PageQuery pQuery = new PageQuery(0, productIds.size(), "productName", true);
+        Map<UUID, Product> productMap =
+            databaseProductRepository.findByIds(productIds, pQuery).content().stream()
+                .collect(Collectors.toMap(Product::getId, p -> p));
+
+        Map<UUID, List<Image>> imagesByProductId =
+            databaseImageRepository.findProductImages(productIds).stream()
+                .collect(Collectors.groupingBy(img -> img.getResource().getResourceId()));
+
+        for (UUID pid : productIds) {
+          Product p = productMap.get(pid);
+          if (p != null) {
+            productDTOs.add(mapToProductCardDTO(p, imagesByProductId.getOrDefault(pid, List.of())));
+          }
+        }
+      }
+
+      result.add(new CategorySectionDTO(category.getId(), category.getCategoryName(), productDTOs));
     }
 
     return result;
+  }
+
+  private ProductCardDTO mapToProductCardDTO(Product p, List<Image> pImages) {
+    String thumbnail = "/images/product-mac.png";
+    if (!pImages.isEmpty()) {
+      Image firstImg = pImages.getFirst();
+      thumbnail =
+          "/images" + firstImg.getResource().genFilename(firstImg.getId(), ImageSize.THUMBNAIL);
+    }
+    return new ProductCardDTO(
+        p.getId(), p.getName(), p.getDescription(), p.getPrice().getValue(), thumbnail);
   }
 }

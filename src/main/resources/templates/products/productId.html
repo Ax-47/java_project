@@ -1,0 +1,78 @@
+<!doctype html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{layout/main :: layout (~{::title}, ~{::section})}"
+>
+  <head>
+    <title th:text="${product.name} + ' - I BUILD CPU'">Product Detail</title>
+  </head>
+
+  <section class="max-w-7xl mx-auto px-6 py-8 md:py-12">
+    <nav class="flex mb-8 text-sm font-medium text-gray-500 items-center gap-2">
+      <a th:href="@{/}" class="hover:text-[#0175CC] transition-colors">Home</a>
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+      <span class="text-gray-900" th:text="${product.name}">Product Name</span>
+    </nav>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+      <div class="space-y-4">
+        <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 flex justify-center items-center h-[400px] md:h-[550px] overflow-hidden">
+          <img
+            id="mainImage"
+            th:src="${!#lists.isEmpty(product.images) ? product.images[0].large : '/images/product-mac.png'}"
+            alt="Main Product"
+            class="w-full h-full object-contain transition-all duration-500 ease-in-out"
+          />
+        </div>
+
+        <div class="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+          <button 
+            th:each="img : ${product.images}"
+            class="focus:outline-none group"
+            th:onclick="changeImage([[${img.large}]], this)"
+          >
+            <img
+              th:src="${img.thumbnail}"
+              class="w-20 h-20 md:w-24 md:h-24 object-cover rounded-2xl border-2 border-transparent group-hover:border-[#0175CC] transition-all opacity-70 group-hover:opacity-100 shadow-sm"
+              alt="Thumbnail"
+            />
+          </button>
+        </div>
+      </div>
+
+      <div class="flex flex-col pt-4">
+        <h1 class="text-3xl md:text-5xl font-black text-gray-900 leading-tight mb-6" th:text="${product.name}"></h1>
+        
+        <div class="prose prose-blue text-gray-600 mb-8">
+            <p class="text-lg leading-relaxed" th:text="${product.description}"></p>
+        </div>
+
+        <div class="bg-blue-50/50 p-6 rounded-2xl border border-blue-100 mb-8">
+            <span class="text-sm font-bold text-blue-600 uppercase tracking-wider">Price</span>
+            <p class="text-4xl font-black text-[#0175CC] mt-1" 
+               th:text="|$ ${#numbers.formatDecimal(product.price, 1, 'COMMA', 2, 'POINT')}|"></p>
+        </div>
+
+        <button class="w-full md:w-max bg-[#0175CC] text-white px-12 py-5 rounded-2xl font-bold text-xl hover:bg-blue-700 hover:shadow-2xl hover:-translate-y-1 transition-all flex items-center justify-center gap-3">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          Add to Cart
+        </button>
+      </div>
+    </div>
+
+    <script th:inline="javascript">
+      function changeImage(url, element) {
+        const mainImg = document.getElementById('mainImage');
+        mainImg.style.opacity = '0';
+        setTimeout(() => {
+          mainImg.src = url;
+          mainImg.style.opacity = '1';
+        }, 200);
+      }
+    </script>
+  </section>
+</html>
