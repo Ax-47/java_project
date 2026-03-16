@@ -7,32 +7,29 @@
     <title>Home - I BUILD CPU</title>
   </head>
 
-  <section>
+  <section class="max-w-7xl mx-auto px-6 py-8">
     <div
       th:replace="~{fragments/productCard :: category-nav(${categories}, ${activeCategoryId})}"
     ></div>
 
     <div th:if="${categories != null}">
-      <div th:each="category : ${categories}" th:if="${activeCategoryId ==null||category.id == activeCategoryId}" class="py-10">
+      <div
+        th:each="category : ${categories}"
+        class="py-10"
+        th:if="${activeCategoryId ==null ||category.id ==activeCategoryId}"
+      >
         <div
-          th:if="${activeCategoryId == null || category.id == activeCategoryId}"
-        >
-          <div
-            th:replace="~{fragments/productCard :: category-title(${category})}"
-          ></div>
+          th:replace="~{fragments/productCard :: category-title(${category})}"
+        ></div>
 
-          <div
-            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
-          >
+        <div
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8"
+        >
+          <th:block th:each="product : ${category.products}">
             <div
-              th:each="product : ${category.products}"
-              th:if="${product != null }"
-            >
-              <div
-                th:replace="~{fragments/productCard :: product-card(${product})}"
-              </div>
-            </div>
-          </div>
+              th:replace="~{fragments/productCard :: product-card(${product})}"
+            ></div>
+          </th:block>
         </div>
       </div>
     </div>

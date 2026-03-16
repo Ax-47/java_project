@@ -75,4 +75,20 @@ public class DatabaseProductCategoryRepositoryImpl implements DatabaseProductCat
     return new Page<>(
         users, page.getTotalElements(), page.getTotalPages(), page.getNumber(), page.getSize());
   }
+
+  @Override
+  public Page<ProductCategory> findByCategoryIds(List<UUID> categoryIds, PageQuery query) {
+
+    Sort sort =
+        query.ascending()
+            ? Sort.by(query.sortBy()).ascending()
+            : Sort.by(query.sortBy()).descending();
+    Pageable pageable = PageRequest.of(query.page(), query.size(), sort);
+    org.springframework.data.domain.Page<ProductCategoryModel> page =
+        jpaProductCategoryRepository.findByCategoryIdIn(categoryIds, pageable);
+    List<ProductCategory> users =
+        page.getContent().stream().map(category -> category.toDomain()).toList();
+    return new Page<>(
+        users, page.getTotalElements(), page.getTotalPages(), page.getNumber(), page.getSize());
+  }
 }

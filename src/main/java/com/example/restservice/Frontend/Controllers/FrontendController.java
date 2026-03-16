@@ -1,6 +1,5 @@
 package com.example.restservice.Frontend.Controllers;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.restservice.Auth.dto.UserPrincipalDTO;
 import com.example.restservice.Categories.usecases.FindCategoriesUsecase;
-import com.example.restservice.Frontend.dto.CategoryWithProducts;
+import com.example.restservice.Frontend.dto.CategorySectionDTO;
+import com.example.restservice.Frontend.usecases.GetHomePageUsecase;
 import com.example.restservice.ProductCategories.usecases.FindProductsByCategoryIdUsecase;
 import com.example.restservice.Products.usecases.FindProductUsecase;
 import com.example.restservice.common.PageQuery;
@@ -24,13 +24,16 @@ public class FrontendController {
   private final FindProductsByCategoryIdUsecase findProductsByCategoryIdUsecase;
   private final FindCategoriesUsecase findCategoriesUsecase;
   private final FindProductUsecase findProductUsecase;
+  private final GetHomePageUsecase getHomePageUsecase;
 
   public FrontendController(
       FindProductsByCategoryIdUsecase findProductsByCategoryIdUsecase,
       FindProductUsecase findProductUsecase,
+      GetHomePageUsecase getHomePageUsecase,
       FindCategoriesUsecase findCategoriesUsecase) {
     this.findProductsByCategoryIdUsecase = findProductsByCategoryIdUsecase;
     this.findCategoriesUsecase = findCategoriesUsecase;
+    this.getHomePageUsecase = getHomePageUsecase;
     this.findProductUsecase = findProductUsecase;
   }
 
@@ -40,17 +43,10 @@ public class FrontendController {
       @RequestParam(required = false) UUID activeCategoryId,
       Model model) {
     model.addAttribute("user", user);
-    PageQuery categoryQuery = new PageQuery(0, 5, "categoryName", true);
-    var categories = findCategoriesUsecase.execute(categoryQuery);
-    PageQuery productQuery = new PageQuery(0, 50, "productName", true);
-    List<CategoryWithProducts> categoryWithProducts = new ArrayList<>();
-    for (var category : categories.content()) {
-      var products = findProductsByCategoryIdUsecase.execute(category.id(), productQuery);
-      categoryWithProducts.add(
-          new CategoryWithProducts(category.id(), category.name(), products.content()));
-    }
+    PageQuery query = new PageQuery(0, 50, "categoryName", true);
+    List<CategorySectionDTO> categories = getHomePageUsecase.execute(activeCategoryId, query);
     model.addAttribute("activeCategoryId", activeCategoryId);
-    model.addAttribute("categories", categoryWithProducts);
+    model.addAttribute("categories", categories);
     return "index";
   }
 
