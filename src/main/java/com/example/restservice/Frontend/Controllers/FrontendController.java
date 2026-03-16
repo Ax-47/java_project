@@ -2,11 +2,13 @@ package com.example.restservice.Frontend.Controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.restservice.Auth.dto.UserPrincipalDTO;
 import com.example.restservice.Categories.usecases.FindCategoriesUsecase;
@@ -28,7 +30,10 @@ public class FrontendController {
   }
 
   @GetMapping("/")
-  public String index(@AuthenticationPrincipal UserPrincipalDTO user, Model model) {
+  public String index(
+      @AuthenticationPrincipal UserPrincipalDTO user,
+      @RequestParam(required = false) UUID activeCategoryId,
+      Model model) {
     model.addAttribute("user", user);
     PageQuery categoryQuery = new PageQuery(0, 5, "categoryName", true);
     var categories = findCategoriesUsecase.execute(categoryQuery);
@@ -40,6 +45,7 @@ public class FrontendController {
           new CategoryWithProducts(category.id(), category.name(), products.content()));
     }
     System.out.println(categoryWithProducts);
+    model.addAttribute("activeCategoryId", activeCategoryId);
     model.addAttribute("categories", categoryWithProducts);
     return "index";
   }

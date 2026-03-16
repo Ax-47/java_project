@@ -15,4 +15,15 @@ public enum ImageResourceType {
   public String getPath() {
     return path;
   }
+
+  public static ImageResourceType fromPath(String path) {
+
+    for (ImageResourceType type : values()) {
+      if (type.path.equals(path)) {
+        return type;
+      }
+    }
+
+    throw new IllegalArgumentException("Unknown resource type: " + path);
+  }
 }

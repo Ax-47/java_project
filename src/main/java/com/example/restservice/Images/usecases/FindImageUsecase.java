@@ -30,9 +30,9 @@ public class FindImageUsecase {
             image ->
                 new UploadImageResponseDTO(
                     image.getId().toString(),
+                    toFileName(resource, image.getId(), ImageSize.THUMBNAIL),
                     toFileName(resource, image.getId(), ImageSize.LARGE),
-                    toFileName(resource, image.getId(), ImageSize.MEDIUM),
-                    toFileName(resource, image.getId(), ImageSize.THUMBNAIL)))
+                    toFileName(resource, image.getId(), ImageSize.MEDIUM)))
         .toList();
   }
 
