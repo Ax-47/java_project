@@ -8,12 +8,14 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.restservice.Auth.dto.UserPrincipalDTO;
 import com.example.restservice.Categories.usecases.FindCategoriesUsecase;
 import com.example.restservice.Frontend.dto.CategoryWithProducts;
 import com.example.restservice.ProductCategories.usecases.FindProductsByCategoryIdUsecase;
+import com.example.restservice.Products.usecases.FindProductUsecase;
 import com.example.restservice.common.PageQuery;
 
 /** Controller for the home page. */
@@ -21,12 +23,15 @@ import com.example.restservice.common.PageQuery;
 public class FrontendController {
   private final FindProductsByCategoryIdUsecase findProductsByCategoryIdUsecase;
   private final FindCategoriesUsecase findCategoriesUsecase;
+  private final FindProductUsecase findProductUsecase;
 
   public FrontendController(
       FindProductsByCategoryIdUsecase findProductsByCategoryIdUsecase,
+      FindProductUsecase findProductUsecase,
       FindCategoriesUsecase findCategoriesUsecase) {
     this.findProductsByCategoryIdUsecase = findProductsByCategoryIdUsecase;
     this.findCategoriesUsecase = findCategoriesUsecase;
+    this.findProductUsecase = findProductUsecase;
   }
 
   @GetMapping("/")
@@ -44,10 +49,18 @@ public class FrontendController {
       categoryWithProducts.add(
           new CategoryWithProducts(category.id(), category.name(), products.content()));
     }
-    System.out.println(categoryWithProducts);
     model.addAttribute("activeCategoryId", activeCategoryId);
     model.addAttribute("categories", categoryWithProducts);
     return "index";
+  }
+
+  @GetMapping("/products/{productId}")
+  public String product(
+      @PathVariable UUID productId, @AuthenticationPrincipal UserPrincipalDTO user, Model model) {
+    model.addAttribute("user", user);
+    var product = findProductUsecase.execute(productId);
+    model.addAttribute("product", product);
+    return "products/index";
   }
 
   @GetMapping("/sign-in")

@@ -1,0 +1,67 @@
+<!doctype html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{layout/main :: layout (~{::title}, ~{::section})}"
+>
+  <head>
+    <title>Home - I BUILD CPU</title>
+  </head>
+
+  <section>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+
+    <!-- IMAGE GALLERY -->
+    <div>
+
+    <!-- main image -->
+    <div class="bg-white rounded-xl shadow p-6 flex justify-center">
+
+    <img
+    id="mainImage"
+    th:src="${!#lists.isEmpty(product.images) ? product.images[0].large : '/images/product-mac.png'}"
+    class="w-[400px] object-contain transition"
+    />
+
+    </div>
+
+    <!-- thumbnails -->
+    <div class="flex gap-3 mt-4">
+
+    <img
+    th:each="img : ${product.images}"
+    th:src="${img.thumbnail}"
+    class="w-20 h-20 object-cover rounded-lg cursor-pointer border hover:border-black transition"
+    onclick="document.getElementById('mainImage').src=this.dataset.large"
+    th:attr="data-large=${img.large}"
+    />
+
+    </div>
+
+    </div>
+
+    <!-- PRODUCT INFO -->
+    <div>
+
+    <h1
+    class="text-4xl font-bold text-gray-900"
+    th:text="${product.name}">
+    </h1>
+
+    <p
+    class="text-gray-600 mt-4"
+    th:text="${product.description}">
+    </p>
+
+    <p
+    class="text-3xl font-bold text-red-500 mt-6"
+    th:text="'$' + ${#numbers.formatDecimal(product.price,1,2)}">
+    </p>
+
+    <button
+    class="mt-8 bg-black text-white px-8 py-3 rounded-lg hover:bg-gray-800 transition">
+    Add to Cart
+    </button>
+
+</div>
+  </section>
+</html>
