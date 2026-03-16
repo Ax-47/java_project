@@ -73,14 +73,14 @@ public class ReviewController {
 
   @PostMapping("/{reviewId}/images")
   public UploadImageResponseDTO uploadReviewImage(
-      @PathVariable UUID productId, @RequestParam MultipartFile file, @RequestParam int sortOrder)
+      @PathVariable UUID reviewId, @RequestParam MultipartFile file, @RequestParam int sortOrder)
       throws IOException {
 
-    return uploadImageUsecase.execute(file, productId, ImageResourceType.REVIEW, sortOrder);
+    return uploadImageUsecase.execute(file, reviewId, ImageResourceType.REVIEW, sortOrder);
   }
 
   @PostMapping
-  public CreateReviewResponseDTO CreateReview(@RequestBody CreateReviewRequestDTO request) {
+  public CreateReviewResponseDTO CreateReview(@Valid @RequestBody CreateReviewRequestDTO request) {
 
     return createReviewUsecase.execute(request);
   }
