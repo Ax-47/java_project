@@ -1,33 +1,107 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
   <body>
-    <!-- CATEGORY CHIP -->
-    <div
-      th:fragment="category-chip(name)"
-      class="px-4 py-2 bg-gray-200 rounded-full text-sm font-semibold"
-    >
-      <span th:text="${name}"></span>
-    </div>
+    <!-- CATEGORY NAV -->
 
+    <div
+      th:fragment="category-nav(categories, activeCategoryId)"
+      class="pt-12 pb-6"
+      th:if="${categories != null}"
+    >
+      <h2 class="text-2xl font-bold flex items-center gap-3 mb-6">
+        <img
+          th:src="@{/images/category-icon.png}"
+          alt="Category Icon"
+          class="w-6 h-6 object-contain"
+        />
+        Browse Categories
+      </h2>
+      <div class="flex gap-3 overflow-x-auto pb-2">
+        <!-- ALL -->
+        <a
+          th:href="@{/}"
+          th:class="${activeCategoryId == null}
+      ? 'px-5 py-2 rounded-full bg-black text-white text-sm font-medium'
+      : 'px-5 py-2 rounded-full bg-white border text-gray-700 text-sm hover:bg-gray-100'"
+        >
+          All
+        </a>
+
+        <!-- CATEGORY -->
+        <a
+          th:each="category : ${categories}"
+          th:href="@{'/?activeCategoryId=' + ${category.id}}"
+          th:text="${category.name}"
+          th:class="${activeCategoryId == category.id}
+      ? 'px-5 py-2 rounded-full bg-black text-white text-sm font-medium whitespace-nowrap'
+      : 'px-5 py-2 rounded-full bg-white border text-gray-700 text-sm hover:bg-gray-100 whitespace-nowrap'"
+        ></a>
+      </div>
+    </div>
     <!-- CATEGORY TITLE -->
     <div
-      th:fragment="category-title(name)"
-      class="flex items-center gap-3 mb-6"
+      th:fragment="category-title(category)"
+      class="flex items-center justify-between mb-8"
     >
-      <img th:src="@{/images/category-icon.png}" class="w-6 h-6" />
+<div class="flex items-center gap-3">
+  <img
+    th:src="@{/images/category-icon.png}"
+    alt="Category Icon"
+    class="w-6 h-6 object-contain"
+  />
 
-      <h2 class="text-2xl font-bold" th:text="${name}"></h2>
+  <h2
+    class="text-3xl font-bold text-gray-900"
+    th:text="${category?.name}"
+  ></h2>
+</div>
+
+      <a
+        th:href="@{'/?category=' + ${category?.id}}"
+        class="text-sm text-gray-500 hover:text-black"
+      >
+        View All
+      </a>
     </div>
 
     <!-- PRODUCT CARD -->
-    <div
-      th:fragment="product-card(product, image)"
-      class="border rounded-xl p-4 shadow"
+    <a
+      th:fragment="product-card(product)"
+      th:href="@{/products/{id}(id=${product?.id})}"
+      class="group relative border border-gray-100 rounded-xl p-5 bg-white shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 ease-out flex flex-col overflow-hidden"
     >
-      <img th:src="${image}" class="w-full h-48 object-cover rounded" />
-      <h3 class="font-bold text-lg mt-2" th:text="${product.name}"></h3>
-      <p class="text-gray-500 text-sm" th:text="${product.description}"></p>
-      <p class="text-red-500 font-bold mt-2" th:text="${product.price}"></p>
-    </div>
+      <!-- glow effect -->
+      <div
+        class="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 bg-gradient-to-br from-blue-50 via-transparent to-purple-50 pointer-events-none"
+      ></div>
+
+      <!-- image -->
+      <div class="flex justify-center mb-4 overflow-hidden rounded-lg">
+        <img
+          loading="lazy"
+          th:src="${!#lists.isEmpty(product?.images) ? product?.images[0].thumbnail : '/images/product-mac.png'}"
+          class="w-[200px] h-[200px] object-cover transition duration-500 ease-out group-hover:scale-110 group-hover:rotate-1"
+          alt="product image"
+        />
+      </div>
+
+      <!-- product name -->
+      <h3
+        class="font-semibold text-lg text-gray-900 line-clamp-1 transition-colors duration-300 group-hover:text-black"
+        th:text="${product?.name}"
+      ></h3>
+
+      <!-- description -->
+      <p
+        class="text-gray-500 text-sm mt-1 line-clamp-2 flex-grow transition duration-300 group-hover:text-gray-600"
+        th:text="${product?.description}"
+      ></p>
+
+      <!-- price -->
+      <p
+        class="text-red-500 font-semibold text-lg mt-3 transform transition duration-300 group-hover:translate-y-[-2px] group-hover:scale-105"
+        th:text="'$' + ${#numbers.formatDecimal(product?.price,1,2)}"
+      ></p>
+    </a>
   </body>
 </html>

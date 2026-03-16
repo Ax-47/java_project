@@ -1,65 +1,40 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{layout/main :: layout (~{::title}, ~{::section})}"
+>
   <head>
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <link
-      href="https://fonts.googleapis.com/css2?family=Khula:wght@400;600;800&display=swap"
-      rel="stylesheet"
-    />
-
-    <style>
-      body {
-        font-family: "Khula", sans-serif;
-      }
-    </style>
-
     <title>Home - I BUILD CPU</title>
   </head>
 
-  <body class="bg-white text-black m-0 p-0">
-    <div th:replace="~{fragments/header :: navbar}"></div>
+  <section>
+    <div
+      th:replace="~{fragments/productCard :: category-nav(${categories}, ${activeCategoryId})}"
+    ></div>
 
-    <!-- CATEGORY CHIPS -->
-    <div class="px-12 pt-8 pb-4" th:if="${categories != null}">
-      <h2 class="text-2xl font-bold flex items-center gap-3 mb-6">
-        <img th:src="@{/images/category-icon.png}" class="w-6 h-6" />
-        หมวดหมู่สินค้า
-      </h2>
-
-      <div class="flex gap-4 mb-8">
-        <div
-          th:each="category : ${categories}"
-          th:if="${category != null}"
-          th:replace="~{fragments/productCard :: category-chip(${category?.name})}"
-        ></div>
-      </div>
-    </div>
-
-    <!-- CATEGORY + PRODUCTS -->
     <div th:if="${categories != null}">
-      <div
-        th:each="category : ${categories}"
-        th:if="${category != null}"
-        class="px-12 py-8"
-      >
-        <!-- CATEGORY TITLE -->
+      <div th:each="category : ${categories}" th:if="${activeCategoryId ==null||category.id == activeCategoryId}" class="py-10">
         <div
-          th:replace="~{fragments/productCard :: category-title(${category?.name})}"
-        ></div>
+          th:if="${activeCategoryId == null || category.id == activeCategoryId}"
+        >
+          <div
+            th:replace="~{fragments/productCard :: category-title(${category})}"
+          ></div>
 
-        <!-- PRODUCTS GRID -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div th:each="product : ${category.products}">
+          <div
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+          >
             <div
-              th:with="img=${(product.images != null and !#lists.isEmpty(product.images))
-        ? '/api/images/' + product.images[0].id
-        : '/images/product-mac.png'}"
-              th:replace="~{fragments/productCard :: product-card(${product}, ${img})}"
-            ></div>
+              th:each="product : ${category.products}"
+              th:if="${product != null }"
+            >
+              <div
+                th:replace="~{fragments/productCard :: product-card(${product})}"
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </body>
+  </section>
 </html>

@@ -1,25 +1,34 @@
 package com.example.restservice.Images.controllers;
 
+import java.io.InputStream;
+import java.util.UUID;
+
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.restservice.Images.usecases.FindImageUsecase;
-import com.example.restservice.Images.usecases.ReorderImageUsecase;
-import com.example.restservice.Images.usecases.UploadImageUsecase;
+import com.example.restservice.Images.domain.ImageResourceType;
+import com.example.restservice.Images.usecases.GetImageUsecase;
 
 @RestController
-@RequestMapping("/api/images")
+@RequestMapping("/images")
 public class ImageController {
 
-  private final UploadImageUsecase uploadImageUsecase;
-  private final FindImageUsecase findImageUsecase;
-  private final ReorderImageUsecase reorderImageUsecase;
+  private final GetImageUsecase getImageUseCase;
 
-  public ImageController(
-      UploadImageUsecase uploadImageUsecase,
-      FindImageUsecase findImageUsecase,
-      ReorderImageUsecase reorderImageUsecase) {
-    this.uploadImageUsecase = uploadImageUsecase;
-    this.findImageUsecase = findImageUsecase;
-    this.reorderImageUsecase = reorderImageUsecase;
+  public ImageController(GetImageUsecase getImageUseCase) {
+    this.getImageUseCase = getImageUseCase;
+  }
+
+  @GetMapping("/{type}/{resourceId}/{imageName}")
+  public ResponseEntity<InputStreamResource> getImage(
+      @PathVariable String type, @PathVariable UUID resourceId, @PathVariable String imageName) {
+    ImageResourceType resourceType = ImageResourceType.fromPath(type);
+    InputStream stream = getImageUseCase.execute(resourceType, resourceId, imageName);
+
+    return ResponseEntity.ok()
+        .contentType(MediaType.parseMediaType("image/webp"))
+        .body(new InputStreamResource(stream));
   }
 }
