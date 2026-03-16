@@ -1,5 +1,6 @@
 package com.example.restservice.Products.domain;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -14,4 +15,6 @@ public interface DatabaseProductRepository {
   Product delete(Product product);
 
   Page<Product> findAllProducts(PageQuery query);
+
+  Page<Product> findByIds(List<UUID> productIds, PageQuery query);
 }

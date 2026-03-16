@@ -4,64 +4,64 @@
   th:replace="~{layout/main :: layout (~{::title}, ~{::section})}"
 >
   <head>
-    <title>Home - I BUILD CPU</title>
+    <title th:text="${product.name} + ' - I BUILD CPU'">Product - I BUILD CPU</title>
   </head>
 
-  <section>
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+  <section class="max-w-7xl mx-auto px-6 py-10 md:py-16">
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
 
-    <!-- IMAGE GALLERY -->
-    <div>
+      <div class="flex flex-col gap-4">
 
-    <!-- main image -->
-    <div class="bg-white rounded-xl shadow p-6 flex justify-center">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex justify-center items-center h-[350px] md:h-[500px]">
+          <img
+            id="mainImage"
+            th:src="${!#lists.isEmpty(product.images) ? product.images[0].large : '/images/product-mac.png'}"
+            alt="Main Product Image"
+            class="w-full h-full object-contain transition-all duration-300"
+          />
+        </div>
 
-    <img
-    id="mainImage"
-    th:src="${!#lists.isEmpty(product.images) ? product.images[0].large : '/images/product-mac.png'}"
-    class="w-[400px] object-contain transition"
-    />
+        <div class="flex gap-3 overflow-x-auto py-2 scrollbar-hide">
+          <img
+            th:each="img : ${product.images}"
+            th:src="${img.thumbnail}"
+            alt="Thumbnail"
+            class="w-20 h-20 md:w-24 md:h-24 object-cover rounded-xl cursor-pointer border-2 border-transparent hover:border-[#0175CC] hover:shadow-md transition-all opacity-80 hover:opacity-100"
+            onclick="document.getElementById('mainImage').src=this.dataset.large"
+            th:attr="data-large=${img.large}"
+          />
+        </div>
 
-    </div>
+      </div>
 
-    <!-- thumbnails -->
-    <div class="flex gap-3 mt-4">
+      <div class="flex flex-col justify-center">
 
-    <img
-    th:each="img : ${product.images}"
-    th:src="${img.thumbnail}"
-    class="w-20 h-20 object-cover rounded-lg cursor-pointer border hover:border-black transition"
-    onclick="document.getElementById('mainImage').src=this.dataset.large"
-    th:attr="data-large=${img.large}"
-    />
+        <h1
+          class="text-3xl md:text-5xl font-extrabold text-gray-900 leading-tight"
+          th:text="${product.name}">
+        </h1>
 
-    </div>
+        <p
+          class="text-gray-600 mt-6 text-lg leading-relaxed"
+          th:text="${product.description}">
+        </p>
 
-    </div>
+        <p
+          class="text-4xl font-bold text-[#0175CC] mt-8"
+          th:text="|$ ${#numbers.formatDecimal(product.price, 1, 'COMMA', 2, 'POINT')}|">
+        </p>
 
-    <!-- PRODUCT INFO -->
-    <div>
+        <div class="mt-10 flex gap-4">
+          <button class="bg-[#0175CC] text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-blue-700 hover:shadow-lg transition-all w-full md:w-auto flex items-center justify-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            Add to Cart
+          </button>
+        </div>
 
-    <h1
-    class="text-4xl font-bold text-gray-900"
-    th:text="${product.name}">
-    </h1>
+      </div>
 
-    <p
-    class="text-gray-600 mt-4"
-    th:text="${product.description}">
-    </p>
-
-    <p
-    class="text-3xl font-bold text-red-500 mt-6"
-    th:text="'$' + ${#numbers.formatDecimal(product.price,1,2)}">
-    </p>
-
-    <button
-    class="mt-8 bg-black text-white px-8 py-3 rounded-lg hover:bg-gray-800 transition">
-    Add to Cart
-    </button>
-
-</div>
-  </section>
+    </div> </section>
 </html>
