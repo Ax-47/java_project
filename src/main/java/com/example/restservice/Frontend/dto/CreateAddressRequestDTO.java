@@ -1,9 +1,13 @@
-package com.example.restservice.Address.dto;
+package com.example.restservice.Frontend.dto;
+
+import java.util.UUID;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record CreateAddressRequestDTO(
+    @NotNull(message = "User ID is required") UUID userId,
     @NotBlank(message = "Full name is required")
         @Size(max = 100, message = "Full name must not exceed 100 characters")
         String fullName,

@@ -21,7 +21,6 @@
         <div
           th:replace="~{fragments/productCard :: category-title(${category})}"
         ></div>
-
         <div
           class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8"
         >
@@ -30,6 +29,13 @@
               th:replace="~{fragments/productCard :: product-card(${product})}"
             ></div>
           </th:block>
+        </div>
+        <div th:if="${activeCategoryId !=null &&category.id ==activeCategoryId &&#lists.isEmpty(category.products)}" class="mt-10">
+          <div th:replace="~{fragments/notFound :: not-found-product}"></div>
+        </div>
+
+        <div th:if="${#lists.isEmpty(categories)}" class="mt-10">
+          <div th:replace="~{fragments/notFound :: not-found-product}"></div>
         </div>
       </div>
     </div>
