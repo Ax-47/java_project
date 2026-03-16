@@ -66,10 +66,11 @@ public class AuthenticationController {
   }
 
   @PostMapping("/signin")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Login success"),
-      @ApiResponse(responseCode = "401", description = "Invalid credentials")
-  })
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200", description = "Login success"),
+        @ApiResponse(responseCode = "401", description = "Invalid credentials")
+      })
   public ResponseEntity<TokenResponseDTO> signin(
       @RequestBody @Validated SignInRequestDTO request, HttpServletResponse response) {
 
