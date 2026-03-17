@@ -11,6 +11,8 @@ import com.example.restservice.Users.domain.DatabaseUserRepository;
 import com.example.restservice.Users.domain.User;
 import com.example.restservice.Users.exceptions.UserNotFoundException;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class PurchaseProductUsecase {
   private final DatabaseUserRepository databaseUserRepository;
@@ -23,6 +25,7 @@ public class PurchaseProductUsecase {
     this.databaseUserRepository = databaseUserRepository;
   }
 
+  @Transactional
   public void execute(UUID userId, UUID productId) {
 
     User user =
@@ -36,7 +39,6 @@ public class PurchaseProductUsecase {
             .orElseThrow(() -> new ProductNotFoundException("not found"));
 
     user.purchase(product.getPrice());
-
     databaseUserRepository.save(user);
   }
 }
