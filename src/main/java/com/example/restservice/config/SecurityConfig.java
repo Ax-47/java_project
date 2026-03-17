@@ -83,9 +83,6 @@ public class SecurityConfig {
                     .anyRequest()
                     .authenticated())
         .addFilterBefore(authorizeFilter, UsernamePasswordAuthenticationFilter.class)
-        // .oauth2ResourceServer(
-        // rs -> rs.jwt(jwt ->
-        // jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
         .exceptionHandling(
             ex ->
                 ex.authenticationEntryPoint(authenticationEntryPoint())
