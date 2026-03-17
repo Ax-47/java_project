@@ -135,7 +135,7 @@
 
       <div
         th:replace="~{admin/components/data-table :: wrapper(
-        'content-categories', ${activeTab != 'categories'}, '/admin/categories/new', '+ Add Category', 
+        'content-categories', ${activeTab != 'categories'}, '/admin/categories/create', '+ Add Category', 
         ~{::categoryHeaders}, ~{::categoryRows},
         ${categoryPage}, ${categoryTotal},
         @{/admin(tab='categories', orderPage=${orderPage}, productPage=${productPage}, categoryPage=${categoryPage - 1})},
@@ -163,12 +163,12 @@
 
             <td class="px-4 py-3 text-sm text-center space-x-2">
               <a
-                th:href="@{/admin/categories/edit/{id}(id=${cat.id})}"
+                th:href="@{/admin/categories/{id}/edit(id=${cat.id})}"
                 class="text-yellow-600"
                 >Edit</a
               >
               <form
-                th:action="@{/admin/categories/delete/{id}(id=${cat.id})}"
+                th:action="@{/admin/categories/{id}/delete(id=${cat.id})}"
                 method="post"
                 class="inline"
               >
@@ -185,7 +185,6 @@
       </div>
 
       <script th:inline="javascript">
-        // ระวังจุดนี้: ใน controller ต้องส่ง "activeTab" มาเสมอ ไม่งั้นจะเออเร่อ
         const currentTab = /*[[${activeTab}]]*/ "orders";
 
         document.addEventListener("DOMContentLoaded", () => {
