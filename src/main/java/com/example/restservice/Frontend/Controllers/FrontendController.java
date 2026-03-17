@@ -88,8 +88,7 @@ public class FrontendController {
     model.addAttribute("product", product);
     PageQuery query = new PageQuery(page, size, sortBy, asc);
     var reviews = findReveiwByProductUsecase.execute(productId, query);
-    System.out.println(reviews.content());
-    model.addAttribute("reviews", reviews.content());
+    model.addAttribute("reviews", reviews);
 
     return "products/productId";
   }
