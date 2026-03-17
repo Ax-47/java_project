@@ -19,10 +19,10 @@ public class DeleteReviewUsecase {
   }
 
   @Transactional
-  public DeleteReviewResponseDTO execute(UUID productId) {
+  public DeleteReviewResponseDTO execute(UUID reviewId) {
     Review existingReview =
         this.databaseReviewRepository
-            .findById(productId)
+            .findById(reviewId)
             .orElseThrow(() -> new RuntimeException("Review not found"));
 
     this.databaseReviewRepository.delete(existingReview);

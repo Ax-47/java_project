@@ -21,7 +21,7 @@ public class FindReviewByProductandIdandUserIdUsecase {
   }
 
   @Transactional
-  public ReviewResponseDTO execute(UUID userId, UUID productId) {
+  public ReviewResponseDTO execute(UUID productId, UUID userId) {
 
     Review review =
         databaseReviewRepository

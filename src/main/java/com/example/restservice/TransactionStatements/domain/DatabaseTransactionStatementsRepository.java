@@ -6,7 +6,7 @@ import com.example.restservice.common.Page;
 import com.example.restservice.common.PageQuery;
 
 public interface DatabaseTransactionStatementsRepository {
-  public TransactionStatements save(TransactionStatements transactionStatements);
+  public TransactionStatement save(TransactionStatement transactionStatements);
 
-  public Page<TransactionStatements> findByUserId(UUID userId, PageQuery pageable);
+  public Page<TransactionStatement> findByUserId(UUID userId, PageQuery pageable);
 }
