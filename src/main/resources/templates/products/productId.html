@@ -28,9 +28,9 @@
         </div>
 
         <div class="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
-          <button 
+          <button
             th:each="img : ${product.images}"
-            class="focus:outline-none group"
+            class="focus:outline-none group shrink-0"
             th:onclick="changeImage([[${img.large}]], this)"
           >
             <img
@@ -44,15 +44,14 @@
 
       <div class="flex flex-col pt-4">
         <h1 class="text-3xl md:text-5xl font-black text-gray-900 leading-tight mb-6" th:text="${product.name}"></h1>
-        
+
         <div class="prose prose-blue text-gray-600 mb-8">
-            <p class="text-lg leading-relaxed" th:text="${product.description}"></p>
+          <p class="text-lg leading-relaxed" th:text="${product.description}"></p>
         </div>
 
         <div class="bg-blue-50/50 p-6 rounded-2xl border border-blue-100 mb-8">
-            <span class="text-sm font-bold text-blue-600 uppercase tracking-wider">Price</span>
-            <p class="text-4xl font-black text-[#0175CC] mt-1" 
-               th:text="|$ ${#numbers.formatDecimal(product.price, 1, 'COMMA', 2, 'POINT')}|"></p>
+          <span class="text-sm font-bold text-blue-600 uppercase tracking-wider">Price</span>
+          <p class="text-4xl font-black text-[#0175CC] mt-1" th:text="|$ ${#numbers.formatDecimal(product.price, 1, 'COMMA', 2, 'POINT')}|"></p>
         </div>
 
         <button class="w-full md:w-max bg-[#0175CC] text-white px-12 py-5 rounded-2xl font-bold text-xl hover:bg-blue-700 hover:shadow-2xl hover:-translate-y-1 transition-all flex items-center justify-center gap-3">
@@ -64,15 +63,251 @@
       </div>
     </div>
 
+    <div class="mt-16 border-t border-gray-100 pt-12">
+      <h2 class="text-2xl md:text-3xl font-black text-gray-900 mb-8">Customer Reviews</h2>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        <div class="lg:col-span-1 bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100 h-max">
+          <h3 id="form-title" class="text-xl font-bold text-gray-900 mb-4">Write a Review</h3>
+
+          <input type="hidden" id="current-product-id" th:value="${product.id}" />
+          <input type="hidden" id="current-user-id" th:value="${principal != null ? principal.id : ''}" />
+
+          <form id="review-form" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+              <div class="flex gap-2" id="star-rating">
+                <button type="button" class="star-btn text-gray-300 hover:text-yellow-400 focus:outline-none transition-colors" data-value="1">
+                  <svg class="w-8 h-8 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                </button>
+                <button type="button" class="star-btn text-gray-300 hover:text-yellow-400 focus:outline-none transition-colors" data-value="2">
+                  <svg class="w-8 h-8 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                </button>
+                <button type="button" class="star-btn text-gray-300 hover:text-yellow-400 focus:outline-none transition-colors" data-value="3">
+                  <svg class="w-8 h-8 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                </button>
+                <button type="button" class="star-btn text-gray-300 hover:text-yellow-400 focus:outline-none transition-colors" data-value="4">
+                  <svg class="w-8 h-8 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                </button>
+                <button type="button" class="star-btn text-gray-300 hover:text-yellow-400 focus:outline-none transition-colors" data-value="5">
+                  <svg class="w-8 h-8 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
+                </button>
+              </div>
+              <input type="hidden" id="review-rating" value="0" required />
+            </div>
+
+            <div>
+              <label for="review-comment" class="block text-sm font-medium text-gray-700 mb-2">Your Review</label>
+              <textarea
+                id="review-comment"
+                rows="4"
+                class="w-full rounded-2xl border-gray-200 bg-gray-50 focus:border-[#0175CC] focus:ring-[#0175CC] p-4 text-gray-700 transition-colors resize-none"
+                placeholder="What do you think about this product?"
+                required
+              ></textarea>
+            </div>
+
+            <div id="review-error" class="text-red-500 text-sm hidden">Please select a rating and write a comment.</div>
+            
+            <div class="flex gap-2">
+              <button type="submit" id="submit-review-btn" class="flex-1 bg-[#0175CC] text-white px-6 py-3.5 rounded-2xl font-bold hover:bg-blue-700 transition-colors">
+                Submit Review
+              </button>
+              <button type="button" id="cancel-edit-btn" class="hidden bg-gray-200 text-gray-700 px-6 py-3.5 rounded-2xl font-bold hover:bg-gray-300 transition-colors">
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="lg:col-span-2 space-y-6">
+          
+          <div th:if="${reviews == null || #lists.isEmpty(reviews)}" class="text-center py-10 bg-gray-50 rounded-3xl border border-gray-100">
+            <p class="text-gray-500 font-medium">No reviews yet. Be the first to review!</p>
+          </div>
+
+          <div th:if="${reviews != null && not #lists.isEmpty(reviews)}" 
+               th:each="review : ${reviews}" 
+               class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex gap-4">
+            <div class="flex-1">
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-3">
+                  <h4 class="font-bold text-gray-900" th:text="${review.username != null ? review.username : 'User'}">User</h4>
+                  
+                  <div th:if="${principal != null and principal.id.toString() == review.userId.toString()}" class="flex gap-3 ml-4">
+                    <button type="button" 
+                            th:data-id="${review.id}" 
+                            th:data-rating="${review.rating}" 
+                            th:data-comment="${review.comment}"
+                            onclick="editReview(this.getAttribute('data-id'), this.getAttribute('data-rating'), this.getAttribute('data-comment'))" 
+                            class="text-sm font-semibold text-blue-500 hover:text-blue-700 transition-colors">Edit</button>
+                    
+                    <button type="button" 
+                            th:data-id="${review.id}"
+                            onclick="deleteReview(this.getAttribute('data-id'))" 
+                            class="text-sm font-semibold text-red-500 hover:text-red-700 transition-colors">Delete</button>
+                  </div>
+                </div>
+
+                <div class="flex">
+                  <svg th:each="i : ${#numbers.sequence(1, 5)}"
+                       th:classappend="${i <= review.rating} ? 'text-yellow-400' : 'text-gray-300'"
+                       class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                    <path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/>
+                  </svg>
+                </div>
+              </div>
+              <p class="text-gray-600 leading-relaxed" th:text="${review.comment}">Review Text</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
     <script th:inline="javascript">
+      // 1. Image Function
       function changeImage(url, element) {
-        const mainImg = document.getElementById('mainImage');
-        mainImg.style.opacity = '0';
+        const mainImg = document.getElementById("mainImage");
+        mainImg.style.opacity = "0";
         setTimeout(() => {
           mainImg.src = url;
-          mainImg.style.opacity = '1';
+          mainImg.style.opacity = "1";
         }, 200);
       }
+
+      // 2. ตัวแปรเก็บสถานะการ Edit
+      let selectedRating = 0;
+      let editingReviewId = null;
+
+      function updateStarUI(rating) {
+        selectedRating = parseInt(rating);
+        document.getElementById("review-rating").value = selectedRating;
+        const stars = document.querySelectorAll(".star-btn");
+        stars.forEach((s, index) => {
+          if (index < selectedRating) {
+            s.classList.remove("text-gray-300");
+            s.classList.add("text-yellow-400");
+          } else {
+            s.classList.remove("text-yellow-400");
+            s.classList.add("text-gray-300");
+          }
+        });
+      }
+
+      // 3. ฟังก์ชันดึงข้อมูลมาใส่ฟอร์ม Edit (เรียกจากปุ่ม HTML)
+      window.editReview = function(reviewId, rating, comment) {
+        editingReviewId = reviewId;
+        
+        document.getElementById("review-comment").value = comment;
+        updateStarUI(rating);
+        
+        document.getElementById("form-title").innerText = "Edit Your Review";
+        document.getElementById("submit-review-btn").innerText = "Update Review";
+        document.getElementById("cancel-edit-btn").classList.remove("hidden");
+        
+        // เลื่อนหน้าจอไปที่ฟอร์ม
+        document.getElementById("form-title").scrollIntoView({ behavior: 'smooth', block: 'center' });
+      };
+
+      // 4. ฟังก์ชันลบรีวิว (เรียกจากปุ่ม HTML)
+      window.deleteReview = async function(reviewId) {
+        if (!confirm("Are you sure you want to delete this review?")) return;
+        
+        try {
+          const response = await fetch(`/api/review/${reviewId}`, { method: "DELETE" });
+          if (response.ok || response.status === 204) {
+            // ลบสำเร็จ ให้รีเฟรชหน้าจอเลยเพื่อให้ Controller ดึงข้อมูลใหม่
+            window.location.reload();
+          } else {
+            alert("Failed to delete review.");
+          }
+        } catch (error) {
+          console.error("Delete Error:", error);
+          alert("Error deleting review.");
+        }
+      };
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const productId = document.getElementById("current-product-id").value;
+        const currentUserId = document.getElementById("current-user-id").value;
+        const reviewForm = document.getElementById("review-form");
+        
+        const stars = document.querySelectorAll(".star-btn");
+        const submitBtn = document.getElementById("submit-review-btn");
+        const cancelEditBtn = document.getElementById("cancel-edit-btn");
+
+        // คลิกเลือกดาว
+        stars.forEach((star) => {
+          star.addEventListener("click", (e) => {
+            updateStarUI(e.currentTarget.getAttribute("data-value"));
+          });
+        });
+
+        // ปุ่ม Cancel Edit
+        cancelEditBtn.addEventListener("click", () => {
+          editingReviewId = null;
+          document.getElementById("form-title").innerText = "Write a Review";
+          submitBtn.innerText = "Submit Review";
+          cancelEditBtn.classList.add("hidden");
+          reviewForm.reset();
+          updateStarUI(0);
+        });
+
+        // Submit ฟอร์ม (Create หรือ Update)
+        reviewForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const comment = document.getElementById("review-comment").value;
+          const errorMsg = document.getElementById("review-error");
+
+          if (selectedRating === 0 || !comment.trim()) {
+            errorMsg.innerText = "Please select a rating and write a comment.";
+            errorMsg.classList.remove("hidden");
+            return;
+          }
+
+          if (!currentUserId) {
+            alert("Please log in to submit a review.");
+            return;
+          }
+
+          errorMsg.classList.add("hidden");
+          const originalBtnText = submitBtn.innerText;
+          submitBtn.disabled = true;
+          submitBtn.innerText = "Saving...";
+
+          const isUpdating = editingReviewId !== null;
+          const fetchMethod = isUpdating ? "PUT" : "POST";
+          const fetchUrl = isUpdating ? `/api/review/${editingReviewId}` : "/api/review";
+          
+          const payload = {
+            productId: productId,
+            userId: currentUserId,
+            rating: selectedRating,
+            comment: comment,
+          };
+
+          try {
+            const response = await fetch(fetchUrl, {
+              method: fetchMethod,
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+
+            if (response.ok) {
+              // พอบันทึกเสร็จ ให้รีเฟรชหน้าเว็บเลย ข้อมูลใหม่จะมาทันทีเพราะใช้ SSR
+              window.location.reload();
+            } else {
+              throw new Error("Failed to save");
+            }
+          } catch (error) {
+            errorMsg.innerText = "Error saving review.";
+            errorMsg.classList.remove("hidden");
+            submitBtn.disabled = false;
+            submitBtn.innerText = originalBtnText;
+          }
+        });
+      });
     </script>
   </section>
 </html>
