@@ -16,6 +16,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.restservice.Auth.dto.UserPrincipalDTO;
 import com.example.restservice.Categories.domain.Category;
 import com.example.restservice.Categories.domain.DatabaseCategoryRepository;
+import com.example.restservice.Categories.dto.CategoryRequestDTO;
+import com.example.restservice.Categories.usecases.CreateCategoryUsecase;
+import com.example.restservice.Categories.usecases.DeleteCategoryUsecase;
+import com.example.restservice.Categories.usecases.FindCategoriesUsecase;
+import com.example.restservice.Categories.usecases.UpdateCategoryUsecase;
+import com.example.restservice.Frontend.dto.CategoryFormDTO;
 import com.example.restservice.Frontend.dto.CreateProductFormDTO;
 import com.example.restservice.Images.domain.DatabaseImageRepository;
 import com.example.restservice.Images.domain.ImageResourceType;
@@ -46,6 +52,10 @@ public class AdminViewController {
   private final DatabaseCategoryRepository databaseCategoryRepository;
   private final DeleteProductUsecase deleteProductUsecase;
   private final CreateProductUsecase createProductUsecase;
+  private final CreateCategoryUsecase createCategoryUsecase;
+  private final UpdateCategoryUsecase updateCategoryUsecase;
+  private final FindCategoriesUsecase findCategoriesUsecase;
+  private final DeleteCategoryUsecase deleteCategoryUsecase;
 
   public AdminViewController(
       DatabaseOrderRepository databaseOrderRepository,
@@ -55,8 +65,12 @@ public class AdminViewController {
       CreateProductUsecase createProductUsecase,
       UpdateProductUsecase updateProductUsecase,
       DeleteProductUsecase deleteProductUsecase,
+      UpdateCategoryUsecase updateCategoryUsecase,
+      DeleteCategoryUsecase deleteCategoryUsecase,
       DatabaseProductCategoryRepository databaseProductCategoryRepository,
       DatabaseCategoryRepository databaseCategoryRepository,
+      CreateCategoryUsecase createCategoryUsecase,
+      FindCategoriesUsecase findCategoriesUsecase,
       DatabaseProductRepository databaseProductRepository) {
     this.databaseOrderRepository = databaseOrderRepository;
     this.databaseUserRepository = databaseUserRepository;
@@ -68,6 +82,10 @@ public class AdminViewController {
     this.updateProductUsecase = updateProductUsecase;
     this.deleteProductUsecase = deleteProductUsecase;
     this.createProductUsecase = createProductUsecase;
+    this.createCategoryUsecase = createCategoryUsecase;
+    this.updateCategoryUsecase = updateCategoryUsecase;
+    this.findCategoriesUsecase = findCategoriesUsecase;
+    this.deleteCategoryUsecase = deleteCategoryUsecase;
   }
 
   @GetMapping
@@ -130,6 +148,77 @@ public class AdminViewController {
     model.addAttribute("images", images);
 
     return "admin/products/images/index";
+  }
+
+  // /admin/categories/create
+
+  @GetMapping("/categories/create")
+  public String createCategoryView(
+      @AuthenticationPrincipal UserPrincipalDTO user,
+      @RequestParam(defaultValue = "0") int orderPage,
+      @RequestParam(defaultValue = "0") int productPage,
+      @RequestParam(defaultValue = "0") int categoryPage,
+      @RequestParam(defaultValue = "50") int size,
+      @RequestParam(defaultValue = "categories") String tab,
+      Model model) {
+    model.addAttribute("createCategoryDTO", new CategoryFormDTO());
+    return "admin/categories/create/index";
+  }
+
+  @PostMapping("/categories/create")
+  public String updateCategoryView(
+      @AuthenticationPrincipal UserPrincipalDTO user,
+      @RequestParam(defaultValue = "0") int orderPage,
+      @RequestParam(defaultValue = "0") int productPage,
+      @RequestParam(defaultValue = "0") int categoryPage,
+      @RequestParam(defaultValue = "50") int size,
+      @RequestParam(defaultValue = "categories") String tab,
+      @ModelAttribute CategoryFormDTO request,
+      Model model) {
+    createCategoryUsecase.execute(new CategoryRequestDTO(request.getName()));
+    return adminDashboard(orderPage, productPage, categoryPage, size, tab, model);
+  }
+
+  @GetMapping("/categories/{categoryId}/edit")
+  public String updateCategory(
+      @PathVariable UUID categoryId,
+      @RequestParam(defaultValue = "0") int orderPage,
+      @RequestParam(defaultValue = "0") int productPage,
+      @RequestParam(defaultValue = "0") int categoryPage,
+      @RequestParam(defaultValue = "50") int size,
+      @RequestParam(defaultValue = "categories") String tab,
+      Model model) {
+    Category category = databaseCategoryRepository.findById(categoryId).orElseThrow();
+    model.addAttribute("category", category);
+    return "admin/categories/edit/index";
+  }
+
+  @PostMapping("/categories/{categoryId}/delete")
+  public String deleteCategory(
+      @RequestParam(defaultValue = "0") int orderPage,
+      @RequestParam(defaultValue = "0") int productPage,
+      @RequestParam(defaultValue = "0") int categoryPage,
+      @RequestParam(defaultValue = "50") int size,
+      @RequestParam(defaultValue = "categories") String tab,
+      @PathVariable UUID categoryId,
+      @AuthenticationPrincipal UserPrincipalDTO user,
+      Model model) {
+    deleteCategoryUsecase.execute(categoryId);
+    return adminDashboard(orderPage, productPage, categoryPage, size, tab, model);
+  }
+
+  @PostMapping("/categories/{categoryId}/edit")
+  public String updateCategory(
+      @PathVariable UUID categoryId,
+      @RequestParam(defaultValue = "0") int orderPage,
+      @RequestParam(defaultValue = "0") int productPage,
+      @RequestParam(defaultValue = "0") int categoryPage,
+      @RequestParam(defaultValue = "50") int size,
+      @RequestParam(defaultValue = "categories") String tab,
+      Model model,
+      @ModelAttribute UpdateProductRequestDTO request) {
+    updateCategoryUsecase.execute(categoryId, new CategoryRequestDTO(request.name()));
+    return adminDashboard(orderPage, productPage, categoryPage, size, tab, model);
   }
 
   @GetMapping("/products/create")

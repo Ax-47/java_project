@@ -80,7 +80,8 @@ public class AddressViewController {
   }
 
   @GetMapping("/edit/{id}")
-  public String showEditAddressForm(@PathVariable("id") UUID id, Model model) {
+  public String showEditAddressForm(
+      @AuthenticationPrincipal UserPrincipalDTO user, @PathVariable("id") UUID id, Model model) {
     FindAddressResponseDTO address = findAddressUsecase.execute(new FindAddressRequestDTO(id));
     AddressWebFormDTO form = new AddressWebFormDTO();
     form.setId(id)
@@ -96,6 +97,9 @@ public class AddressViewController {
         .setLabel(address.label())
         .setIsDefault(address.isDefault());
     model.addAttribute("addressDTO", form);
+    if (!address.userId().equals(user.id())) {
+      return "redirect:/addresses";
+    }
     return "addresses/new";
   }
 
