@@ -8,6 +8,8 @@ public interface DatabaseUserRepository {
 
   public boolean existsByUsername(String username);
 
+  public boolean existsByUserId(UUID userid);
+
   public User findUserByUsername(String username);
 
   public Optional<User> findUserByUserId(UUID userId);
