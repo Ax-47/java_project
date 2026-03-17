@@ -2,8 +2,8 @@ package com.example.restservice.Images.domain;
 
 public enum ImageResourceType {
   PRODUCT("products"),
-  USER_PROFILE("users/profile"),
-  USER_BACKGROUND("users/background"),
+  USER_PROFILE("users_profile"),
+  USER_BACKGROUND("users_background"),
   REVIEW("reviews");
 
   private final String path;

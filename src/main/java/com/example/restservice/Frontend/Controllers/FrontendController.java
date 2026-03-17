@@ -19,6 +19,7 @@ import com.example.restservice.Frontend.usecases.GetCategoryPageUsecase;
 import com.example.restservice.Frontend.usecases.GetHomePageUsecase;
 import com.example.restservice.ProductCategories.usecases.FindProductsByCategoryIdUsecase;
 import com.example.restservice.Products.usecases.FindProductUsecase;
+import com.example.restservice.Users.usecases.FindUserProfileUsecase;
 import com.example.restservice.common.PageQuery;
 
 /** Controller for the home page. */
@@ -28,6 +29,7 @@ public class FrontendController {
   private final FindCategoriesUsecase findCategoriesUsecase;
   private final FindAddressesByUserIdUsecase findAddressesByUserIdUsecase;
   private final FindAddressesUsecase findAddressesUsecase;
+  private final FindUserProfileUsecase findUserProfileUsecase;
   private final FindProductUsecase findProductUsecase;
   private final GetHomePageUsecase getHomePageUsecase;
   private final GetCategoryPageUsecase getCategoryPageUsecase;
@@ -37,6 +39,7 @@ public class FrontendController {
       FindProductUsecase findProductUsecase,
       GetHomePageUsecase getHomePageUsecase,
       FindAddressesUsecase findAddressesUsecase,
+      FindUserProfileUsecase findUserProfileUsecase,
       FindAddressesByUserIdUsecase findAddressesByUserIdUsecase,
       GetCategoryPageUsecase getCategoryPageUsecase,
       FindCategoriesUsecase findCategoriesUsecase) {
@@ -47,6 +50,7 @@ public class FrontendController {
     this.findProductUsecase = findProductUsecase;
     this.findAddressesByUserIdUsecase = findAddressesByUserIdUsecase;
     this.findAddressesUsecase = findAddressesUsecase;
+    this.findUserProfileUsecase = findUserProfileUsecase;
   }
 
   @GetMapping("/")
@@ -138,13 +142,10 @@ public class FrontendController {
 
   @GetMapping("/profile")
   public String profile(@AuthenticationPrincipal UserPrincipalDTO user, Model model) {
-
-    if (user == null) {
-      return "redirect:/sign-in";
-    }
-
-    model.addAttribute("user", user);
-    return "profile";
+    var userDetail = findUserProfileUsecase.execute(user.id());
+    model.addAttribute("principal", user);
+    model.addAttribute("detail", userDetail);
+    return "profile/index";
   }
 
   @GetMapping("/order")
