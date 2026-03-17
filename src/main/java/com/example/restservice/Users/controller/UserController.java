@@ -72,7 +72,7 @@ public class UserController {
     return ResponseEntity.ok(response);
   }
 
-  @PostMapping("/{userId}/backgound")
+  @PostMapping("/{userId}/background")
   public ResponseEntity<UploadImageResponseDTO> uploadBackgound(
       @PathVariable UUID userId, @RequestParam MultipartFile file) throws IOException {
 
