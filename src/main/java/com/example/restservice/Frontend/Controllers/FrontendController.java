@@ -19,6 +19,8 @@ import com.example.restservice.Frontend.usecases.GetCategoryPageUsecase;
 import com.example.restservice.Frontend.usecases.GetHomePageUsecase;
 import com.example.restservice.ProductCategories.usecases.FindProductsByCategoryIdUsecase;
 import com.example.restservice.Products.usecases.FindProductUsecase;
+import com.example.restservice.Reviews.usecases.FindReveiwByProductUsecase;
+import com.example.restservice.Users.usecases.FindUserByIdUsecase;
 import com.example.restservice.Users.usecases.FindUserProfileUsecase;
 import com.example.restservice.common.PageQuery;
 
@@ -29,6 +31,8 @@ public class FrontendController {
   private final FindCategoriesUsecase findCategoriesUsecase;
   private final FindAddressesByUserIdUsecase findAddressesByUserIdUsecase;
   private final FindAddressesUsecase findAddressesUsecase;
+  private final FindReveiwByProductUsecase findReveiwByProductUsecase;
+  private final FindUserByIdUsecase findUserByIdUsecase;
   private final FindUserProfileUsecase findUserProfileUsecase;
   private final FindProductUsecase findProductUsecase;
   private final GetHomePageUsecase getHomePageUsecase;
@@ -39,6 +43,8 @@ public class FrontendController {
       FindProductUsecase findProductUsecase,
       GetHomePageUsecase getHomePageUsecase,
       FindAddressesUsecase findAddressesUsecase,
+      FindReveiwByProductUsecase findReveiwByProductUsecase,
+      FindUserByIdUsecase findUserByIdUsecase,
       FindUserProfileUsecase findUserProfileUsecase,
       FindAddressesByUserIdUsecase findAddressesByUserIdUsecase,
       GetCategoryPageUsecase getCategoryPageUsecase,
@@ -50,7 +56,9 @@ public class FrontendController {
     this.findProductUsecase = findProductUsecase;
     this.findAddressesByUserIdUsecase = findAddressesByUserIdUsecase;
     this.findAddressesUsecase = findAddressesUsecase;
+    this.findReveiwByProductUsecase = findReveiwByProductUsecase;
     this.findUserProfileUsecase = findUserProfileUsecase;
+    this.findUserByIdUsecase = findUserByIdUsecase;
   }
 
   @GetMapping("/")
@@ -68,10 +76,21 @@ public class FrontendController {
 
   @GetMapping("/products/{productId}")
   public String product(
-      @PathVariable UUID productId, @AuthenticationPrincipal UserPrincipalDTO user, Model model) {
-    model.addAttribute("user", user);
+      @PathVariable UUID productId,
+      @AuthenticationPrincipal UserPrincipalDTO user,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size,
+      @RequestParam(defaultValue = "rating") String sortBy,
+      @RequestParam(defaultValue = "false") boolean asc,
+      Model model) {
+    model.addAttribute("principal", user);
     var product = findProductUsecase.execute(productId);
     model.addAttribute("product", product);
+    PageQuery query = new PageQuery(page, size, sortBy, asc);
+    var reviews = findReveiwByProductUsecase.execute(productId, query);
+    System.out.println(reviews.content());
+    model.addAttribute("reviews", reviews.content());
+
     return "products/productId";
   }
 
@@ -159,14 +178,11 @@ public class FrontendController {
     return "order";
   }
 
-  @GetMapping("/cash")
+  @GetMapping("/totup")
   public String cash(@AuthenticationPrincipal UserPrincipalDTO user, Model model) {
 
-    if (user == null) {
-      return "redirect:/sign-in";
-    }
-
-    model.addAttribute("user", user);
-    return "cash";
+    var userDetail = findUserByIdUsecase.execute(user.id());
+    model.addAttribute("detail", userDetail);
+    return "totup/index";
   }
 }
