@@ -1,3 +1,5 @@
 package com.example.restservice.Reviews.dto;
 
-public record CreateReviewResponseDTO(String message) {}
+import java.util.UUID;
+
+public record CreateReviewResponseDTO(UUID id, String message) {}
