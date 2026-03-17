@@ -1,0 +1,237 @@
+<!doctype html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{admin/layout :: layout(~{::#main-content}, ~{::#custom-scripts})}"
+>
+  <head>
+    <title>Admin Dashboard</title>
+  </head>
+  <body>
+    <div id="main-content">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6">Admin Dashboard</h2>
+
+      <div class="border-b border-gray-200 mb-6">
+        <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+          <button
+            onclick="switchTab('orders')"
+            id="tab-orders"
+            class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+          >
+            Orders
+          </button>
+          <button
+            onclick="switchTab('products')"
+            id="tab-products"
+            class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+          >
+            Products
+          </button>
+          <button
+            onclick="switchTab('categories')"
+            id="tab-categories"
+            class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+          >
+            Categories
+          </button>
+        </nav>
+      </div>
+
+      <div
+        th:replace="~{admin/components/data-table :: wrapper(
+        'content-orders', ${activeTab != 'orders'}, null, null, 
+        ~{::orderHeaders}, ~{::orderRows},
+        ${orderPage}, ${orderTotal},
+        @{/admin(tab='orders', orderPage=${orderPage - 1}, productPage=${productPage}, categoryPage=${categoryPage})},
+        @{/admin(tab='orders', orderPage=${orderPage + 1}, productPage=${productPage}, categoryPage=${categoryPage})})}"
+      >
+        <tr th:fragment="orderHeaders">
+          <th class="px-4 py-3 text-sm font-semibold uppercase">Order ID</th>
+          <th class="px-4 py-3 text-sm font-semibold uppercase">Status</th>
+          <th class="px-4 py-3 text-sm font-semibold uppercase text-center">
+            Actions
+          </th>
+        </tr>
+
+        <th:block th:fragment="orderRows">
+          <tr th:each="order : ${orders}" class="hover:bg-gray-50 transition">
+            <td
+              class="px-4 py-3 text-sm"
+              th:text="${#strings.substring(order.id, 0, 8)}"
+            ></td>
+            <td class="px-4 py-3 text-sm" th:text="${order.status}"></td>
+            <td class="px-4 py-3 text-sm text-center">
+              <a
+                th:href="@{/admin/orders/view/{id}(id=${order.id})}"
+                class="text-blue-600"
+                >View</a
+              >
+            </td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(orders)}">
+            <td colspan="3" class="px-4 py-8 text-center text-gray-500">
+              No orders found.
+            </td>
+          </tr>
+        </th:block>
+      </div>
+
+      <div
+        th:replace="~{admin/components/data-table :: wrapper(
+        'content-products', ${activeTab != 'products'}, '/admin/products/create', '+ Add Product', 
+        ~{::productHeaders}, ~{::productRows},
+        ${productPage}, ${productTotal},
+        @{/admin(tab='products', orderPage=${orderPage}, productPage=${productPage - 1}, categoryPage=${categoryPage})},
+        @{/admin(tab='products', orderPage=${orderPage}, productPage=${productPage + 1}, categoryPage=${categoryPage})})}"
+      >
+        <tr th:fragment="productHeaders">
+          <th class="px-4 py-3 text-sm font-semibold uppercase">Product ID</th>
+          <th class="px-4 py-3 text-sm font-semibold uppercase">Name</th>
+          <th class="px-4 py-3 text-sm font-semibold uppercase">Price</th>
+          <th class="px-4 py-3 text-sm font-semibold uppercase text-center">
+            Actions
+          </th>
+        </tr>
+        <th:block th:fragment="productRows">
+          <tr
+            th:each="product : ${products}"
+            class="hover:bg-gray-50 transition"
+          >
+            <td
+              class="px-4 py-3 text-sm"
+              th:text="${#strings.substring(product.id, 0, 8)}"
+            ></td>
+            <td
+              class="px-4 py-3 text-sm font-medium"
+              th:text="${product.name}"
+            ></td>
+            <td
+              class="px-4 py-3 text-sm"
+              th:text="${product.price.getValue()}"
+            ></td>
+            <td class="px-4 py-3 text-sm text-center space-x-2">
+              <a
+                th:href="@{/admin/products/edit/{id}(id=${product.id},tab='products', orderPage=${orderPage}, productPage=${productPage + 1}, categoryPage=${categoryPage})}"
+                class="text-yellow-600"
+                >Edit</a
+              >
+
+              <form
+                th:action="@{/admin/products/{id}/delete(id=${product.id})}"
+                method="post"
+                class="inline"
+              >
+                <button type="submit" class="text-red-600">Delete</button>
+              </form>
+            </td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(products)}">
+            <td colspan="4" class="px-4 py-8 text-center text-gray-500">
+              No products found.
+            </td>
+          </tr>
+        </th:block>
+      </div>
+
+      <div
+        th:replace="~{admin/components/data-table :: wrapper(
+        'content-categories', ${activeTab != 'categories'}, '/admin/categories/new', '+ Add Category', 
+        ~{::categoryHeaders}, ~{::categoryRows},
+        ${categoryPage}, ${categoryTotal},
+        @{/admin(tab='categories', orderPage=${orderPage}, productPage=${productPage}, categoryPage=${categoryPage - 1})},
+        @{/admin(tab='categories', orderPage=${orderPage}, productPage=${productPage}, categoryPage=${categoryPage + 1})})}"
+      >
+        <tr th:fragment="categoryHeaders">
+          <th class="px-4 py-3 text-sm font-semibold uppercase">Category ID</th>
+          <th class="px-4 py-3 text-sm font-semibold uppercase">Name</th>
+          <th class="px-4 py-3 text-sm font-semibold uppercase text-center">
+            Actions
+          </th>
+        </tr>
+
+        <th:block th:fragment="categoryRows">
+          <tr th:each="cat : ${categories}" class="hover:bg-gray-50 transition">
+            <td
+              class="px-4 py-3 text-sm"
+              th:text="${#strings.substring(cat.id, 0, 8)}"
+            ></td>
+
+            <td
+              class="px-4 py-3 text-sm font-medium"
+              th:text="${cat.categoryName}"
+            ></td>
+
+            <td class="px-4 py-3 text-sm text-center space-x-2">
+              <a
+                th:href="@{/admin/categories/edit/{id}(id=${cat.id})}"
+                class="text-yellow-600"
+                >Edit</a
+              >
+              <form
+                th:action="@{/admin/categories/delete/{id}(id=${cat.id})}"
+                method="post"
+                class="inline"
+              >
+                <button type="submit" class="text-red-600">Delete</button>
+              </form>
+            </td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(categories)}">
+            <td colspan="3" class="px-4 py-8 text-center text-gray-500">
+              No categories found.
+            </td>
+          </tr>
+        </th:block>
+      </div>
+
+      <script th:inline="javascript">
+        // ระวังจุดนี้: ใน controller ต้องส่ง "activeTab" มาเสมอ ไม่งั้นจะเออเร่อ
+        const currentTab = /*[[${activeTab}]]*/ "orders";
+
+        document.addEventListener("DOMContentLoaded", () => {
+          switchTab(currentTab);
+        });
+
+        function switchTab(tabName) {
+          document.querySelectorAll(".tab-content").forEach((el) => {
+            el.classList.remove("block");
+            el.classList.add("hidden");
+          });
+
+          document.querySelectorAll(".tab-btn").forEach((el) => {
+            el.classList.remove("border-blue-500", "text-blue-600");
+            el.classList.add(
+              "border-transparent",
+              "text-gray-500",
+              "hover:text-gray-700",
+              "hover:border-gray-300",
+            );
+          });
+
+          const contentEl = document.getElementById(`content-${tabName}`);
+          if (contentEl) {
+            contentEl.classList.remove("hidden");
+            contentEl.classList.add("block");
+          }
+
+          const activeTabBtn = document.getElementById(`tab-${tabName}`);
+          if (activeTabBtn) {
+            activeTabBtn.classList.remove(
+              "border-transparent",
+              "text-gray-500",
+              "hover:text-gray-700",
+              "hover:border-gray-300",
+            );
+            activeTabBtn.classList.add("border-blue-500", "text-blue-600");
+          }
+
+          const url = new URL(window.location);
+          url.searchParams.set("tab", tabName);
+          window.history.pushState({}, "", url);
+        }
+      </script>
+    </div>
+
+    <th:block id="custom-scripts"></th:block>
+  </body>
+</html>

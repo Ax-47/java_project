@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(content, scripts)">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin System</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Khula:wght@400;600;800&display=swap" rel="stylesheet" />
+    <script>
+      tailwind.config = {
+        theme: { extend: { fontFamily: { sans: ["Khula", "sans-serif"] } } },
+      };
+    </script>
+  </head>
+
+  <body class="bg-gray-50 min-h-screen flex flex-col text-gray-800">
+    <nav class="bg-gray-900 shadow-sm">
+      <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+        <a class="text-xl font-bold text-white hover:text-gray-300 transition" href="/admin">🚀 Admin Panel</a>
+        <button id="mobile-menu-button" class="md:hidden text-gray-300 hover:text-white focus:outline-none">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+        <div class="hidden md:block" id="navbarNav">
+          <ul class="flex space-x-6 items-center">
+            <li><a class="text-gray-300 hover:text-white transition" href="/admin/orders">Orders</a></li>
+            <li><a class="text-gray-300 hover:text-white transition" href="/admin/products">Products</a></li>
+            <li><a class="text-gray-300 hover:text-white transition" href="/admin/categories">Categories</a></li>
+            <li><a class="text-red-400 hover:text-red-300 transition" href="/logout">Logout</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id="mobile-menu" class="hidden md:hidden bg-gray-800 px-4 pt-2 pb-4">
+        <ul class="flex flex-col space-y-2">
+            <li><a class="block text-gray-300 hover:bg-gray-700 hover:text-white px-2 py-2 rounded" href="/admin/orders">Orders</a></li>
+            <li><a class="block text-gray-300 hover:bg-gray-700 hover:text-white px-2 py-2 rounded" href="/admin/products">Products</a></li>
+            <li><a class="block text-gray-300 hover:bg-gray-700 hover:text-white px-2 py-2 rounded" href="/admin/categories">Categories</a></li>
+            <li><a class="block text-red-400 hover:bg-gray-700 hover:text-red-300 px-2 py-2 rounded" href="/logout">Logout</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main class="container mx-auto px-4 mt-8 mb-10 flex-grow">
+      <div th:replace="${content}"></div>
+    </main>
+
+    <footer class="bg-white text-center py-4 border-t mt-auto">
+      <div class="container mx-auto">
+        <span class="text-gray-500 text-sm">© 2026 Admin Dashboard. All rights reserved.</span>
+      </div>
+    </footer>
+
+    <script>
+      const btn = document.getElementById("mobile-menu-button");
+      const menu = document.getElementById("mobile-menu");
+      if (btn) btn.addEventListener("click", () => menu.classList.toggle("hidden"));
+    </script>
+
+    <th:block th:replace="${scripts}"></th:block>
+  </body>
+</html>
