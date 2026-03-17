@@ -1,0 +1,75 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Khula:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Khula", sans-serif;
+      }
+    </style>
+    <title>Sign Up - I BUILD CPU</title>
+  </head>
+  <body class="bg-white text-black m-0 p-0">
+    <div th:replace="~{fragments/header :: navbar}"></div>
+
+    <div class="text-center mt-12 mb-8">
+      <h2 class="text-3xl font-bold">ลงทะเบียน</h2>
+    </div>
+
+    <div
+      class="bg-[#FCF2D9] rounded-[2.5rem] p-10 max-w-2xl mx-auto shadow-sm mb-6"
+    >
+      <form th:action="@{/sign-up}" method="post" class="space-y-6">
+        <div>
+          <input
+            type="text"
+            name="username"
+            required
+            class="w-full px-5 py-3 rounded-full"
+            placeholder="Enter username"
+          />
+        </div>
+
+        <div>
+          <input
+            type="password"
+            name="password"
+            required
+            class="w-full px-5 py-3 rounded-full"
+            placeholder="Enter password"
+          />
+        </div>
+
+        <div>
+          <input
+            type="password"
+            name="confirmPassword"
+            required
+            class="w-full px-5 py-3 rounded-full"
+            placeholder="Confirm password"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="w-full bg-[#FF6A00] text-white py-3 rounded-full"
+        >
+          สมัครสมาชิก
+        </button>
+      </form>
+    </div>
+
+    <div class="text-center mb-16 text-lg font-medium">
+      หรือ เป็นสมาชิกอยู่แล้ว?
+      <a
+        th:href="@{/sign_in}"
+        class="text-[#0175CC] border-b border-[#0175CC] pb-0.5 hover:opacity-80 transition ml-2"
+        >เข้าสู่ระบบ</a
+      >
+    </div>
+  </body>
+</html>

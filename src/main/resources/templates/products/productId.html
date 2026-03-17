@@ -79,6 +79,8 @@
         </div>
 
         <button
+          id="purchase-btn"
+          onclick="purchaseProduct()"
           class="w-full md:w-max bg-[#0175CC] text-white px-12 py-5 rounded-2xl font-bold text-xl hover:bg-blue-700 hover:shadow-2xl hover:-translate-y-1 transition-all flex items-center justify-center gap-3"
         >
           <svg
@@ -95,7 +97,7 @@
               d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
             />
           </svg>
-          Add to Cart
+          Purchase
         </button>
       </div>
     </div>
@@ -381,6 +383,47 @@
         }, 200);
       }
 
+        async function purchaseProduct() {
+          const productId = document.getElementById("current-product-id").value;
+          const currentUserId =
+            document.getElementById("current-user-id").value;
+          const purchaseBtn = document.getElementById("purchase-btn");
+
+          // เช็กก่อนว่าล็อกอินหรือยัง
+          if (!currentUserId || currentUserId === "") {
+            alert("กรุณาเข้าสู่ระบบก่อนทำการสั่งซื้อครับ");
+            window.location.href = "/signin"; // พาไปหน้าล็อกอิน
+            return;
+          }
+
+          // ป้องกันการกดซ้ำ
+          const originalText = purchaseBtn.innerHTML;
+          purchaseBtn.disabled = true;
+          purchaseBtn.innerHTML = "Processing...";
+
+          try {
+            const response = await fetch("/api/orders", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                productId: productId,
+                userId: currentUserId,
+                quantity: 1,
+              }),
+            });
+
+            if (response.ok) {
+            } else {
+              throw new Error("Failed to purchase");
+            }
+          } catch (error) {
+            console.error("Purchase Error:", error);
+            alert("ไม่สามารถทำรายการได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง");
+          } finally {
+            purchaseBtn.disabled = false;
+            purchaseBtn.innerHTML = originalText;
+          }
+        }
       // 2. จัดการฟอร์ม และ อัปโหลดรูปภาพ
       document.addEventListener("DOMContentLoaded", () => {
         const productId = document.getElementById("current-product-id").value;
@@ -410,7 +453,6 @@
             reader.readAsDataURL(file);
           });
         });
-
         // --- ดึงรูปภาพของรีวิวมาแสดงผล ---
         document.querySelectorAll(".review-card").forEach(async (card) => {
           const reviewId = card.getAttribute("data-review-id");

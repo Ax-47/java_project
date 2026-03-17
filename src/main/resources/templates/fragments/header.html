@@ -20,7 +20,7 @@
                     <img th:src="@{/images/location-pin.png}" alt="Address" class="w-5 h-5 md:w-6 md:h-6 object-contain">
                 </a>
 
-                <form th:action="@{/logout}" method="post" class="m-0">
+                <form th:action="@{/sign_out}" method="post" class="m-0">
                     <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors duration-300 text-sm md:text-base font-bold">
                         ออกจากระบบ
                     </button>
@@ -28,8 +28,9 @@
             </th:block>
 
             <th:block sec:authorize="isAnonymous()">
-                <a th:href="@{/login}" class="text-white hover:text-[#FCF2D9] transition-colors duration-300">เข้าสู่ระบบ</a>
-                <a th:href="@{/register}" class="bg-[#FCF2D9] text-[#0175CC] hover:bg-white px-4 py-2 rounded-lg transition-colors duration-300 text-sm md:text-base font-bold shadow-sm">
+                <a th:href="@{/sign_in}" class="text-white hover:text-[#FCF2D9] transition-colors duration-300">เข้าสู่ระบบ</a>
+
+                <a th:href="@{/sign_up}" class="bg-[#FCF2D9] text-[#0175CC] hover:bg-white px-4 py-2 rounded-lg transition-colors duration-300 text-sm md:text-base font-bold shadow-sm">
                     สมัครสมาชิก
                 </a>
             </th:block>

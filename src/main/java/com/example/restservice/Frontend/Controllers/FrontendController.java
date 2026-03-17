@@ -130,15 +130,15 @@ public class FrontendController {
     return "categories/categoryId";
   }
 
-  @GetMapping("/sign-in")
+  @GetMapping("/sign_in")
   public String signin() {
 
-    return "sign-in";
+    return "sign_in/index";
   }
 
-  @GetMapping("/sign-up")
+  @GetMapping("/sign_up")
   public String signup() {
-    return "sign-up";
+    return "sign_up/index";
   }
 
   /*
@@ -168,10 +168,6 @@ public class FrontendController {
 
   @GetMapping("/order")
   public String order(@AuthenticationPrincipal UserPrincipalDTO user, Model model) {
-
-    if (user == null) {
-      return "redirect:/sign-in";
-    }
 
     model.addAttribute("user", user);
     return "order";

@@ -51,6 +51,11 @@ public class DatabaseProductCategoryRepositoryImpl implements DatabaseProductCat
   }
 
   @Override
+  public void deleteByProductId(UUID productId) {
+    jpaProductCategoryRepository.deleteByIdProductId(productId);
+  }
+
+  @Override
   public List<Category> findCategoriesByProductId(UUID productId) {
 
     return jpaProductCategoryRepository.findByProductId(productId).stream()

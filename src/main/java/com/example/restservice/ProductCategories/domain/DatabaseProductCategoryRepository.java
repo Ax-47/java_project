@@ -13,6 +13,8 @@ public interface DatabaseProductCategoryRepository {
 
   public void delete(ProductCategory relation);
 
+  public void deleteByProductId(UUID productId);
+
   List<Category> findCategoriesByProductId(UUID productId);
 
   public Page<Product> findProductsByCategoryId(UUID categoryId, PageQuery query);

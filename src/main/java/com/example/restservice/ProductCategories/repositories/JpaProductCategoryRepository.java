@@ -8,14 +8,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import com.example.restservice.ProductCategories.models.ProductCategoryId;
 import com.example.restservice.ProductCategories.models.ProductCategoryModel;
 import com.example.restservice.Products.models.ProductModel;
 
+@Repository
 public interface JpaProductCategoryRepository
     extends JpaRepository<ProductCategoryModel, ProductCategoryId> {
   List<ProductCategoryModel> findByProductId(UUID productId);
+
+  void deleteByIdProductId(@Param("productId") UUID productId);
 
   @Query(
       """
