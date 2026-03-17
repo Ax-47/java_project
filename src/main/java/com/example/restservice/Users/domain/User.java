@@ -16,6 +16,7 @@ public class User {
   private final boolean isAdmin;
   private final LocalDateTime createdAt;
   private LocalDateTime updatedAt;
+  private Long version;
 
   public static User rehydrate(
       UUID id,
@@ -23,10 +24,12 @@ public class User {
       String password,
       BigDecimal credit,
       boolean isAdmin,
+      Long version,
       LocalDateTime createdAt,
       LocalDateTime updatedAt) {
 
-    return new User(id, username, password, Credit.of(credit), isAdmin, createdAt, updatedAt);
+    return new User(
+        id, username, password, Credit.of(credit), isAdmin, version, createdAt, updatedAt);
   }
 
   private User(
@@ -35,6 +38,7 @@ public class User {
       String password,
       Credit credit,
       boolean isAdmin,
+      Long version,
       LocalDateTime createdAt,
       LocalDateTime updatedAt) {
 
@@ -51,6 +55,7 @@ public class User {
     this.password = password;
     this.credit = Objects.requireNonNull(credit);
     this.isAdmin = isAdmin;
+    this.version = version;
     this.createdAt = Objects.requireNonNull(createdAt);
     this.updatedAt = Objects.requireNonNull(updatedAt);
   }
@@ -62,8 +67,13 @@ public class User {
         hashedPassword,
         Credit.zero(),
         false,
+        null,
         LocalDateTime.now(),
         LocalDateTime.now());
+  }
+
+  public Long getVersion() {
+    return version;
   }
 
   public void changePassword(String newHashedPassword) {

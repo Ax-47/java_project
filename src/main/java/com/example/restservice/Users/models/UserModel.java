@@ -48,12 +48,12 @@ public class UserModel {
     model.isAdmin = user.isAdmin();
     model.createdAt = user.getCreatedAt();
     model.updatedAt = user.getUpdatedAt();
-
+    model.version = user.getVersion();
     return model;
   }
 
   public User toDomain() {
-    return User.rehydrate(id, username, password, credit, isAdmin, createdAt, updatedAt);
+    return User.rehydrate(id, username, password, credit, isAdmin, version, createdAt, updatedAt);
   }
 
   @PrePersist

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.restservice.Address.usecases.FindAddressesByUserIdUsecase;
@@ -19,6 +20,7 @@ import com.example.restservice.Frontend.usecases.GetCategoryPageUsecase;
 import com.example.restservice.Frontend.usecases.GetHomePageUsecase;
 import com.example.restservice.ProductCategories.usecases.FindProductsByCategoryIdUsecase;
 import com.example.restservice.Products.usecases.FindProductUsecase;
+import com.example.restservice.Products.usecases.PurchaseProductUsecase;
 import com.example.restservice.Reviews.usecases.FindReveiwByProductUsecase;
 import com.example.restservice.Users.usecases.FindUserByIdUsecase;
 import com.example.restservice.Users.usecases.FindUserProfileUsecase;
@@ -37,6 +39,7 @@ public class FrontendController {
   private final FindProductUsecase findProductUsecase;
   private final GetHomePageUsecase getHomePageUsecase;
   private final GetCategoryPageUsecase getCategoryPageUsecase;
+  private final PurchaseProductUsecase purchaseProductUsecase;
 
   public FrontendController(
       FindProductsByCategoryIdUsecase findProductsByCategoryIdUsecase,
@@ -48,6 +51,7 @@ public class FrontendController {
       FindUserProfileUsecase findUserProfileUsecase,
       FindAddressesByUserIdUsecase findAddressesByUserIdUsecase,
       GetCategoryPageUsecase getCategoryPageUsecase,
+      PurchaseProductUsecase purchaseProductUsecase,
       FindCategoriesUsecase findCategoriesUsecase) {
     this.findProductsByCategoryIdUsecase = findProductsByCategoryIdUsecase;
     this.findCategoriesUsecase = findCategoriesUsecase;
@@ -59,6 +63,7 @@ public class FrontendController {
     this.findReveiwByProductUsecase = findReveiwByProductUsecase;
     this.findUserProfileUsecase = findUserProfileUsecase;
     this.findUserByIdUsecase = findUserByIdUsecase;
+    this.purchaseProductUsecase = purchaseProductUsecase;
   }
 
   @GetMapping("/")
@@ -128,6 +133,14 @@ public class FrontendController {
     model.addAttribute("hasMore", activeCategory.products().size() == pageSize);
 
     return "categories/categoryId";
+  }
+
+  @PostMapping("/products/{productId}/purchase")
+  public String purchase(
+      @PathVariable UUID productId, @AuthenticationPrincipal UserPrincipalDTO user) {
+
+    purchaseProductUsecase.execute(user.id(), productId);
+    return "redirect:/products/" + productId + "?success=true";
   }
 
   @GetMapping("/sign_in")
