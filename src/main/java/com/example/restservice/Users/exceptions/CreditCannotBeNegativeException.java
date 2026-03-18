@@ -1,6 +1,8 @@
 package com.example.restservice.Users.exceptions;
 
-public class CreditCannotBeNegativeException extends RuntimeException {
+import com.example.restservice.Exeptions.DomainException;
+
+public class CreditCannotBeNegativeException extends DomainException {
   public CreditCannotBeNegativeException() {
     super("Credit cannot be negative");
   }

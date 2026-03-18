@@ -1,4 +1,4 @@
-package com.example.restservice.Frontend.Controllers.Admin;
+package com.example.restservice.Controllers.Admin;
 
 public enum AdminTab {
   ORDERS("orders"),

@@ -1,6 +1,8 @@
 package com.example.restservice.Users.exceptions;
 
-public class InvalidUserNameException extends RuntimeException {
+import com.example.restservice.Exeptions.DomainException;
+
+public class InvalidUserNameException extends DomainException {
   public InvalidUserNameException(String message) {
     super(message);
   }

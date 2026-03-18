@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.Executor;
 
 import org.springframework.stereotype.Service;
@@ -64,14 +65,20 @@ public class UploadUserImageUsecase {
     Map<ImageSize, CompletableFuture<String>> uploads = new HashMap<>();
 
     for (ImageSize size : processedImages.keySet()) {
-
       uploads.put(size, uploadAsync(processedImages.get(size), image.getId(), size, resource));
     }
 
-    CompletableFuture.allOf(uploads.values().toArray(new CompletableFuture[0])).join();
+    try {
+      CompletableFuture.allOf(uploads.values().toArray(new CompletableFuture[0])).join();
+    } catch (CompletionException e) {
+      throw new IllegalStateException("ไม่สามารถอัปโหลดรูปภาพได้ในขณะนี้ โปรดลองใหม่อีกครั้ง", e);
+    }
 
+    var existingImages = databaseImageRepository.findByResource(resource);
+    if (existingImages != null && !existingImages.isEmpty()) {
+      databaseImageRepository.delete(existingImages.getFirst().getId());
+    }
     databaseImageRepository.save(image);
-
     if (resourceType == ImageResourceType.USER_PROFILE) {
 
       return new UploadImageResponseDTO(

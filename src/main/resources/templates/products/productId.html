@@ -130,6 +130,7 @@
           method="post"
           class="w-full mt-6"
         >
+
           <div class="bg-gray-50 p-6 rounded-2xl border border-gray-200 mb-6">
             <div class="flex items-center justify-between mb-4">
               <h3 class="font-bold text-gray-900">Shipping Address</h3>
@@ -428,6 +429,7 @@
                         );
                       "
                     >
+
                       <input type="hidden" name="_method" value="delete" />
                       <input
                         type="hidden"
@@ -473,7 +475,11 @@
       </div>
     </div>
 
+
     <script th:inline="javascript">
+      const csrfToken = /*[[${_csrf.token}]]*/ '';
+      const csrfHeader = /*[[${_csrf.headerName}]]*/ 'X-CSRF-TOKEN';
+
       function changeImage(url, element) {
         const mainImg = document.getElementById("mainImage");
         mainImg.style.opacity = "0";
@@ -491,7 +497,6 @@
           "image-preview-container",
         );
 
-        // --- ระบบดาว ---
         function updateStarUI(rating) {
           const selectedRating = parseInt(rating);
           document.getElementById("review-rating").value = selectedRating;
@@ -512,7 +517,6 @@
           });
         });
 
-        // --- พรีวิวรูป ---
         imageInput.addEventListener("change", function () {
           previewContainer.innerHTML = "";
           Array.from(this.files).forEach((file) => {
@@ -528,7 +532,13 @@
           const reviewId = card.getAttribute("data-review-id");
           const gallery = card.querySelector(".review-image-gallery");
           try {
-            const res = await fetch(`/api/review/${reviewId}/images`);
+            const res = await fetch(`/api/review/${reviewId}/images`, {
+              method: 'GET',
+              headers: {
+                [csrfHeader]: csrfToken 
+              }
+            });
+            
             if (res.ok) {
               const images = await res.json();
               images.forEach((img) => {
@@ -538,7 +548,7 @@
               });
             }
           } catch (e) {
-            console.error(e);
+            console.error("Error loading images:", e);
           }
         });
 

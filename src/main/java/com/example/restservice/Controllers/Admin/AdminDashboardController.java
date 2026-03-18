@@ -1,4 +1,4 @@
-package com.example.restservice.Frontend.Controllers.Admin;
+package com.example.restservice.Controllers.Admin;
 
 import java.util.List;
 

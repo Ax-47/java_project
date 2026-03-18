@@ -108,6 +108,7 @@
           <div class="space-y-3 relative z-10">
             <th:block th:if="${order.status.name() == 'PENDING'}">
               <form th:action="@{/admin/orders/{id}/ship(id=${order.id})}" method="post" onsubmit="return confirm('ยืนยันการจัดส่งออเดอร์นี้ใช่หรือไม่?');">
+
                   <input type="hidden" name="_method" value="PATCH" />
                 <button type="submit" class="w-full bg-[#0175CC] hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-[0_0_15px_rgba(1,117,204,0.4)] hover:shadow-[0_0_25px_rgba(1,117,204,0.6)] hover:-translate-y-0.5 flex justify-center items-center gap-2">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
