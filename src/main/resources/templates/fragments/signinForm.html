@@ -2,14 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 
-<!-- Login Form Component -->
-<div th:fragment="login-form">
+<div th:fragment="signin-form">
 
-  <form id="loginForm" class="space-y-5">
+  <form th:action="@{/signin}" method="post" class="space-y-5">
+    <div th:if="${param.error}" class="p-4 bg-red-50 text-red-500 rounded-lg text-sm font-bold text-center border border-red-100">
+      ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง
+    </div>
 
     <input
       type="text"
-      id="username"
+      name="username"
       class="w-full p-4 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#0175CC]"
       placeholder="Username"
       required
@@ -17,7 +19,7 @@
 
     <input
       type="password"
-      id="password"
+      name="password"
       class="w-full p-4 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#0175CC]"
       placeholder="Password"
       required
@@ -25,43 +27,14 @@
 
     <button
       type="submit"
-      class="w-full bg-[#FF6A00] text-white p-4 rounded-lg hover:opacity-90 transition"
+      class="w-full bg-[#FF6A00] text-white font-bold p-4 rounded-lg hover:opacity-90 transition shadow-sm"
     >
       เข้าสู่ระบบ
     </button>
 
   </form>
 
-  <script>
-  document.getElementById("loginForm")?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const name = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
-
-    const res = await fetch("/api/auth/signin", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ name, password })
-    });
-
-    if (!res.ok) {
-      alert("Login failed");
-      return;
-    }
-
-    const data = await res.json();
-
-    localStorage.setItem("access_token", data.access_token);
-    localStorage.setItem("refresh_token", data.refresh_token);
-
-    window.location.href = "/";
-  });
-  </script>
-
-</div>
+  </div>
 
 </body>
 </html>

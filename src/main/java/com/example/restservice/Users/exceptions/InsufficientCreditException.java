@@ -1,7 +1,9 @@
 package com.example.restservice.Users.exceptions;
 
-public class InsufficientCreditException extends RuntimeException {
+import com.example.restservice.Exeptions.DomainException;
+
+public class InsufficientCreditException extends DomainException {
   public InsufficientCreditException() {
-    super("Insufficient credit");
+    super("เงินไม่พอจ้า");
   }
 }

@@ -100,8 +100,12 @@
     </div>
   </div>
 
-  <script th:fragment="uploadScript">
+<script th:fragment="uploadScript" th:inline="javascript">
     console.log("Script loaded!"); 
+    
+    const csrfToken = /*[[${_csrf.token}]]*/ '';
+    const csrfHeader = /*[[${_csrf.headerName}]]*/ 'X-CSRF-TOKEN';
+
     document.addEventListener("DOMContentLoaded", () => {
       console.log("DOM loaded! กำลังผูก Event...");
 
@@ -121,6 +125,7 @@
         console.error("หา Input อัปโหลดไม่เจอ!");
         return;
       }
+
       profileUploadInput.addEventListener("change", async function () {
         if (this.files && this.files[0]) {
           const file = this.files[0];
@@ -133,7 +138,13 @@
           const formData = new FormData();
           formData.append("file", file);
           try {
-            await fetch(`/api/users/${userId}/profile`, { method: "POST", body: formData });
+            await fetch(`/api/users/${userId}/profile`, { 
+              method: "POST", 
+              body: formData,
+              headers: {
+                [csrfHeader]: csrfToken
+              }
+            });
           } catch (error) {
             console.error("Network Error Profile:", error);
           } finally {
@@ -142,6 +153,7 @@
         }
       });
 
+      // --- ลากวางรูปปก ---
       if (dropZone) {
         ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
           dropZone.addEventListener(eventName, (e) => {
@@ -153,6 +165,7 @@
         });
       }
 
+      // --- อัปโหลดรูปปกผ่านปุ่มคลิก ---
       bgUploadInput.addEventListener("change", function () {
         if (this.files.length > 0) handleBgFile(this.files[0]);
       });
@@ -170,7 +183,14 @@
         formData.append("file", file);
         if (bgUploadText) bgUploadText.innerText = "กำลังอัปโหลด...";
         try {
-          await fetch(`/api/users/${userId}/background`, { method: "POST", body: formData });
+          await fetch(`/api/users/${userId}/background`, { 
+            method: "POST", 
+            body: formData,
+            // 💡 4. แนบ CSRF Token ใน Header สำหรับรูปปก
+            headers: {
+              [csrfHeader]: csrfToken
+            }
+          });
         } catch (error) {
           console.error("Network Error BG:", error);
         } finally {

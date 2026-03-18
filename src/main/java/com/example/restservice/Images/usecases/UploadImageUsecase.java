@@ -59,7 +59,6 @@ public class UploadImageUsecase {
     }
     CompletableFuture.allOf(uploads.values().toArray(new CompletableFuture[0])).join();
     databaseImageRepository.save(image);
-    // databaseImageRepository.save(image);
     return new UploadImageResponseDTO(
         image.getId().toString(),
         uploads.get(ImageSize.THUMBNAIL).join(),

@@ -19,11 +19,13 @@
     <div class="text-center mt-12 mb-8">
       <h2 class="text-3xl font-bold">ลงทะเบียน</h2>
     </div>
-
     <div
       class="bg-[#FCF2D9] rounded-[2.5rem] p-10 max-w-2xl mx-auto shadow-sm mb-6"
     >
-      <form th:action="@{/sign-up}" method="post" class="space-y-6">
+      <form th:action="@{/signup}" method="post" class="space-y-6">
+        <div th:if="${error != null}" class="p-4 bg-red-50 text-red-500 rounded-lg text-sm font-bold text-center border border-red-100">
+          <span th:text="${error}">เกิดข้อผิดพลาด</span>
+        </div>
         <div>
           <input
             type="text"
@@ -33,7 +35,6 @@
             placeholder="Enter username"
           />
         </div>
-
         <div>
           <input
             type="password"
@@ -56,7 +57,7 @@
 
         <button
           type="submit"
-          class="w-full bg-[#FF6A00] text-white py-3 rounded-full"
+          class="w-full bg-[#FF6A00] text-white font-bold py-3 rounded-full hover:opacity-90 transition"
         >
           สมัครสมาชิก
         </button>
@@ -66,7 +67,7 @@
     <div class="text-center mb-16 text-lg font-medium">
       หรือ เป็นสมาชิกอยู่แล้ว?
       <a
-        th:href="@{/sign_in}"
+        th:href="@{/signin}"
         class="text-[#0175CC] border-b border-[#0175CC] pb-0.5 hover:opacity-80 transition ml-2"
         >เข้าสู่ระบบ</a
       >

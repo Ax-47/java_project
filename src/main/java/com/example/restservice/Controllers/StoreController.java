@@ -1,4 +1,4 @@
-package com.example.restservice.Frontend.Controllers;
+package com.example.restservice.Controllers;
 
 import java.util.List;
 import java.util.UUID;

@@ -1,6 +1,8 @@
 package com.example.restservice.Users.exceptions;
 
-public class UserNotFoundException extends RuntimeException {
+import com.example.restservice.Exeptions.DomainException;
+
+public class UserNotFoundException extends DomainException {
   public UserNotFoundException(String message) {
     super(message);
   }
