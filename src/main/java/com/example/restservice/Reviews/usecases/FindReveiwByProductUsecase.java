@@ -19,49 +19,46 @@ import com.example.restservice.common.*;
 @Service
 public class FindReveiwByProductUsecase {
 
-  private final DatabaseReviewRepository databaseReviewRepository;
-  private final DatabaseUserRepository databaseUserRepository;
-  private final DatabaseImageRepository databaseImageRepository;
+    private final DatabaseReviewRepository databaseReviewRepository;
+    private final DatabaseUserRepository databaseUserRepository;
+    private final DatabaseImageRepository databaseImageRepository;
 
-  public FindReveiwByProductUsecase(
-      DatabaseReviewRepository databaseReviewRepository,
-      DatabaseUserRepository databaseUserRepository,
-      DatabaseImageRepository databaseImageRepository) {
-    this.databaseReviewRepository = databaseReviewRepository;
-    this.databaseUserRepository = databaseUserRepository;
-    this.databaseImageRepository = databaseImageRepository;
-  }
+    public FindReveiwByProductUsecase(
+            DatabaseReviewRepository databaseReviewRepository,
+            DatabaseUserRepository databaseUserRepository,
+            DatabaseImageRepository databaseImageRepository) {
+        this.databaseReviewRepository = databaseReviewRepository;
+        this.databaseUserRepository = databaseUserRepository;
+        this.databaseImageRepository = databaseImageRepository;
+    }
 
-  public Page<ReviewWithUserResponseDTO> execute(UUID productId, PageQuery query) {
-    Page<Review> reviewsPage = databaseReviewRepository.findReviewByProductId(productId, query);
+    public Page<ReviewWithUserResponseDTO> execute(UUID productId, PageQuery query) {
+        Page<Review> reviewsPage = databaseReviewRepository.findReviewByProductId(productId, query);
 
-    List<ReviewWithUserResponseDTO> content =
-        reviewsPage.content().stream()
-            .map(
-                review -> {
-                  String username =
-                      databaseUserRepository
-                          .findUserByUserId(review.getUserId())
-                          .map(user -> user.getUsername())
-                          .orElse("Anonymous");
-                  ImageResource profileResource =
-                      ImageResource.of(review.getUserId(), ImageResourceType.USER_PROFILE);
-                  List<Image> profileList = databaseImageRepository.findByResource(profileResource);
-                  String profileUrl =
-                      profileList.getFirst() != null
-                          ? "/images"
-                              + profileResource.genFilename(
-                                  profileList.getFirst().getId(), ImageSize.MEDIUM)
-                          : "/images/profile-pic.png";
-                  return ReviewWithUserResponseDTO.from(review, username, profileUrl);
-                })
-            .toList();
+        List<ReviewWithUserResponseDTO> content = reviewsPage.content().stream()
+                .map(
+                        review -> {
+                            String username = databaseUserRepository
+                                    .findUserByUserId(review.getUserId())
+                                    .map(user -> user.getUsername())
+                                    .orElse("Anonymous");
+                            ImageResource profileResource = ImageResource.of(review.getUserId(),
+                                    ImageResourceType.USER_PROFILE);
+                            List<Image> profileList = databaseImageRepository.findByResource(profileResource);
+                            String profileUrl = profileList.stream().findFirst() != null
+                                    ? "/images"
+                                            + profileResource.genFilename(
+                                                    profileList.getFirst().getId(), ImageSize.MEDIUM)
+                                    : "/images/profile-pic.png";
+                            return ReviewWithUserResponseDTO.from(review, username, profileUrl);
+                        })
+                .toList();
 
-    return new Page<>(
-        content,
-        reviewsPage.totalElements(),
-        reviewsPage.totalPages(),
-        reviewsPage.page(),
-        reviewsPage.size());
-  }
+        return new Page<>(
+                content,
+                reviewsPage.totalElements(),
+                reviewsPage.totalPages(),
+                reviewsPage.page(),
+                reviewsPage.size());
+    }
 }
