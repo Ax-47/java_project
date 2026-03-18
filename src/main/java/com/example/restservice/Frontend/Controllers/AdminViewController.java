@@ -8,10 +8,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.restservice.Auth.dto.UserPrincipalDTO;
 import com.example.restservice.Categories.domain.Category;
@@ -28,6 +30,11 @@ import com.example.restservice.Images.domain.ImageResourceType;
 import com.example.restservice.Images.dto.UploadImageResponseDTO;
 import com.example.restservice.Images.usecases.FindImageUsecase;
 import com.example.restservice.Orders.domain.DatabaseOrderRepository;
+import com.example.restservice.Orders.usecases.CancelOrderUsecase;
+import com.example.restservice.Orders.usecases.CompleteOrderUsecase;
+import com.example.restservice.Orders.usecases.GetOrdersUsecase;
+import com.example.restservice.Orders.usecases.GetUserOrderUsecase;
+import com.example.restservice.Orders.usecases.ShipOrderUsecase;
 import com.example.restservice.ProductCategories.domain.DatabaseProductCategoryRepository;
 import com.example.restservice.Products.domain.DatabaseProductRepository;
 import com.example.restservice.Products.domain.Product;
@@ -56,36 +63,51 @@ public class AdminViewController {
   private final UpdateCategoryUsecase updateCategoryUsecase;
   private final FindCategoriesUsecase findCategoriesUsecase;
   private final DeleteCategoryUsecase deleteCategoryUsecase;
+  private final GetOrdersUsecase getOrdersUsecase;
+  private final GetUserOrderUsecase getUserOrderUsecase;
+  private final CompleteOrderUsecase completeOrderUsecase;
+  private final ShipOrderUsecase shipOrderUsecase;
+  private final CancelOrderUsecase cancelOrderUsecase;
 
   public AdminViewController(
-      DatabaseOrderRepository databaseOrderRepository,
       DatabaseUserRepository databaseUserRepository,
-      DatabaseImageRepository databaseImageRepository,
-      FindImageUsecase findImageUsecase,
-      CreateProductUsecase createProductUsecase,
-      UpdateProductUsecase updateProductUsecase,
-      DeleteProductUsecase deleteProductUsecase,
-      UpdateCategoryUsecase updateCategoryUsecase,
-      DeleteCategoryUsecase deleteCategoryUsecase,
+      DatabaseOrderRepository databaseOrderRepository,
       DatabaseProductCategoryRepository databaseProductCategoryRepository,
+      DatabaseImageRepository databaseImageRepository,
+      UpdateProductUsecase updateProductUsecase,
+      FindImageUsecase findImageUsecase,
+      DatabaseProductRepository databaseProductRepository,
       DatabaseCategoryRepository databaseCategoryRepository,
+      DeleteProductUsecase deleteProductUsecase,
+      CreateProductUsecase createProductUsecase,
       CreateCategoryUsecase createCategoryUsecase,
+      UpdateCategoryUsecase updateCategoryUsecase,
       FindCategoriesUsecase findCategoriesUsecase,
-      DatabaseProductRepository databaseProductRepository) {
-    this.databaseOrderRepository = databaseOrderRepository;
+      DeleteCategoryUsecase deleteCategoryUsecase,
+      GetOrdersUsecase getOrdersUsecase,
+      GetUserOrderUsecase getUserOrderUsecase,
+      CompleteOrderUsecase completeOrderUsecase,
+      ShipOrderUsecase shipOrderUsecase,
+      CancelOrderUsecase cancelOrderUsecase) {
     this.databaseUserRepository = databaseUserRepository;
-    this.databaseCategoryRepository = databaseCategoryRepository;
-    this.databaseProductRepository = databaseProductRepository;
+    this.databaseOrderRepository = databaseOrderRepository;
     this.databaseProductCategoryRepository = databaseProductCategoryRepository;
     this.databaseImageRepository = databaseImageRepository;
-    this.findImageUsecase = findImageUsecase;
     this.updateProductUsecase = updateProductUsecase;
+    this.findImageUsecase = findImageUsecase;
+    this.databaseProductRepository = databaseProductRepository;
+    this.databaseCategoryRepository = databaseCategoryRepository;
     this.deleteProductUsecase = deleteProductUsecase;
     this.createProductUsecase = createProductUsecase;
     this.createCategoryUsecase = createCategoryUsecase;
     this.updateCategoryUsecase = updateCategoryUsecase;
     this.findCategoriesUsecase = findCategoriesUsecase;
     this.deleteCategoryUsecase = deleteCategoryUsecase;
+    this.getOrdersUsecase = getOrdersUsecase;
+    this.getUserOrderUsecase = getUserOrderUsecase;
+    this.completeOrderUsecase = completeOrderUsecase;
+    this.shipOrderUsecase = shipOrderUsecase;
+    this.cancelOrderUsecase = cancelOrderUsecase;
   }
 
   @GetMapping
@@ -95,13 +117,15 @@ public class AdminViewController {
       @RequestParam(defaultValue = "0") int categoryPage,
       @RequestParam(defaultValue = "50") int size,
       @RequestParam(defaultValue = "orders") String tab,
+      @RequestParam(defaultValue = "createdAt") String sortBy,
+      @RequestParam(defaultValue = "desc") String sortDir,
       Model model) {
+    boolean sortDirection = sortDir.equalsIgnoreCase("asc") ? true : false;
+    PageQuery orderQuery = new PageQuery(orderPage, size, sortBy, sortDirection);
+    PageQuery productQuery = new PageQuery(productPage, size, sortBy, sortDirection);
+    PageQuery categoryQuery = new PageQuery(categoryPage, size, sortBy, sortDirection);
 
-    PageQuery orderQuery = new PageQuery(orderPage, size, "createdAt", false);
-    PageQuery productQuery = new PageQuery(productPage, size, "productName", true);
-    PageQuery categoryQuery = new PageQuery(categoryPage, size, "categoryName", true);
-
-    var orders = databaseOrderRepository.findAll(orderQuery);
+    var orders = getOrdersUsecase.execute(orderQuery);
     var products = databaseProductRepository.findAllProducts(productQuery);
     var categories = databaseCategoryRepository.findAllCategories(categoryQuery);
 
@@ -118,6 +142,8 @@ public class AdminViewController {
     model.addAttribute("categoryTotal", categories.totalPages());
 
     model.addAttribute("activeTab", tab);
+    model.addAttribute("sortBy", sortBy);
+    model.addAttribute("sortDir", sortDir);
 
     return "admin/index";
   }
@@ -176,7 +202,7 @@ public class AdminViewController {
       @ModelAttribute CategoryFormDTO request,
       Model model) {
     createCategoryUsecase.execute(new CategoryRequestDTO(request.getName()));
-    return adminDashboard(orderPage, productPage, categoryPage, size, tab, model);
+    return "redirect:/admin?tab=products";
   }
 
   @GetMapping("/categories/{categoryId}/edit")
@@ -204,7 +230,7 @@ public class AdminViewController {
       @AuthenticationPrincipal UserPrincipalDTO user,
       Model model) {
     deleteCategoryUsecase.execute(categoryId);
-    return adminDashboard(orderPage, productPage, categoryPage, size, tab, model);
+    return "redirect:/admin?tab=products";
   }
 
   @PostMapping("/categories/{categoryId}/edit")
@@ -218,7 +244,7 @@ public class AdminViewController {
       Model model,
       @ModelAttribute UpdateProductRequestDTO request) {
     updateCategoryUsecase.execute(categoryId, new CategoryRequestDTO(request.name()));
-    return adminDashboard(orderPage, productPage, categoryPage, size, tab, model);
+    return "redirect:/admin?tab=products";
   }
 
   @GetMapping("/products/create")
@@ -231,7 +257,7 @@ public class AdminViewController {
       @RequestParam(defaultValue = "products") String tab,
       Model model) {
     model.addAttribute("addressDTO", new CreateProductFormDTO());
-    return "admin/products/create/index";
+    return "redirect:/admin?tab=products";
   }
 
   @PostMapping("/products/create")
@@ -245,7 +271,7 @@ public class AdminViewController {
       @ModelAttribute CreateProductFormDTO request,
       Model model) {
     createProductUsecase.execute(request.toRequest(user.id()));
-    return adminDashboard(orderPage, productPage, categoryPage, size, tab, model);
+    return "redirect:/admin?tab=products";
   }
 
   @PostMapping("/products/{productId}/edit")
@@ -259,7 +285,7 @@ public class AdminViewController {
       Model model,
       @ModelAttribute UpdateProductRequestDTO request) {
     updateProductUsecase.execute(productId, request);
-    return adminDashboard(orderPage, productPage, categoryPage, size, tab, model);
+    return "redirect:/admin?tab=products";
   }
 
   @PostMapping("/products/{productId}/delete")
@@ -273,6 +299,57 @@ public class AdminViewController {
       @AuthenticationPrincipal UserPrincipalDTO user,
       Model model) {
     deleteProductUsecase.execute(new DeleteProductRequestDTO(productId, user.id()));
-    return adminDashboard(orderPage, productPage, categoryPage, size, tab, model);
+    return "redirect:/admin?tab=products";
+  }
+
+  @GetMapping("/orders/{orderId}/view")
+  public String viewOrderDetail(@PathVariable UUID orderId, Model model) {
+    var order = getUserOrderUsecase.execute(orderId);
+    if (order == null) {
+      return "redirect:/admin?tab=orders";
+    }
+
+    model.addAttribute("order", order);
+    return "admin/orders/view/index";
+  }
+
+  @PatchMapping("/orders/{orderId}/ship")
+  public String markOrderAsShipped(
+      @PathVariable UUID orderId, RedirectAttributes redirectAttributes) {
+    try {
+      shipOrderUsecase.execute(orderId);
+      redirectAttributes.addFlashAttribute(
+          "successMessage", "อัปเดตสถานะเป็นจัดส่งแล้ว (SHIPPED) เรียบร้อย");
+    } catch (Exception e) {
+      redirectAttributes.addFlashAttribute(
+          "errorMessage", "ไม่สามารถอัปเดตสถานะได้: " + e.getMessage());
+    }
+    return "redirect:/admin/orders/" + orderId + "/view";
+  }
+
+  @PatchMapping("/orders/{orderId}/cancel")
+  public String markOrderAsCancelled(
+      @PathVariable UUID orderId, RedirectAttributes redirectAttributes) {
+    try {
+
+      cancelOrderUsecase.execute(orderId);
+      redirectAttributes.addFlashAttribute("successMessage", "ยกเลิกคำสั่งซื้อ (CANCELLED) สำเร็จ");
+    } catch (Exception e) {
+      redirectAttributes.addFlashAttribute(
+          "errorMessage", "ไม่สามารถยกเลิกคำสั่งซื้อได้: " + e.getMessage());
+    }
+    return "redirect:/admin/orders/" + orderId + "/view";
+  }
+
+  @PatchMapping("/orders/{orderId}/complete")
+  public String markOrderAsCompleted(
+      @PathVariable UUID orderId, RedirectAttributes redirectAttributes) {
+    try {
+      completeOrderUsecase.execute(orderId);
+      redirectAttributes.addFlashAttribute("successMessage", "ปิดคำสั่งซื้อ (COMPLETED) สมบูรณ์");
+    } catch (Exception e) {
+      redirectAttributes.addFlashAttribute("errorMessage", "เกิดข้อผิดพลาด: " + e.getMessage());
+    }
+    return "redirect:/admin/orders/" + orderId + "/view";
   }
 }

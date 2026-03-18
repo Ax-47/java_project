@@ -36,6 +36,19 @@ public class DatabaseOrderRepositoryImpl implements DatabaseOrderRepository {
     return jpaOrderRepository.findById(id).map(OrderModel::toDomain);
   }
 
+  public Page<Order> findAllByUserId(UUID userId, PageQuery query) {
+    Sort sort =
+        query.ascending()
+            ? Sort.by(query.sortBy()).ascending()
+            : Sort.by(query.sortBy()).descending();
+    Pageable pageable = PageRequest.of(query.page(), query.size(), sort);
+
+    var page = jpaOrderRepository.findAllByUserId(userId, pageable);
+    List<Order> products = page.getContent().stream().map(product -> product.toDomain()).toList();
+    return new Page<>(
+        products, page.getTotalElements(), page.getTotalPages(), page.getNumber(), page.getSize());
+  }
+
   @Override
   public Page<Order> findAll(PageQuery query) {
 

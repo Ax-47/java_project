@@ -41,14 +41,14 @@ public class OrderController {
   }
 
   // Patch /api/orders
-  @PatchMapping("/{orderId}/cancel")
-  public ResponseEntity<CancelOrderResponseDTO> cancelOrder(
-      @PathVariable UUID orderId, Authentication authentication) {
-    UUID userId = UUID.fromString(authentication.getName());
-    CancelOrderRequestDTO request = new CancelOrderRequestDTO(orderId, userId);
-    CancelOrderResponseDTO response = cancelOrderUsecase.execute(request);
-    return ResponseEntity.ok(response);
-  }
+  // @PatchMapping("/{orderId}/cancel")
+  // public ResponseEntity<CancelOrderResponseDTO> cancelOrder(
+  // @PathVariable UUID orderId, Authentication authentication) {
+  // UUID userId = UUID.fromString(authentication.getName());
+  // CancelOrderRequestDTO request = new CancelOrderRequestDTO(orderId, userId);
+  // CancelOrderResponseDTO response = cancelOrderUsecase.execute(request);
+  // return ResponseEntity.ok(response);
+  // }
 
   // TestTest
   // GET /api/orders
@@ -71,11 +71,11 @@ public class OrderController {
   // return ResponseEntity.ok(getOrdersUsecase.execute(id));
   // }
   // PATCH /api/orders/{orderId}/complete
-  @PatchMapping("/{orderId}/complete")
-  public ResponseEntity<CompleteOrderResponseDTO> create(
-      @Valid @RequestBody CompleteOrderRequestDTO request) {
-    return ResponseEntity.ok(completeOrderUsecase.execute(request));
-  }
+  // @PatchMapping("/{orderId}/complete")
+  // public ResponseEntity<CompleteOrderResponseDTO> create(
+  // @Valid @RequestBody CompleteOrderRequestDTO request) {
+  // return ResponseEntity.ok(completeOrderUsecase.execute(request));
+  // }
 
   // GET /api/users/{userId}/orders
 }

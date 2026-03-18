@@ -6,11 +6,15 @@ import java.util.UUID;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.example.restservice.Address.models.AddressSortField;
 import com.example.restservice.Address.usecases.FindAddressesByUserIdUsecase;
 import com.example.restservice.Address.usecases.FindAddressesUsecase;
 import com.example.restservice.Auth.dto.UserPrincipalDTO;
@@ -18,10 +22,20 @@ import com.example.restservice.Categories.usecases.FindCategoriesUsecase;
 import com.example.restservice.Frontend.dto.CategorySectionDTO;
 import com.example.restservice.Frontend.usecases.GetCategoryPageUsecase;
 import com.example.restservice.Frontend.usecases.GetHomePageUsecase;
+import com.example.restservice.Images.domain.ImageResourceType;
+import com.example.restservice.Images.usecases.UploadImageUsecase;
+import com.example.restservice.Orders.usecases.GetUserOrdersUsecase;
 import com.example.restservice.ProductCategories.usecases.FindProductsByCategoryIdUsecase;
 import com.example.restservice.Products.usecases.FindProductUsecase;
 import com.example.restservice.Products.usecases.PurchaseProductUsecase;
+import com.example.restservice.Reviews.dto.CreateReviewRequestDTO;
+import com.example.restservice.Reviews.dto.ReviewRequestDTO;
+import com.example.restservice.Reviews.usecases.CreateReviewUsecase;
+import com.example.restservice.Reviews.usecases.DeleteReviewUsecase;
 import com.example.restservice.Reviews.usecases.FindReveiwByProductUsecase;
+import com.example.restservice.Reviews.usecases.UpdateReviewUsecase;
+import com.example.restservice.TransactionStatements.dto.GetTransactionStatementsByUserRequestDTO;
+import com.example.restservice.TransactionStatements.usecases.GetTransactionStatementsByUserUsecase;
 import com.example.restservice.Users.usecases.FindUserByIdUsecase;
 import com.example.restservice.Users.usecases.FindUserProfileUsecase;
 import com.example.restservice.common.PageQuery;
@@ -40,6 +54,12 @@ public class FrontendController {
   private final GetHomePageUsecase getHomePageUsecase;
   private final GetCategoryPageUsecase getCategoryPageUsecase;
   private final PurchaseProductUsecase purchaseProductUsecase;
+  private final CreateReviewUsecase createReviewUsecase;
+  private final UpdateReviewUsecase updateReviewUsecase;
+  private final GetTransactionStatementsByUserUsecase getTransactionStatementsByUserUsecase;
+  private final UploadImageUsecase uploadImageUsecase;
+  private final DeleteReviewUsecase deleteReviewUsecase;
+  private final GetUserOrdersUsecase getUserOrdersUsecase;
 
   public FrontendController(
       FindProductsByCategoryIdUsecase findProductsByCategoryIdUsecase,
@@ -52,6 +72,12 @@ public class FrontendController {
       FindAddressesByUserIdUsecase findAddressesByUserIdUsecase,
       GetCategoryPageUsecase getCategoryPageUsecase,
       PurchaseProductUsecase purchaseProductUsecase,
+      CreateReviewUsecase createReviewUsecase,
+      UploadImageUsecase uploadImageUsecase,
+      UpdateReviewUsecase updateReviewUsecase,
+      DeleteReviewUsecase deleteReviewUsecase,
+      GetTransactionStatementsByUserUsecase getTransactionStatementsByUserUsecase,
+      GetUserOrdersUsecase getUserOrdersUsecase,
       FindCategoriesUsecase findCategoriesUsecase) {
     this.findProductsByCategoryIdUsecase = findProductsByCategoryIdUsecase;
     this.findCategoriesUsecase = findCategoriesUsecase;
@@ -64,6 +90,12 @@ public class FrontendController {
     this.findUserProfileUsecase = findUserProfileUsecase;
     this.findUserByIdUsecase = findUserByIdUsecase;
     this.purchaseProductUsecase = purchaseProductUsecase;
+    this.createReviewUsecase = createReviewUsecase;
+    this.uploadImageUsecase = uploadImageUsecase;
+    this.updateReviewUsecase = updateReviewUsecase;
+    this.deleteReviewUsecase = deleteReviewUsecase;
+    this.getTransactionStatementsByUserUsecase = getTransactionStatementsByUserUsecase;
+    this.getUserOrdersUsecase = getUserOrdersUsecase;
   }
 
   @GetMapping("/")
@@ -95,6 +127,11 @@ public class FrontendController {
     var reviews = findReveiwByProductUsecase.execute(productId, query);
     model.addAttribute("reviews", reviews);
 
+    AddressSortField sortField = AddressSortField.fromString("isDefault");
+    PageQuery addressQuery = new PageQuery(page, 20, sortField.getFieldName(), asc);
+    var addresses = findAddressesByUserIdUsecase.execute(user.id(), addressQuery);
+
+    model.addAttribute("addresses", addresses.content());
     return "products/productId";
   }
 
@@ -137,9 +174,75 @@ public class FrontendController {
 
   @PostMapping("/products/{productId}/purchase")
   public String purchase(
-      @PathVariable UUID productId, @AuthenticationPrincipal UserPrincipalDTO user) {
+      @PathVariable UUID productId,
+      @RequestParam("addressId") UUID addressId,
+      @AuthenticationPrincipal UserPrincipalDTO user) {
 
-    purchaseProductUsecase.execute(user.id(), productId);
+    purchaseProductUsecase.execute(user.id(), productId, addressId);
+    return "redirect:/products/" + productId + "?success=true";
+  }
+
+  @PostMapping("/review")
+  public String createReview(
+      @RequestParam("productId") UUID productId,
+      @RequestParam("rating") int rating,
+      @RequestParam("comment") String comment,
+      @RequestParam(value = "files", required = false) MultipartFile[] files,
+      @AuthenticationPrincipal UserPrincipalDTO user) {
+    var res =
+        createReviewUsecase.execute(
+            new CreateReviewRequestDTO(productId, user.id(), rating, comment));
+    UUID reviewId = res.id();
+    try {
+      if (files != null && files.length > 0) {
+        int i = 1;
+        for (MultipartFile file : files) {
+          if (!file.isEmpty()) {
+            uploadImageUsecase.execute(file, reviewId, ImageResourceType.REVIEW, i);
+            i++;
+          }
+        }
+      }
+    } catch (Exception e) {
+      // ถ้าอัปโหลดรูปพัง อาจจะเปลี่ยนเป็นส่ง warning หรือ error กลับไปให้หน้าเว็บรู้
+      return "redirect:/products/" + productId + "?success=true&imageUploadFailed=true";
+    }
+    return "redirect:/products/" + productId + "?success=true";
+  }
+
+  @PutMapping("/review/{reviewId}")
+  public String updateReview(
+      @PathVariable UUID reviewId,
+      @RequestParam("productId") UUID productId,
+      @RequestParam("rating") int rating,
+      @RequestParam("comment") String comment,
+      @RequestParam(value = "files", required = false) MultipartFile[] files,
+      @AuthenticationPrincipal UserPrincipalDTO user) {
+
+    var res = updateReviewUsecase.execute(reviewId, new ReviewRequestDTO(rating, comment));
+    try {
+      if (files != null && files.length > 0) {
+        int i = 1;
+        for (MultipartFile file : files) {
+          if (!file.isEmpty()) {
+            uploadImageUsecase.execute(file, reviewId, ImageResourceType.REVIEW, i);
+            i++;
+          }
+        }
+      }
+    } catch (Exception e) {
+      return "redirect:/products/" + productId + "?success=true";
+    }
+    return "redirect:/products/" + productId + "?success=true";
+  }
+
+  @DeleteMapping("/review/{reviewId}")
+  public String deleteReview(
+      @PathVariable UUID reviewId,
+      @RequestParam("productId") UUID productId,
+      @AuthenticationPrincipal UserPrincipalDTO user) {
+
+    deleteReviewUsecase.execute(reviewId);
     return "redirect:/products/" + productId + "?success=true";
   }
 
@@ -152,6 +255,23 @@ public class FrontendController {
   @GetMapping("/sign_up")
   public String signup() {
     return "sign_up/index";
+  }
+
+  @GetMapping("/profile/transactions")
+  public String viewTransactions(
+      @AuthenticationPrincipal UserPrincipalDTO user,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size,
+      Model model) {
+    PageQuery query = new PageQuery(page, size, "createdAt", false);
+
+    var transactions =
+        getTransactionStatementsByUserUsecase.execute(
+            new GetTransactionStatementsByUserRequestDTO(user.id(), query));
+
+    model.addAttribute("transactions", transactions);
+
+    return "profile/transactions/index"; // คืนค่าหน้า HTML
   }
 
   /*
@@ -177,6 +297,18 @@ public class FrontendController {
     model.addAttribute("principal", user);
     model.addAttribute("detail", userDetail);
     return "profile/index";
+  }
+
+  @GetMapping("/profile/orders")
+  public String viewOrders(
+      @AuthenticationPrincipal UserPrincipalDTO user,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size,
+      Model model) {
+    PageQuery query = new PageQuery(page, size, "createdAt", false);
+    var orders = getUserOrdersUsecase.execute(user.id(), query);
+    model.addAttribute("orders", orders);
+    return "profile/orders/index";
   }
 
   @GetMapping("/order")

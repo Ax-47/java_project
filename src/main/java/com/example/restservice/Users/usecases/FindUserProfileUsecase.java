@@ -48,6 +48,12 @@ public class FindUserProfileUsecase {
                 + bgResource.genFilename(bgList.getFirst().getId(), ImageSize.BACKGROUND_LARGE)
             : "/images/default-bg.jpg";
 
-    return new FindUserProfileResponseDTO(profileUrl, backgroundUrl);
+    return new FindUserProfileResponseDTO(
+        user.getId(),
+        user.getUsername(),
+        user.getCredit().getValue(),
+        user.getCreatedAt(),
+        profileUrl,
+        backgroundUrl);
   }
 }

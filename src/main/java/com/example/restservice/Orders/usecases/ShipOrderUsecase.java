@@ -12,10 +12,10 @@ import com.example.restservice.Orders.exceptions.OrderNotFoundException;
 import jakarta.transaction.Transactional;
 
 @Service
-public class CompleteOrderUsecase {
+public class ShipOrderUsecase {
   private final DatabaseOrderRepository databaseOrderRepository;
 
-  public CompleteOrderUsecase(DatabaseOrderRepository databaseOrderRepository) {
+  public ShipOrderUsecase(DatabaseOrderRepository databaseOrderRepository) {
     this.databaseOrderRepository = databaseOrderRepository;
   }
 
@@ -26,7 +26,7 @@ public class CompleteOrderUsecase {
             .findById(orderId)
             .orElseThrow(() -> new OrderNotFoundException("Order not = with ID: " + orderId));
 
-    existingOrder.complete();
+    existingOrder.ship();
 
     this.databaseOrderRepository.save(existingOrder);
 

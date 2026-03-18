@@ -26,43 +26,57 @@
       </svg>
       <span class="text-gray-900" th:text="${product.name}">Product Name</span>
     </nav>
-<div th:if="${param.success}" id="success-alert" class="bg-green-50 border border-green-200 text-green-800 px-6 py-4 mb-8 rounded-2xl shadow-sm flex justify-between items-center animate-[fade-in_0.5s_ease-out]">
+
+    <div
+      th:if="${param.success}"
+      id="success-alert"
+      class="bg-green-50 border border-green-200 text-green-800 px-6 py-4 mb-8 rounded-2xl shadow-sm flex justify-between items-center animate-[fade-in_0.5s_ease-out]"
+    >
       <div class="flex items-center gap-3">
         <div class="bg-green-100 p-2 rounded-full">
-          <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          <svg
+            class="w-6 h-6 text-green-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 13l4 4L19 7"
+            ></path>
           </svg>
         </div>
         <div>
-          <h4 class="font-bold text-lg">Purchase Successful!</h4>
-          <p class="text-sm text-green-700">Thank you for your order. The amount has been deducted from your credit.</p>
+          <h4 class="font-bold text-lg">Success!</h4>
+          <p class="text-sm text-green-700">
+            Your operation has been completed successfully.
+          </p>
         </div>
       </div>
-      <button onclick="document.getElementById('success-alert').style.display='none'" class="text-green-600 hover:text-green-800 bg-green-100 hover:bg-green-200 p-2 rounded-full transition-colors">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      <button
+        onclick="
+          document.getElementById('success-alert').style.display = 'none'
+        "
+        class="text-green-600 hover:text-green-800 bg-green-100 hover:bg-green-200 p-2 rounded-full transition-colors"
+      >
+        <svg
+          class="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          ></path>
         </svg>
       </button>
     </div>
 
-    <div th:if="${param.error}" id="error-alert" class="bg-red-50 border border-red-200 text-red-800 px-6 py-4 mb-8 rounded-2xl shadow-sm flex justify-between items-center animate-[fade-in_0.5s_ease-out]">
-      <div class="flex items-center gap-3">
-        <div class="bg-red-100 p-2 rounded-full">
-          <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
-        </div>
-        <div>
-          <h4 class="font-bold text-lg">Purchase Failed</h4>
-          <p class="text-sm text-red-700">Not enough credit or something went wrong. Please try again.</p>
-        </div>
-      </div>
-      <button onclick="document.getElementById('error-alert').style.display='none'" class="text-red-600 hover:text-red-800 bg-red-100 hover:bg-red-200 p-2 rounded-full transition-colors">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-        </svg>
-      </button>
-    </div>
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
       <div class="space-y-4">
         <div
@@ -75,7 +89,6 @@
             class="w-full h-full object-contain transition-all duration-500 ease-in-out"
           />
         </div>
-
         <div class="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
           <button
             th:each="img : ${product.images}"
@@ -96,14 +109,12 @@
           class="text-3xl md:text-5xl font-black text-gray-900 leading-tight mb-6"
           th:text="${product.name}"
         ></h1>
-
         <div class="prose prose-blue text-gray-600 mb-8">
           <p
             class="text-lg leading-relaxed"
             th:text="${product.description}"
           ></p>
         </div>
-
         <div class="bg-blue-50/50 p-6 rounded-2xl border border-blue-100 mb-8">
           <span class="text-sm font-bold text-blue-600 uppercase tracking-wider"
             >Price</span
@@ -117,11 +128,77 @@
         <form
           th:action="@{/products/{id}/purchase(id=${product.id})}"
           method="post"
-          class="w-full md:w-max"
+          class="w-full mt-6"
         >
+          <div class="bg-gray-50 p-6 rounded-2xl border border-gray-200 mb-6">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-bold text-gray-900">Shipping Address</h3>
+              <a
+                href="/addresses"
+                class="text-sm font-semibold text-[#0175CC] hover:underline"
+                >+ Add New</a
+              >
+            </div>
+
+            <div
+              th:if="${#lists.isEmpty(addresses)}"
+              class="text-sm text-red-600 bg-red-50 p-4 rounded-xl border border-red-100"
+            >
+              You don't have any shipping addresses. Please add an address
+              before purchasing.
+            </div>
+
+            <div
+              th:unless="${#lists.isEmpty(addresses)}"
+              class="space-y-3 max-h-60 overflow-y-auto pr-2"
+            >
+              <div
+                th:each="addr : ${addresses}"
+                class="flex items-start gap-3 p-4 bg-white border border-gray-200 rounded-xl cursor-pointer hover:border-[#0175CC] transition-colors has-[:checked]:border-[#0175CC] has-[:checked]:ring-1 has-[:checked]:ring-[#0175CC]"
+              >
+                <input
+                  type="radio"
+                  th:id="'addr-' + ${addr.id}"
+                  name="addressId"
+                  th:value="${addr.id}"
+                  th:checked="${addr.isDefault}"
+                  required
+                  class="mt-1 w-4 h-4 text-[#0175CC] focus:ring-[#0175CC] border-gray-300"
+                />
+
+                <label
+                  th:for="'addr-' + ${addr.id}"
+                  class="flex-1 cursor-pointer"
+                >
+                  <div class="font-bold text-gray-900 flex items-center gap-2">
+                    <span th:text="${addr.fullName}">Full Name</span>
+                    <span
+                      th:if="${addr.isDefault}"
+                      class="bg-blue-100 text-[#0175CC] text-xs px-2 py-0.5 rounded-full font-semibold"
+                      >Default</span
+                    >
+                  </div>
+                  <div class="text-sm text-gray-600 mt-1 leading-relaxed">
+                    <span th:text="${addr.phoneNumber}">Phone</span> <br />
+                    <span
+                      th:text="${addr.addressLine1} + ' ' + ${addr.addressLine2 != null ? addr.addressLine2 : ''}"
+                      >Line 1</span
+                    ><br />
+                    <span
+                      th:text="${addr.subDistrict} + ', ' + ${addr.district} + ', ' + ${addr.province} + ' ' + ${addr.postalCode}"
+                      >City, ZIP</span
+                    >
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+
           <button
             type="submit"
-            class="w-full bg-[#0175CC] text-white px-12 py-5 rounded-2xl font-bold text-xl hover:bg-blue-700 hover:shadow-2xl hover:-translate-y-1 transition-all flex items-center justify-center gap-3"
+            th:disabled="${#lists.isEmpty(addresses)}"
+            th:classappend="${#lists.isEmpty(addresses)} ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700 hover:shadow-2xl hover:-translate-y-1'"
+            class="w-full md:w-max bg-[#0175CC] text-white px-12 py-5 rounded-2xl font-bold text-xl transition-all flex items-center justify-center gap-3"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -156,18 +233,22 @@
             Write a Review
           </h3>
 
-          <input
-            type="hidden"
-            id="current-product-id"
-            th:value="${product.id}"
-          />
-          <input
-            type="hidden"
-            id="current-user-id"
-            th:value="${principal != null ? principal.id : ''}"
-          />
+          <form
+            id="review-form"
+            th:action="@{/review}"
+            method="post"
+            enctype="multipart/form-data"
+            class="space-y-5"
+          >
+            <input
+              type="hidden"
+              id="hidden-method"
+              name="_method"
+              value="post"
+              disabled
+            />
+            <input type="hidden" name="productId" th:value="${product.id}" />
 
-          <form id="review-form" class="space-y-5">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2"
                 >Rating</label
@@ -229,7 +310,13 @@
                   </svg>
                 </button>
               </div>
-              <input type="hidden" id="review-rating" value="0" required />
+              <input
+                type="hidden"
+                id="review-rating"
+                name="rating"
+                value="0"
+                required
+              />
             </div>
 
             <div>
@@ -240,6 +327,7 @@
               >
               <textarea
                 id="review-comment"
+                name="comment"
                 rows="4"
                 class="w-full rounded-2xl border-gray-200 bg-gray-50 focus:border-[#0175CC] focus:ring-[#0175CC] p-4 text-gray-700 transition-colors resize-none"
                 placeholder="What do you think about this product?"
@@ -254,6 +342,7 @@
               <input
                 type="file"
                 id="review-images"
+                name="files"
                 multiple
                 accept="image/png, image/jpeg, image/webp"
                 class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-blue-50 file:text-[#0175CC] hover:file:bg-blue-100 transition-all cursor-pointer"
@@ -262,10 +351,6 @@
                 id="image-preview-container"
                 class="flex gap-2 mt-3 overflow-x-auto pb-2 scrollbar-hide"
               ></div>
-            </div>
-
-            <div id="review-error" class="text-red-500 text-sm hidden">
-              Please select a rating and write a comment.
             </div>
 
             <div class="flex gap-2 pt-2">
@@ -279,6 +364,7 @@
               <button
                 type="button"
                 id="cancel-edit-btn"
+                onclick="cancelEdit()"
                 class="hidden bg-gray-200 text-gray-700 px-6 py-3.5 rounded-2xl font-bold hover:bg-gray-300 transition-colors"
               >
                 Cancel
@@ -311,7 +397,6 @@
                     class="w-12 h-12 rounded-full object-cover border-2 border-gray-100 shadow-sm"
                     alt="Profile"
                   />
-
                   <h4
                     class="font-bold text-gray-900"
                     th:text="${review.username != null ? review.username : 'User'}"
@@ -332,14 +417,30 @@
                     >
                       Edit
                     </button>
-                    <button
-                      type="button"
-                      th:data-id="${review.id}"
-                      onclick="deleteReview(this.getAttribute('data-id'))"
-                      class="text-sm font-semibold text-red-500 hover:text-red-700 transition-colors"
+
+                    <form
+                      th:action="@{/review/{id}(id=${review.id})}"
+                      method="post"
+                      class="inline"
+                      onsubmit="
+                        return confirm(
+                          'Are you sure you want to delete this review?',
+                        );
+                      "
                     >
-                      Delete
-                    </button>
+                      <input type="hidden" name="_method" value="delete" />
+                      <input
+                        type="hidden"
+                        name="productId"
+                        th:value="${product.id}"
+                      />
+                      <button
+                        type="submit"
+                        class="text-sm font-semibold text-red-500 hover:text-red-700 transition-colors"
+                      >
+                        Delete
+                      </button>
+                    </form>
                   </div>
                 </div>
 
@@ -363,7 +464,6 @@
               >
                 Review Text
               </p>
-
               <div
                 class="review-image-gallery flex gap-3 mt-4 overflow-x-auto pb-2 scrollbar-hide"
               ></div>
@@ -371,50 +471,9 @@
           </div>
         </div>
       </div>
-
-      <div
-        th:if="${reviews != null and reviews.totalPages > 1}"
-        class="flex justify-center items-center gap-4 mt-8 pt-6 border-t border-gray-100"
-      >
-        <a
-          th:if="${reviews.page > 0}"
-          th:href="@{/products/{id}(id=${product.id}, page=${reviews.page - 1}, size=${reviews.size})}"
-          class="px-4 py-2 text-sm font-bold text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:text-[#0175CC] transition-colors"
-          >&laquo; Previous</a
-        >
-        <span
-          th:unless="${reviews.page > 0}"
-          class="px-4 py-2 text-sm font-bold text-gray-400 bg-gray-50 border border-gray-200 rounded-xl cursor-not-allowed"
-          >&laquo; Previous</span
-        >
-
-        <span class="text-sm font-medium text-gray-600">
-          Page
-          <span class="font-bold text-gray-900" th:text="${reviews.page + 1}"
-            >1</span
-          >
-          of
-          <span class="font-bold text-gray-900" th:text="${reviews.totalPages}"
-            >5</span
-          >
-        </span>
-
-        <a
-          th:if="${reviews.page + 1 < reviews.totalPages}"
-          th:href="@{/products/{id}(id=${product.id}, page=${reviews.page + 1}, size=${reviews.size})}"
-          class="px-4 py-2 text-sm font-bold text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:text-[#0175CC] transition-colors"
-          >Next &raquo;</a
-        >
-        <span
-          th:unless="${reviews.page + 1 < reviews.totalPages}"
-          class="px-4 py-2 text-sm font-bold text-gray-400 bg-gray-50 border border-gray-200 rounded-xl cursor-not-allowed"
-          >Next &raquo;</span
-        >
-      </div>
     </div>
 
     <script th:inline="javascript">
-      // 1. ฟังก์ชันเปลี่ยนรูปหลักของสินค้า
       function changeImage(url, element) {
         const mainImg = document.getElementById("mainImage");
         mainImg.style.opacity = "0";
@@ -425,63 +484,16 @@
       }
 
       document.addEventListener("DOMContentLoaded", () => {
-        const productId = document.getElementById("current-product-id").value;
-        const currentUserId = document.getElementById("current-user-id").value;
-        const reviewForm = document.getElementById("review-form");
-
         const stars = document.querySelectorAll(".star-btn");
-        const submitBtn = document.getElementById("submit-review-btn");
-        const cancelEditBtn = document.getElementById("cancel-edit-btn");
-
+        const reviewForm = document.getElementById("review-form");
         const imageInput = document.getElementById("review-images");
         const previewContainer = document.getElementById(
           "image-preview-container",
         );
 
-        let selectedRating = 0;
-        let editingReviewId = null;
-
-        // --- พรีวิวรูปภาพก่อนอัปโหลด ---
-        imageInput.addEventListener("change", function () {
-          previewContainer.innerHTML = "";
-          Array.from(this.files).forEach((file) => {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-              previewContainer.innerHTML += `<img src="${e.target.result}" class="w-16 h-16 object-cover rounded-xl border border-gray-200 shadow-sm shrink-0" />`;
-            };
-            reader.readAsDataURL(file);
-          });
-        });
-        // --- ดึงรูปภาพของรีวิวมาแสดงผล ---
-        document.querySelectorAll(".review-card").forEach(async (card) => {
-          const reviewId = card.getAttribute("data-review-id");
-          const gallery = card.querySelector(".review-image-gallery");
-
-          try {
-            const res = await fetch(`/api/review/${reviewId}/images`);
-            if (res.ok) {
-              const images = await res.json();
-              if (images && images.length > 0) {
-                images.forEach((img) => {
-                  const imgUrl = img.large;
-
-                  if (imgUrl) {
-                    gallery.innerHTML += `
-                      <img src="${imgUrl}" 
-                           class="w-48 h-48 md:w-64 md:h-64 object-cover rounded-2xl border border-gray-100 shadow-sm cursor-pointer hover:opacity-80 transition-opacity shrink-0" 
-                           onclick="window.open('${imgUrl}', '_blank')" 
-                           alt="Review Image" />`;
-                  }
-                });
-              }
-            }
-          } catch (e) {
-            console.error("Error fetching images for review", reviewId, e);
-          }
-        });
-
+        // --- ระบบดาว ---
         function updateStarUI(rating) {
-          selectedRating = parseInt(rating);
+          const selectedRating = parseInt(rating);
           document.getElementById("review-rating").value = selectedRating;
           stars.forEach((s, index) => {
             if (index < selectedRating) {
@@ -500,8 +512,38 @@
           });
         });
 
+        // --- พรีวิวรูป ---
+        imageInput.addEventListener("change", function () {
+          previewContainer.innerHTML = "";
+          Array.from(this.files).forEach((file) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              previewContainer.innerHTML += `<img src="${e.target.result}" class="w-16 h-16 object-cover rounded-xl border border-gray-200 shadow-sm shrink-0" />`;
+            };
+            reader.readAsDataURL(file);
+          });
+        });
+
+        document.querySelectorAll(".review-card").forEach(async (card) => {
+          const reviewId = card.getAttribute("data-review-id");
+          const gallery = card.querySelector(".review-image-gallery");
+          try {
+            const res = await fetch(`/api/review/${reviewId}/images`);
+            if (res.ok) {
+              const images = await res.json();
+              images.forEach((img) => {
+                if (img.large) {
+                  gallery.innerHTML += `<img src="${img.large}" class="w-48 h-48 md:w-64 md:h-64 object-cover rounded-2xl border border-gray-100 shadow-sm cursor-pointer hover:opacity-80 transition-opacity shrink-0" onclick="window.open('${img.large}', '_blank')" alt="Review Image" />`;
+                }
+              });
+            }
+          } catch (e) {
+            console.error(e);
+          }
+        });
+
         window.editReview = function (btnElement) {
-          editingReviewId = btnElement.getAttribute("data-id");
+          const reviewId = btnElement.getAttribute("data-id");
           const rating = btnElement.getAttribute("data-rating");
           const reviewCard = btnElement.closest(".review-card");
           const commentText = reviewCard.querySelector(
@@ -510,145 +552,37 @@
 
           document.getElementById("review-comment").value = commentText;
           updateStarUI(rating);
-
           imageInput.value = "";
           previewContainer.innerHTML = "";
 
+          reviewForm.action = `/review/${reviewId}`;
+          const hiddenMethod = document.getElementById("hidden-method");
+          hiddenMethod.value = "put";
+          hiddenMethod.disabled = false;
+
           document.getElementById("form-title").innerText = "Edit Your Review";
-          submitBtn.innerText = "Update Review";
-          cancelEditBtn.classList.remove("hidden");
+          document.getElementById("submit-review-btn").innerText =
+            "Update Review";
+          document.getElementById("cancel-edit-btn").classList.remove("hidden");
           document
             .getElementById("form-title")
             .scrollIntoView({ behavior: "smooth", block: "center" });
         };
 
-        window.deleteReview = async function (reviewId) {
-          if (!confirm("Are you sure you want to delete this review?")) return;
-          try {
-            const response = await fetch(`/api/review/${reviewId}`, {
-              method: "DELETE",
-            });
-            if (response.ok || response.status === 204) {
-              window.location.reload();
-            } else {
-              alert("Failed to delete review.");
-            }
-          } catch (error) {
-            alert("Error deleting review.");
-          }
-        };
-        cancelEditBtn.addEventListener("click", () => {
-          editingReviewId = null;
+        window.cancelEdit = function () {
+          reviewForm.action = `/review`;
+          const hiddenMethod = document.getElementById("hidden-method");
+          hiddenMethod.value = "post";
+          hiddenMethod.disabled = true;
+
           document.getElementById("form-title").innerText = "Write a Review";
-          submitBtn.innerText = "Submit Review";
-          cancelEditBtn.classList.add("hidden");
+          document.getElementById("submit-review-btn").innerText =
+            "Submit Review";
+          document.getElementById("cancel-edit-btn").classList.add("hidden");
           reviewForm.reset();
           previewContainer.innerHTML = "";
           updateStarUI(0);
-        });
-
-        reviewForm.addEventListener("submit", async (e) => {
-          e.preventDefault();
-          const comment = document.getElementById("review-comment").value;
-          const errorMsg = document.getElementById("review-error");
-
-          if (selectedRating === 0 || !comment.trim()) {
-            errorMsg.innerText = "Please select a rating and write a comment.";
-            errorMsg.classList.remove("hidden");
-            return;
-          }
-          if (!currentUserId) {
-            alert("Please log in to submit a review.");
-            return;
-          }
-
-          errorMsg.classList.add("hidden");
-          const originalBtnText = submitBtn.innerText;
-          submitBtn.disabled = true;
-          submitBtn.innerText = "Saving Review...";
-
-          const isUpdating = editingReviewId !== null;
-          const fetchMethod = isUpdating ? "PUT" : "POST";
-          const fetchUrl = isUpdating
-            ? `/api/review/${editingReviewId}`
-            : "/api/review";
-
-          const payload = {
-            productId: productId,
-            userId: currentUserId,
-            rating: selectedRating,
-            comment: comment,
-          };
-
-          try {
-            const response = await fetch(fetchUrl, {
-              method: fetchMethod,
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(payload),
-            });
-
-            if (response.ok) {
-              let actualReviewId = editingReviewId;
-
-              if (!isUpdating) {
-                const responseData = await response.json();
-                console.log("📥 ข้อมูลหลังจากสร้างรีวิว:", responseData);
-                actualReviewId = responseData.id;
-              }
-
-              if (!actualReviewId) {
-                window.location.reload();
-                return;
-              }
-
-              const files = imageInput.files;
-              if (files.length > 0) {
-                submitBtn.innerText = "Uploading Images...";
-                let uploadSuccess = true;
-
-                for (let i = 0; i < files.length; i++) {
-                  const formData = new FormData();
-                  formData.append("file", files[i]);
-                  formData.append("sortOrder", i + 1);
-
-                  console.log(
-                    `📤 กำลังอัปโหลดรูปที่ ${i + 1} ไปยัง ID: ${actualReviewId}`,
-                  );
-
-                  const imgResponse = await fetch(
-                    `/api/review/${actualReviewId}/images`,
-                    {
-                      method: "POST",
-                      body: formData,
-                    },
-                  );
-
-                  if (!imgResponse.ok) {
-                    uploadSuccess = false;
-                    const errText = await imgResponse.text();
-                    console.error("❌ อัปโหลดรูปล้มเหลว:", errText);
-                    alert(`เกิดข้อผิดพลาดในการอัปโหลดรูปที่ ${i + 1}`);
-                  }
-                }
-
-                if (!uploadSuccess) {
-                  submitBtn.disabled = false;
-                  submitBtn.innerText = "Submit Again";
-                  return;
-                }
-              }
-
-              window.location.reload();
-            } else {
-              throw new Error("Failed to save review");
-            }
-          } catch (error) {
-            errorMsg.innerText = "Error saving review.";
-            errorMsg.classList.remove("hidden");
-            submitBtn.disabled = false;
-            submitBtn.innerText = originalBtnText;
-          }
-        });
+        };
       });
     </script>
   </section>

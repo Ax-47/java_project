@@ -8,81 +8,322 @@
   </head>
   <body>
     <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      
-      <input type="hidden" id="current-user-id" th:value="${principal != null ? principal.id : '1'}" />
+      <input
+        type="hidden"
+        id="current-user-id"
+        th:value="${principal != null ? principal.id : '1'}"
+      />
 
       <div class="relative mb-8">
-        
-        <div id="bg-dropzone" class="w-full h-64 md:h-80 rounded-3xl overflow-hidden shadow-2xl relative group transition-all duration-300">
-          
+        <div
+          id="bg-dropzone"
+          class="w-full h-64 md:h-80 rounded-3xl overflow-hidden shadow-2xl relative group transition-all duration-300"
+        >
           <img
             id="bg-preview"
             th:src="${detail.backgroundUrl != null ? detail.backgroundUrl : '/images/default-bg.jpg'}"
             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
             alt="Cover"
           />
-          <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/20 to-transparent pointer-events-none"></div>
-          
-          <div id="drag-overlay" class="absolute inset-0 bg-blue-500/80 backdrop-blur-sm hidden flex-col items-center justify-center z-30 transition-all duration-300">
-            <div class="border-4 border-dashed border-white rounded-2xl p-8 text-center pointer-events-none">
-              <span class="text-white text-2xl font-black drop-shadow-md">วางรูปภาพที่นี่เพื่อเปลี่ยนหน้าปก</span>
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/20 to-transparent pointer-events-none"
+          ></div>
+
+          <div
+            id="drag-overlay"
+            class="absolute inset-0 bg-blue-500/80 backdrop-blur-sm hidden flex-col items-center justify-center z-30 transition-all duration-300"
+          >
+            <div
+              class="border-4 border-dashed border-white rounded-2xl p-8 text-center pointer-events-none"
+            >
+              <span class="text-white text-2xl font-black drop-shadow-md"
+                >วางรูปภาพที่นี่เพื่อเปลี่ยนหน้าปก</span
+              >
             </div>
           </div>
 
-          <label for="bg-upload" class="absolute top-4 right-4 bg-black/40 hover:bg-black/60 backdrop-blur-md text-white px-4 py-2.5 rounded-2xl cursor-pointer transition-all flex items-center gap-2 z-20 border border-white/20 shadow-lg cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+          <label
+            for="bg-upload"
+            class="absolute top-4 right-4 bg-black/40 hover:bg-black/60 backdrop-blur-md text-white px-4 py-2.5 rounded-2xl cursor-pointer transition-all flex items-center gap-2 z-20 border border-white/20 shadow-lg cursor-pointer"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+              />
             </svg>
-            <span id="bg-upload-text" class="text-sm font-semibold hidden md:block">เปลี่ยนรูปปก</span>
-            <input type="file" id="bg-upload" class="hidden" accept="image/png, image/jpeg, image/webp" />
+            <span
+              id="bg-upload-text"
+              class="text-sm font-semibold hidden md:block"
+              >เปลี่ยนรูปปก</span
+            >
+            <input
+              type="file"
+              id="bg-upload"
+              class="hidden"
+              accept="image/png, image/jpeg, image/webp"
+            />
           </label>
         </div>
 
-        <div class="relative -mt-24 mx-4 md:mx-10 bg-white/95 backdrop-blur-xl rounded-3xl p-6 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.08)] ring-1 ring-gray-100 flex flex-col md:flex-row items-center gap-6 md:gap-8 z-10">
-          
+        <div
+          class="relative -mt-24 mx-4 md:mx-10 bg-white/95 backdrop-blur-xl rounded-3xl p-6 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.08)] ring-1 ring-gray-100 flex flex-col md:flex-row items-center gap-6 md:gap-8 z-10"
+        >
           <div class="shrink-0 relative -mt-20 md:mt-0 group">
             <img
               id="profile-preview"
               th:src="${detail.profileUrl != null ? detail.profileUrl : '/images/profile-pic.png'}"
               class="w-32 h-32 md:w-40 md:h-40 rounded-3xl object-cover bg-white shadow-xl ring-4 ring-white transition-opacity group-hover:opacity-90"
             />
-            
-            <label for="profile-upload" class="absolute -bottom-2 -right-2 bg-gray-800 hover:bg-gray-900 text-white p-2.5 rounded-xl cursor-pointer shadow-lg ring-4 ring-white transition-transform hover:scale-110 z-20">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+
+            <label
+              for="profile-upload"
+              class="absolute -bottom-2 -right-2 bg-gray-800 hover:bg-gray-900 text-white p-2.5 rounded-xl cursor-pointer shadow-lg ring-4 ring-white transition-transform hover:scale-110 z-20"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                />
               </svg>
-              <input type="file" id="profile-upload" class="hidden" accept="image/png, image/jpeg, image/webp" />
+              <input
+                type="file"
+                id="profile-upload"
+                class="hidden"
+                accept="image/png, image/jpeg, image/webp"
+              />
             </label>
           </div>
 
           <div class="flex-1 text-center md:text-left">
             <div class="flex flex-col md:flex-row items-center gap-3">
-              <h1 class="text-3xl md:text-4xl font-black text-gray-900 tracking-tight" th:text="${principal.username}">UserName</h1>
+              <h1
+                class="text-3xl md:text-4xl font-black text-gray-900 tracking-tight"
+                th:text="${principal.username}"
+              >
+                UserName
+              </h1>
             </div>
             <p class="text-gray-500 font-medium mt-2">สมาชิกของ I BUILD CPU</p>
           </div>
         </div>
       </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div
+          class="bg-gradient-to-br from-[#0175CC] to-blue-800 rounded-3xl p-6 text-white shadow-[0_8px_30px_rgba(1,117,204,0.3)] relative overflow-hidden col-span-1 md:col-span-2"
+        >
+          <svg
+            class="absolute -bottom-4 -right-4 w-32 h-32 text-white opacity-10"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.31-8.86c-1.77-.45-2.34-.94-2.34-1.67 0-.84.79-1.43 2.1-1.43 1.38 0 1.9.66 1.94 1.64h1.71c-.05-1.34-.87-2.57-2.49-2.97V5H10.9v1.69c-1.51.32-2.72 1.3-2.72 2.81 0 1.79 1.49 2.69 3.66 3.21 1.95.46 2.34 1.15 2.34 1.87 0 .53-.39 1.64-2.25 1.64-1.74 0-2.33-.89-2.46-1.8H7.74c.14 1.8 1.48 2.88 3.16 3.28V20h2.34v-1.73c1.7-.32 2.92-1.46 2.92-3.04 0-2.31-1.92-3.03-3.85-3.49z"
+            ></path>
+          </svg>
+          <div class="relative z-10">
+            <p class="text-blue-100 font-medium mb-1">Available Credit</p>
+            <h3
+              class="text-4xl font-black mb-4"
+              th:text="|$ ${#numbers.formatDecimal(detail.credit != null ? detail.credit : 0, 1, 'COMMA', 2, 'POINT')}|"
+            >
+              $ 0.00
+            </h3>
+            <div class="flex gap-3">
+              <a
+                th:href="@{/topup}"
+                class="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-colors flex items-center gap-2"
+              >
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                  ></path>
+                </svg>
+                Top Up
+              </a>
+            </div>
+          </div>
+        </div>
 
+        <div
+          class="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm flex flex-col justify-center"
+        >
+          <div class="flex items-center gap-3 mb-2">
+            <div
+              class="w-10 h-10 rounded-full bg-green-50 text-green-500 flex items-center justify-center"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+            </div>
+            <h4 class="font-bold text-gray-900">Account Status</h4>
+          </div>
+          <p class="text-gray-500 text-sm ml-13">Verified Member</p>
+          <div class="mt-4 pt-4 border-t border-gray-50">
+            <p class="text-xs text-gray-400">Joined Date</p>
+            <p
+              class="text-sm font-semibold text-gray-700"
+              th:text="${detail.createdAt != null ? #temporals.format(detail.createdAt, 'dd MMM yyyy') : 'Recently'}"
+            >
+              01 Jan 2024
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="mt-10">
+        <h3 class="text-xl font-black text-gray-900 mb-6">Menu</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <a
+            th:href="@{/profile/orders}"
+            class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:border-[#0175CC] transition-all group"
+          >
+            <div
+              class="w-14 h-14 bg-blue-50 text-[#0175CC] rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-[#0175CC] group-hover:text-white transition-all duration-300"
+            >
+              <svg
+                class="w-7 h-7"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                />
+              </svg>
+            </div>
+            <h4 class="font-bold text-gray-900 text-lg">My Orders</h4>
+            <p class="text-gray-500 text-sm mt-1">
+              Track, return, or buy things again
+            </p>
+          </a>
+
+          <a
+            th:href="@{/profile/transactions}"
+            class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:border-[#0175CC] transition-all group"
+          >
+            <div
+              class="w-14 h-14 bg-blue-50 text-[#0175CC] rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-[#0175CC] group-hover:text-white transition-all duration-300"
+            >
+              <svg
+                class="w-7 h-7"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+            </div>
+            <h4 class="font-bold text-gray-900 text-lg">Transaction History</h4>
+            <p class="text-gray-500 text-sm mt-1">
+              View your top-up and purchase history
+            </p>
+          </a>
+
+          <a
+            th:href="@{/profile/addresses}"
+            class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:border-[#0175CC] transition-all group"
+          >
+            <div
+              class="w-14 h-14 bg-blue-50 text-[#0175CC] rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-[#0175CC] group-hover:text-white transition-all duration-300"
+            >
+              <svg
+                class="w-7 h-7"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+            </div>
+            <h4 class="font-bold text-gray-900 text-lg">Shipping Addresses</h4>
+            <p class="text-gray-500 text-sm mt-1">
+              Manage addresses for faster checkout
+            </p>
+          </a>
+        </div>
+      </div>
       <script>
         console.log("Script loaded!"); // บรรทัดนี้ช่วยเช็กว่า JS ทำงานหรือยัง ลองดูใน F12 Console
 
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener("DOMContentLoaded", () => {
           console.log("DOM loaded! กำลังผูก Event...");
-          
-          const dropZone = document.getElementById('bg-dropzone');
-          const dragOverlay = document.getElementById('drag-overlay');
-          const bgUploadInput = document.getElementById('bg-upload');
-          const bgPreview = document.getElementById('bg-preview');
-          const bgUploadText = document.getElementById('bg-upload-text');
 
-          const profileUploadInput = document.getElementById('profile-upload');
-          const profilePreview = document.getElementById('profile-preview');
-          
-          const userIdInput = document.getElementById('current-user-id');
-          const userId = userIdInput ? userIdInput.value : '1'; 
+          const dropZone = document.getElementById("bg-dropzone");
+          const dragOverlay = document.getElementById("drag-overlay");
+          const bgUploadInput = document.getElementById("bg-upload");
+          const bgPreview = document.getElementById("bg-preview");
+          const bgUploadText = document.getElementById("bg-upload-text");
+
+          const profileUploadInput = document.getElementById("profile-upload");
+          const profilePreview = document.getElementById("profile-preview");
+
+          const userIdInput = document.getElementById("current-user-id");
+          const userId = userIdInput ? userIdInput.value : "1";
 
           // เช็กก่อนว่ามี Element ครบไหม
           if (!profileUploadInput || !bgUploadInput) {
@@ -91,82 +332,87 @@
           }
 
           // === โปรไฟล์ ===
-          profileUploadInput.addEventListener('change', async function() {
+          profileUploadInput.addEventListener("change", async function () {
             console.log("มีการเลือกไฟล์รูปโปรไฟล์");
             if (this.files && this.files[0]) {
               const file = this.files[0];
-              
+
               const reader = new FileReader();
-              reader.onload = function(e) {
+              reader.onload = function (e) {
                 profilePreview.src = e.target.result;
-              }
+              };
               reader.readAsDataURL(file);
-              
+
               const formData = new FormData();
-              formData.append('file', file); 
+              formData.append("file", file);
 
               try {
                 const response = await fetch(`/api/users/${userId}/profile`, {
-                  method: 'POST', 
-                  body: formData
+                  method: "POST",
+                  body: formData,
                 });
                 console.log("Response Profile:", response);
               } catch (error) {
-                console.error('Network Error Profile:', error);
+                console.error("Network Error Profile:", error);
               } finally {
-                this.value = ''; 
+                this.value = "";
               }
             }
           });
 
           // === หน้าปก ===
-          if(dropZone) {
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-              dropZone.addEventListener(eventName, e => {
-                e.preventDefault();
-                e.stopPropagation();
-              }, false);
-            });
+          if (dropZone) {
+            ["dragenter", "dragover", "dragleave", "drop"].forEach(
+              (eventName) => {
+                dropZone.addEventListener(
+                  eventName,
+                  (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  },
+                  false,
+                );
+              },
+            );
 
-            dropZone.addEventListener('drop', (e) => {
+            dropZone.addEventListener("drop", (e) => {
               console.log("มีการ Drop ไฟล์หน้าปก");
               const dt = e.dataTransfer;
               if (dt.files.length > 0) handleBgFile(dt.files[0]);
             });
           }
 
-          bgUploadInput.addEventListener('change', function() {
+          bgUploadInput.addEventListener("change", function () {
             console.log("มีการเลือกไฟล์รูปหน้าปกผ่านการคลิก");
             if (this.files.length > 0) handleBgFile(this.files[0]);
           });
 
           function handleBgFile(file) {
-            if (!file.type.startsWith('image/')) return;
+            if (!file.type.startsWith("image/")) return;
             const reader = new FileReader();
-            reader.onload = (e) => bgPreview.src = e.target.result;
+            reader.onload = (e) => (bgPreview.src = e.target.result);
             reader.readAsDataURL(file);
             uploadBgToServer(file);
           }
 
           async function uploadBgToServer(file) {
             const formData = new FormData();
-            formData.append('file', file); 
-            if(bgUploadText) bgUploadText.innerText = 'กำลังอัปโหลด...';
+            formData.append("file", file);
+            if (bgUploadText) bgUploadText.innerText = "กำลังอัปโหลด...";
 
             try {
               const response = await fetch(`/api/users/${userId}/background`, {
-                method: 'POST', 
-                body: formData
+                method: "POST",
+                body: formData,
               });
               console.log("Response BG:", response);
             } catch (error) {
-              console.error('Network Error BG:', error);
+              console.error("Network Error BG:", error);
             } finally {
-              if(bgUploadText) bgUploadText.innerText = 'เปลี่ยนรูปปก';
-              bgUploadInput.value = ''; 
+              if (bgUploadText) bgUploadText.innerText = "เปลี่ยนรูปปก";
+              bgUploadInput.value = "";
             }
           }
-
         });
       </script>
     </section>
