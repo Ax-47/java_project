@@ -59,23 +59,22 @@ public class SecurityConfig {
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
         .authorizeHttpRequests(
-            auth ->
-                auth.requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**")
-                    .permitAll()
-                    .requestMatchers("/swagger-ui/**", "/v3/api-docs/**")
-                    .permitAll()
-                    .requestMatchers("/products/*/purchase", "/profile", "/topup")
-                    .authenticated()
-                    .requestMatchers("/api/**")
-                    .authenticated()
-                    .requestMatchers("/admin/**")
-                    .hasRole("ADMIN")
-                    .requestMatchers("/", "/signin", "/signup", "/review", "/api/image/**")
-                    .permitAll()
-                    .requestMatchers("/products/**", "/categories/**")
-                    .permitAll()
-                    .anyRequest()
-                    .authenticated())
+            auth -> auth.requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**")
+                .permitAll()
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/api/image/**")
+                .permitAll()
+                .requestMatchers("/products/*/purchase", "/profile", "/topup")
+                .authenticated()
+                .requestMatchers("/api/**")
+                .authenticated()
+                .requestMatchers("/admin/**")
+                .hasRole("ADMIN")
+                .requestMatchers("/", "/signin", "/signup", "/review")
+                .permitAll()
+                .requestMatchers("/products/**", "/categories/**")
+                .permitAll()
+                .anyRequest()
+                .authenticated())
         .addFilterBefore(authorizeFilter, UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
@@ -83,8 +82,7 @@ public class SecurityConfig {
 
   @Bean
   public JwtAuthenticationConverter jwtAuthenticationConverter() {
-    JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter =
-        new JwtGrantedAuthoritiesConverter();
+    JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
     jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("role");
     jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
     JwtAuthenticationConverter jwtConverter = new JwtAuthenticationConverter();
@@ -96,16 +94,14 @@ public class SecurityConfig {
   public AuthenticationManager authenticationManager(
       PasswordEncoder passwordEncoder, UserDetailsService userDetailsService) {
 
-    DaoAuthenticationProvider authenticationProvider =
-        new DaoAuthenticationProvider(userDetailsService);
+    DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider(userDetailsService);
     authenticationProvider.setPasswordEncoder(passwordEncoder);
     return new ProviderManager(authenticationProvider);
   }
 
   @Bean
   public JwtEncoder jwtEncoder(RSAKeyProperties rsaInstance) {
-    JWK jwk =
-        new RSAKey.Builder(rsaInstance.publicKey()).privateKey(rsaInstance.privateKey()).build();
+    JWK jwk = new RSAKey.Builder(rsaInstance.publicKey()).privateKey(rsaInstance.privateKey()).build();
     JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
     return new NimbusJwtEncoder(jwks);
   }
@@ -123,23 +119,19 @@ public class SecurityConfig {
     Resource publicKey = resourceLoader.getResource("classpath:public_key.pem");
     String publicKeyContent = new String(publicKey.getContentAsByteArray());
 
-    privateKeyContent =
-        privateKeyContent
-            .replaceAll("\\n", "")
-            .replace("-----BEGIN PRIVATE KEY-----", "")
-            .replace("-----END PRIVATE KEY-----", "");
-    publicKeyContent =
-        publicKeyContent
-            .replaceAll("\\n", "")
-            .replace("-----BEGIN PUBLIC KEY-----", "")
-            .replace("-----END PUBLIC KEY-----", "");
+    privateKeyContent = privateKeyContent
+        .replaceAll("\\n", "")
+        .replace("-----BEGIN PRIVATE KEY-----", "")
+        .replace("-----END PRIVATE KEY-----", "");
+    publicKeyContent = publicKeyContent
+        .replaceAll("\\n", "")
+        .replace("-----BEGIN PUBLIC KEY-----", "")
+        .replace("-----END PUBLIC KEY-----", "");
 
     KeyFactory kf = KeyFactory.getInstance("RSA");
-    PKCS8EncodedKeySpec keySpecPKCS8 =
-        new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKeyContent));
+    PKCS8EncodedKeySpec keySpecPKCS8 = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKeyContent));
     PrivateKey privKey = kf.generatePrivate(keySpecPKCS8);
-    X509EncodedKeySpec keySpecX509 =
-        new X509EncodedKeySpec(Base64.getDecoder().decode(publicKeyContent));
+    X509EncodedKeySpec keySpecX509 = new X509EncodedKeySpec(Base64.getDecoder().decode(publicKeyContent));
     RSAPublicKey pubKey = (RSAPublicKey) kf.generatePublic(keySpecX509);
     return new RSAKeyProperties(pubKey, privKey);
   }
