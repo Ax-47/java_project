@@ -217,7 +217,7 @@
             ></td>
             <td class="px-4 py-3 text-sm text-center space-x-2">
               <a
-                th:href="@{/admin/products/edit/{id}(id=${product.id},tab='products', orderPage=${orderPage}, productPage=${productPage}, categoryPage=${categoryPage})}"
+                th:href="@{/admin/products/{id}/edit(id=${product.id},tab='products', orderPage=${orderPage}, productPage=${productPage}, categoryPage=${categoryPage})}"
                 class="text-yellow-600 font-semibold hover:underline"
                 >Edit</a
               >

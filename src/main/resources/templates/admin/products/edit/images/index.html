@@ -12,7 +12,7 @@
       <div class="flex items-center justify-between mb-6">
         <div class="flex items-center space-x-4">
           <a
-            th:href="@{/admin/products/edit/{id}(id=${product.id})}"
+            th:href="@{/admin/products/{id}/edit(id=${product.id})}"
             class="p-2 bg-white border border-gray-300 rounded-full hover:bg-gray-50 transition shadow-sm"
           >
             <svg
@@ -152,9 +152,11 @@
 
     <th:block id="custom-scripts">
       <script th:inline="javascript">
-        const productId = /*[[${product.id}]]*/ "uuid";
+        const productId = /*[[${product.id}]]*/ "";
         const apiBaseUrl = `/api/products/${productId}/images`;
 
+        const csrfToken = /*[[${_csrf.token}]]*/ "";
+        const csrfHeader = /*[[${_csrf.headerName}]]*/ "X-CSRF-TOKEN";
         async function handleFileUpload(event) {
           const files = event.target.files;
           if (files.length === 0) return;
@@ -167,9 +169,13 @@
               const response = await fetch(`${apiBaseUrl}`, {
                 method: "POST",
                 body: formData,
+                headers: {
+                  [csrfHeader]: csrfToken,
+                },
+                credentials: "include",
               });
               if (response.ok || response.status === 204) {
-                document.getElementById(`img-card-${imageId}`).remove();
+                // document.getElementById(`img-card-${imageId}`).remove();
               } else {
                 alert("Delete failed");
               }
@@ -186,6 +192,10 @@
           try {
             const response = await fetch(`${apiBaseUrl}/${imageId}`, {
               method: "DELETE",
+              headers: {
+                [csrfHeader]: csrfToken,
+              },
+              credentials: "include",
             });
             if (response.ok || response.status === 204) {
               document.getElementById(`img-card-${imageId}`).remove();
@@ -207,7 +217,11 @@
           try {
             const response = await fetch(`${apiBaseUrl}/reorder`, {
               method: "PATCH",
-              headers: { "Content-Type": "application/json" },
+              headers: {
+                "Content-Type": "application/json", // ✅ บอกว่าเป็น JSON
+                [csrfHeader]: csrfToken, // ✅ ส่ง CSRF Token
+              },
+              credentials: "include",
               body: JSON.stringify(payload),
             });
 

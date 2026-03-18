@@ -303,7 +303,8 @@
       <script th:inline="javascript">
         const productId = /*[[${product.id}]]*/ "default-uuid";
         const apiBaseUrl = `/api/products/${productId}`;
-
+        const csrfToken = /*[[${_csrf.token}]]*/ '';
+        const csrfHeader = /*[[${_csrf.headerName}]]*/ 'X-CSRF-TOKEN';
         async function addCategory() {
           const select = document.getElementById("new-category-select");
           const categoryId = select.value;
@@ -312,7 +313,11 @@
           try {
             const response = await fetch(
               `${apiBaseUrl}/categories/${categoryId}`,
-              { method: "POST" },
+              { method: "POST" ,
+              headers: {
+                [csrfHeader]: csrfToken
+              }
+              },
             );
             if (response.ok) {
               alert("Category added successfully!");
@@ -332,7 +337,12 @@
           try {
             const response = await fetch(
               `${apiBaseUrl}/categories/${categoryId}`,
-              { method: "DELETE" },
+              { method: "DELETE" ,
+
+              headers: {
+                [csrfHeader]: csrfToken
+              }
+              },
             );
             if (response.ok || response.status === 204) {
               document.getElementById(`cat-${categoryId}`).remove();

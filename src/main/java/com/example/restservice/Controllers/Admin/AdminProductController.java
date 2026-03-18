@@ -72,7 +72,7 @@ public class AdminProductController {
     return redirectToAdmin(orderPage, productPage, categoryPage, tab);
   }
 
-  @GetMapping("/edit/{productId}")
+  @GetMapping("/{productId}/edit")
   public String editProductView(@PathVariable UUID productId, Model model) {
     var product = databaseProductRepository.findById(productId).orElseThrow();
     var allCategories = databaseCategoryRepository.findAll();
