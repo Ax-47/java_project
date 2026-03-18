@@ -48,11 +48,14 @@ public class FindReveiwByProductUsecase {
                       ImageResource.of(review.getUserId(), ImageResourceType.USER_PROFILE);
                   List<Image> profileList = databaseImageRepository.findByResource(profileResource);
                   String profileUrl =
-                      profileList.stream().findFirst() != null
-                          ? "/images"
-                              + profileResource.genFilename(
-                                  profileList.getFirst().getId(), ImageSize.MEDIUM)
-                          : "/images/profile-pic.png";
+                      profileList.stream()
+                          .findFirst()
+                          .map(
+                              image ->
+                                  "/images"
+                                      + profileResource.genFilename(
+                                          image.getId(), ImageSize.MEDIUM))
+                          .orElse("/images/profile-pic.png");
                   return ReviewWithUserResponseDTO.from(review, username, profileUrl);
                 })
             .toList();
