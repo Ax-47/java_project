@@ -11,6 +11,8 @@ public interface DatabaseOrderRepository {
 
   Optional<Order> findById(UUID id);
 
+  Page<Order> findAllByUserId(UUID userId, PageQuery query);
+
   Page<Order> findAll(PageQuery query);
 
   public Order delete(Order product);

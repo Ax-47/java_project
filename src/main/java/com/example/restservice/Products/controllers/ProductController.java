@@ -157,7 +157,7 @@ public class ProductController {
   public ResponseEntity<Void> purchase(
       @PathVariable UUID productId, @AuthenticationPrincipal UserPrincipalDTO user) {
 
-    purchaseProductUsecase.execute(user.id(), productId);
+    // purchaseProductUsecase.execute(user.id(), productId);
 
     return ResponseEntity.ok().build();
   }

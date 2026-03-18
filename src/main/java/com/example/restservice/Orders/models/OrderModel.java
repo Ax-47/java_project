@@ -98,9 +98,7 @@ public class OrderModel {
 
     OrderModel model = new OrderModel();
 
-    if (order.getId() != null) {
-      model.id = order.getId();
-    }
+    model.id = order.getId();
 
     model.userId = order.getUserId();
 
@@ -119,7 +117,8 @@ public class OrderModel {
     model.province = addr.getProvince();
     model.postalCode = addr.getPostalCode();
     model.country = addr.getCountry();
-
+    model.createdAt = order.getCreatedAt();
+    model.updatedAt = order.getUpdatedAt();
     model.status = order.getStatus();
 
     return model;

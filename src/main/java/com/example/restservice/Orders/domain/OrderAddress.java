@@ -2,6 +2,7 @@ package com.example.restservice.Orders.domain;
 
 import java.util.Objects;
 
+import com.example.restservice.Address.domain.Address;
 import com.example.restservice.Address.domain.PhoneNumber;
 import com.example.restservice.Orders.exceptions.AddressValidationException;
 
@@ -40,6 +41,21 @@ public class OrderAddress {
     this.province = require("province", province, "Province is required");
     this.postalCode = require("postalCode", postalCode, "Postal code is required");
     this.country = require("country", country, "Country is required");
+  }
+
+  public static OrderAddress of(Address address) {
+    Objects.requireNonNull(address, "Address cannot be null");
+
+    return new OrderAddress(
+        address.getFullName(),
+        address.getPhoneNumber(),
+        address.getAddressLine1(),
+        address.getAddressLine2(),
+        address.getSubDistrict(),
+        address.getDistrict(),
+        address.getProvince(),
+        address.getPostalCode(),
+        address.getCountry());
   }
 
   private String require(String field, String value, String message) {

@@ -35,7 +35,7 @@ public class TransactionStatementsModel {
   @Enumerated(EnumType.STRING)
   private TransactionStatementsType type;
 
-  @Column(nullable = false)
+  @Column(nullable = true)
   @Enumerated(EnumType.STRING)
   private TransactionStatementsMethod method;
 
@@ -43,7 +43,7 @@ public class TransactionStatementsModel {
   @Enumerated(EnumType.STRING)
   private TransactionStatementsStatus status;
 
-  @Column(nullable = false, length = 255)
+  @Column(length = 255, nullable = true)
   private String referenceId;
 
   @CreationTimestamp
@@ -59,9 +59,9 @@ public class TransactionStatementsModel {
         Optional.ofNullable(this.orderId),
         Credit.of(this.amount),
         this.type,
-        this.method,
+        Optional.ofNullable(this.method),
         this.status,
-        this.referenceId,
+        Optional.ofNullable(this.referenceId),
         this.createdAt);
   }
 
@@ -78,9 +78,9 @@ public class TransactionStatementsModel {
     model.orderId = domain.getOrderId().orElse(null);
     model.amount = domain.getAmount().getValue();
     model.type = domain.getType();
-    model.method = domain.getMethod();
+    model.method = domain.getMethod().orElse(null);
     model.status = domain.getStatus();
-    model.referenceId = domain.getReferenceId();
+    model.referenceId = domain.getReferenceId().orElse(null);
 
     if (domain.getCreatedAt() != null) {
       model.createdAt = domain.getCreatedAt();

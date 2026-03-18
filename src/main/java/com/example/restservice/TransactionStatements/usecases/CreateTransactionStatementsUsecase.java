@@ -41,9 +41,9 @@ public class CreateTransactionStatementsUsecase {
             Optional.ofNullable(request.orderId()),
             Credit.of(request.amount()),
             request.type(),
-            request.method(),
+            Optional.ofNullable(request.method()),
             request.status(),
-            request.referenceId());
+            Optional.ofNullable(request.referenceId()));
 
     this.databaseTransactionStatementsRepository.save(newTransaction);
 

@@ -13,27 +13,9 @@
 
       <div class="border-b border-gray-200 mb-6">
         <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-          <button
-            onclick="switchTab('orders')"
-            id="tab-orders"
-            class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
-          >
-            Orders
-          </button>
-          <button
-            onclick="switchTab('products')"
-            id="tab-products"
-            class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
-          >
-            Products
-          </button>
-          <button
-            onclick="switchTab('categories')"
-            id="tab-categories"
-            class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
-          >
-            Categories
-          </button>
+          <button onclick="switchTab('orders')" id="tab-orders" class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Orders</button>
+          <button onclick="switchTab('products')" id="tab-products" class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Products</button>
+          <button onclick="switchTab('categories')" id="tab-categories" class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Categories</button>
         </nav>
       </div>
 
@@ -42,36 +24,46 @@
         'content-orders', ${activeTab != 'orders'}, null, null, 
         ~{::orderHeaders}, ~{::orderRows},
         ${orderPage}, ${orderTotal},
-        @{/admin(tab='orders', orderPage=${orderPage - 1}, productPage=${productPage}, categoryPage=${categoryPage})},
-        @{/admin(tab='orders', orderPage=${orderPage + 1}, productPage=${productPage}, categoryPage=${categoryPage})})}"
+        @{/admin(tab='orders', orderPage=${orderPage - 1}, productPage=${productPage}, categoryPage=${categoryPage}, sortBy=${sortBy}, sortDir=${sortDir})},
+        @{/admin(tab='orders', orderPage=${orderPage + 1}, productPage=${productPage}, categoryPage=${categoryPage}, sortBy=${sortBy}, sortDir=${sortDir})})}"
       >
         <tr th:fragment="orderHeaders">
-          <th class="px-4 py-3 text-sm font-semibold uppercase">Order ID</th>
-          <th class="px-4 py-3 text-sm font-semibold uppercase">Status</th>
-          <th class="px-4 py-3 text-sm font-semibold uppercase text-center">
-            Actions
+          <th class="px-4 py-3 text-sm font-semibold uppercase">
+            <a th:href="@{/admin(tab='orders', orderPage=0, productPage=${productPage}, categoryPage=${categoryPage}, sortBy='id', sortDir=${sortBy == 'id' and sortDir == 'asc' ? 'desc' : 'asc'})}" class="flex items-center gap-1 hover:text-gray-300 transition-colors">
+              Order ID
+              <span th:if="${sortBy == 'id'}" th:utext="${sortDir == 'asc' ? '&#9650;' : '&#9660;'}"></span>
+            </a>
           </th>
+          <th class="px-4 py-3 text-sm font-semibold uppercase">Name</th>
+          <th class="px-4 py-3 text-sm font-semibold uppercase">Item</th>
+          <th class="px-4 py-3 text-sm font-semibold uppercase">
+            <a th:href="@{/admin(tab='orders', orderPage=0, productPage=${productPage}, categoryPage=${categoryPage}, sortBy='status', sortDir=${sortBy == 'status' and sortDir == 'asc' ? 'desc' : 'asc'})}" class="flex items-center gap-1 hover:text-gray-300 transition-colors">
+              Status
+              <span th:if="${sortBy == 'status'}" th:utext="${sortDir == 'asc' ? '&#9650;' : '&#9660;'}"></span>
+            </a>
+          </th>
+          <th class="px-4 py-3 text-sm font-semibold uppercase text-center">Actions</th>
         </tr>
 
         <th:block th:fragment="orderRows">
           <tr th:each="order : ${orders}" class="hover:bg-gray-50 transition">
-            <td
-              class="px-4 py-3 text-sm"
-              th:text="${#strings.substring(order.id, 0, 8)}"
-            ></td>
-            <td class="px-4 py-3 text-sm" th:text="${order.status}"></td>
+            <td class="px-4 py-3 text-sm font-mono text-gray-600" th:text="${#strings.substring(order.id, 0, 8)}"></td>
+            <td class="px-4 py-3 text-sm" th:text="${order.fullName}"></td>
+            <td class="px-4 py-3 text-sm" th:text="${order.productName}"></td>
+            <td class="px-4 py-3 text-sm">
+              <span th:if="${order.status.name() == 'PENDING'}" class="bg-yellow-100 text-yellow-700 text-xs px-2 py-1 rounded font-bold">PENDING</span>
+              <span th:if="${order.status.name() == 'SHIPPED'}" class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold">SHIPPED</span>
+              <span th:if="${order.status.name() == 'COMPLETED'}" class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded font-bold">COMPLETED</span>
+              <span th:if="${order.status.name() == 'CANCELLED'}" class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded font-bold">CANCELLED</span>
+            </td>
             <td class="px-4 py-3 text-sm text-center">
-              <a
-                th:href="@{/admin/orders/view/{id}(id=${order.id})}"
-                class="text-blue-600"
-                >View</a
-              >
+              <div class="flex items-center justify-center gap-3">
+                <a th:href="@{/admin/orders/view/{id}(id=${order.id})}" class="text-blue-600 hover:underline font-semibold">View</a>
+              </div>
             </td>
           </tr>
           <tr th:if="${#lists.isEmpty(orders)}">
-            <td colspan="3" class="px-4 py-8 text-center text-gray-500">
-              No orders found.
-            </td>
+            <td colspan="5" class="px-4 py-8 text-center text-gray-500">No orders found.</td>
           </tr>
         </th:block>
       </div>
@@ -81,54 +73,44 @@
         'content-products', ${activeTab != 'products'}, '/admin/products/create', '+ Add Product', 
         ~{::productHeaders}, ~{::productRows},
         ${productPage}, ${productTotal},
-        @{/admin(tab='products', orderPage=${orderPage}, productPage=${productPage - 1}, categoryPage=${categoryPage})},
-        @{/admin(tab='products', orderPage=${orderPage}, productPage=${productPage + 1}, categoryPage=${categoryPage})})}"
+        @{/admin(tab='products', orderPage=${orderPage}, productPage=${productPage - 1}, categoryPage=${categoryPage}, sortBy=${sortBy}, sortDir=${sortDir})},
+        @{/admin(tab='products', orderPage=${orderPage}, productPage=${productPage + 1}, categoryPage=${categoryPage}, sortBy=${sortBy}, sortDir=${sortDir})})}"
       >
         <tr th:fragment="productHeaders">
-          <th class="px-4 py-3 text-sm font-semibold uppercase">Product ID</th>
-          <th class="px-4 py-3 text-sm font-semibold uppercase">Name</th>
-          <th class="px-4 py-3 text-sm font-semibold uppercase">Price</th>
-          <th class="px-4 py-3 text-sm font-semibold uppercase text-center">
-            Actions
+          <th class="px-4 py-3 text-sm font-semibold uppercase">
+            <a th:href="@{/admin(tab='products', orderPage=${orderPage}, productPage=0, categoryPage=${categoryPage}, sortBy='id', sortDir=${sortBy == 'id' and sortDir == 'asc' ? 'desc' : 'asc'})}" class="flex items-center gap-1 hover:text-gray-300 transition-colors">
+              Product ID
+              <span th:if="${sortBy == 'id'}" th:utext="${sortDir == 'asc' ? '&#9650;' : '&#9660;'}"></span>
+            </a>
           </th>
+          <th class="px-4 py-3 text-sm font-semibold uppercase">
+            <a th:href="@{/admin(tab='products', orderPage=${orderPage}, productPage=0, categoryPage=${categoryPage}, sortBy='name', sortDir=${sortBy == 'name' and sortDir == 'asc' ? 'desc' : 'asc'})}" class="flex items-center gap-1 hover:text-gray-300 transition-colors">
+              Name
+              <span th:if="${sortBy == 'name'}" th:utext="${sortDir == 'asc' ? '&#9650;' : '&#9660;'}"></span>
+            </a>
+          </th>
+          <th class="px-4 py-3 text-sm font-semibold uppercase">
+            <a th:href="@{/admin(tab='products', orderPage=${orderPage}, productPage=0, categoryPage=${categoryPage}, sortBy='price', sortDir=${sortBy == 'price' and sortDir == 'asc' ? 'desc' : 'asc'})}" class="flex items-center gap-1 hover:text-gray-300 transition-colors">
+              Price
+              <span th:if="${sortBy == 'price'}" th:utext="${sortDir == 'asc' ? '&#9650;' : '&#9660;'}"></span>
+            </a>
+          </th>
+          <th class="px-4 py-3 text-sm font-semibold uppercase text-center">Actions</th>
         </tr>
         <th:block th:fragment="productRows">
-          <tr
-            th:each="product : ${products}"
-            class="hover:bg-gray-50 transition"
-          >
-            <td
-              class="px-4 py-3 text-sm"
-              th:text="${#strings.substring(product.id, 0, 8)}"
-            ></td>
-            <td
-              class="px-4 py-3 text-sm font-medium"
-              th:text="${product.name}"
-            ></td>
-            <td
-              class="px-4 py-3 text-sm"
-              th:text="${product.price.getValue()}"
-            ></td>
+          <tr th:each="product : ${products}" class="hover:bg-gray-50 transition">
+            <td class="px-4 py-3 text-sm font-mono text-gray-600" th:text="${#strings.substring(product.id, 0, 8)}"></td>
+            <td class="px-4 py-3 text-sm font-medium" th:text="${product.name}"></td>
+            <td class="px-4 py-3 text-sm" th:text="${product.price.getValue()}"></td>
             <td class="px-4 py-3 text-sm text-center space-x-2">
-              <a
-                th:href="@{/admin/products/edit/{id}(id=${product.id},tab='products', orderPage=${orderPage}, productPage=${productPage + 1}, categoryPage=${categoryPage})}"
-                class="text-yellow-600"
-                >Edit</a
-              >
-
-              <form
-                th:action="@{/admin/products/{id}/delete(id=${product.id})}"
-                method="post"
-                class="inline"
-              >
-                <button type="submit" class="text-red-600">Delete</button>
+              <a th:href="@{/admin/products/edit/{id}(id=${product.id},tab='products', orderPage=${orderPage}, productPage=${productPage}, categoryPage=${categoryPage})}" class="text-yellow-600 font-semibold hover:underline">Edit</a>
+              <form th:action="@{/admin/products/{id}/delete(id=${product.id})}" method="post" class="inline" onsubmit="return confirm('ลบสินค้านี้ใช่หรือไม่?');">
+                <button type="submit" class="text-red-600 font-semibold hover:underline bg-transparent border-0 cursor-pointer p-0">Delete</button>
               </form>
             </td>
           </tr>
           <tr th:if="${#lists.isEmpty(products)}">
-            <td colspan="4" class="px-4 py-8 text-center text-gray-500">
-              No products found.
-            </td>
+            <td colspan="4" class="px-4 py-8 text-center text-gray-500">No products found.</td>
           </tr>
         </th:block>
       </div>
@@ -138,48 +120,38 @@
         'content-categories', ${activeTab != 'categories'}, '/admin/categories/create', '+ Add Category', 
         ~{::categoryHeaders}, ~{::categoryRows},
         ${categoryPage}, ${categoryTotal},
-        @{/admin(tab='categories', orderPage=${orderPage}, productPage=${productPage}, categoryPage=${categoryPage - 1})},
-        @{/admin(tab='categories', orderPage=${orderPage}, productPage=${productPage}, categoryPage=${categoryPage + 1})})}"
+        @{/admin(tab='categories', orderPage=${orderPage}, productPage=${productPage}, categoryPage=${categoryPage - 1}, sortBy=${sortBy}, sortDir=${sortDir})},
+        @{/admin(tab='categories', orderPage=${orderPage}, productPage=${productPage}, categoryPage=${categoryPage + 1}, sortBy=${sortBy}, sortDir=${sortDir})})}"
       >
         <tr th:fragment="categoryHeaders">
-          <th class="px-4 py-3 text-sm font-semibold uppercase">Category ID</th>
-          <th class="px-4 py-3 text-sm font-semibold uppercase">Name</th>
-          <th class="px-4 py-3 text-sm font-semibold uppercase text-center">
-            Actions
+          <th class="px-4 py-3 text-sm font-semibold uppercase">
+            <a th:href="@{/admin(tab='categories', orderPage=${orderPage}, productPage=${productPage}, categoryPage=0, sortBy='id', sortDir=${sortBy == 'id' and sortDir == 'asc' ? 'desc' : 'asc'})}" class="flex items-center gap-1 hover:text-gray-300 transition-colors">
+              Category ID
+              <span th:if="${sortBy == 'id'}" th:utext="${sortDir == 'asc' ? '&#9650;' : '&#9660;'}"></span>
+            </a>
           </th>
+          <th class="px-4 py-3 text-sm font-semibold uppercase">
+            <a th:href="@{/admin(tab='categories', orderPage=${orderPage}, productPage=${productPage}, categoryPage=0, sortBy='categoryName', sortDir=${sortBy == 'categoryName' and sortDir == 'asc' ? 'desc' : 'asc'})}" class="flex items-center gap-1 hover:text-gray-300 transition-colors">
+              Name
+              <span th:if="${sortBy == 'categoryName'}" th:utext="${sortDir == 'asc' ? '&#9650;' : '&#9660;'}"></span>
+            </a>
+          </th>
+          <th class="px-4 py-3 text-sm font-semibold uppercase text-center">Actions</th>
         </tr>
 
         <th:block th:fragment="categoryRows">
           <tr th:each="cat : ${categories}" class="hover:bg-gray-50 transition">
-            <td
-              class="px-4 py-3 text-sm"
-              th:text="${#strings.substring(cat.id, 0, 8)}"
-            ></td>
-
-            <td
-              class="px-4 py-3 text-sm font-medium"
-              th:text="${cat.categoryName}"
-            ></td>
-
+            <td class="px-4 py-3 text-sm font-mono text-gray-600" th:text="${#strings.substring(cat.id, 0, 8)}"></td>
+            <td class="px-4 py-3 text-sm font-medium" th:text="${cat.categoryName}"></td>
             <td class="px-4 py-3 text-sm text-center space-x-2">
-              <a
-                th:href="@{/admin/categories/{id}/edit(id=${cat.id})}"
-                class="text-yellow-600"
-                >Edit</a
-              >
-              <form
-                th:action="@{/admin/categories/{id}/delete(id=${cat.id})}"
-                method="post"
-                class="inline"
-              >
-                <button type="submit" class="text-red-600">Delete</button>
+              <a th:href="@{/admin/categories/{id}/edit(id=${cat.id})}" class="text-yellow-600 font-semibold hover:underline">Edit</a>
+              <form th:action="@{/admin/categories/{id}/delete(id=${cat.id})}" method="post" class="inline" onsubmit="return confirm('ลบหมวดหมู่นี้ใช่หรือไม่?');">
+                <button type="submit" class="text-red-600 font-semibold hover:underline bg-transparent border-0 cursor-pointer p-0">Delete</button>
               </form>
             </td>
           </tr>
           <tr th:if="${#lists.isEmpty(categories)}">
-            <td colspan="3" class="px-4 py-8 text-center text-gray-500">
-              No categories found.
-            </td>
+            <td colspan="3" class="px-4 py-8 text-center text-gray-500">No categories found.</td>
           </tr>
         </th:block>
       </div>
@@ -199,12 +171,7 @@
 
           document.querySelectorAll(".tab-btn").forEach((el) => {
             el.classList.remove("border-blue-500", "text-blue-600");
-            el.classList.add(
-              "border-transparent",
-              "text-gray-500",
-              "hover:text-gray-700",
-              "hover:border-gray-300",
-            );
+            el.classList.add("border-transparent", "text-gray-500", "hover:text-gray-700", "hover:border-gray-300");
           });
 
           const contentEl = document.getElementById(`content-${tabName}`);
@@ -215,12 +182,7 @@
 
           const activeTabBtn = document.getElementById(`tab-${tabName}`);
           if (activeTabBtn) {
-            activeTabBtn.classList.remove(
-              "border-transparent",
-              "text-gray-500",
-              "hover:text-gray-700",
-              "hover:border-gray-300",
-            );
+            activeTabBtn.classList.remove("border-transparent", "text-gray-500", "hover:text-gray-700", "hover:border-gray-300");
             activeTabBtn.classList.add("border-blue-500", "text-blue-600");
           }
 

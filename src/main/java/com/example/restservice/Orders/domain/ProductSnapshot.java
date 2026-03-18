@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 import com.example.restservice.Products.domain.Price;
+import com.example.restservice.Products.domain.Product;
 
 public class ProductSnapshot {
 
@@ -20,6 +21,10 @@ public class ProductSnapshot {
 
     this.productName = productName;
     this.price = Objects.requireNonNull(price);
+  }
+
+  public static ProductSnapshot of(Product product) {
+    return new ProductSnapshot(product.getId(), product.getName(), product.getPrice());
   }
 
   public UUID getProductId() {

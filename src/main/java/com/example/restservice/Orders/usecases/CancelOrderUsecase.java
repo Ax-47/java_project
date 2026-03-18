@@ -1,14 +1,14 @@
 package com.example.restservice.Orders.usecases;
 
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.restservice.Orders.domain.DatabaseOrderRepository;
 import com.example.restservice.Orders.domain.Order;
-import com.example.restservice.Orders.dto.CancelOrderRequestDTO;
 import com.example.restservice.Orders.dto.CancelOrderResponseDTO;
 import com.example.restservice.Orders.exceptions.OrderNotFoundException;
-import com.example.restservice.Products.exceptions.UnauthorizedProductActionException;
 
 @Service
 public class CancelOrderUsecase {
@@ -20,16 +20,11 @@ public class CancelOrderUsecase {
   }
 
   @Transactional
-  public CancelOrderResponseDTO execute(CancelOrderRequestDTO request) {
+  public CancelOrderResponseDTO execute(UUID orderId) {
     Order existingOrder =
         this.databaseOrderRepository
-            .findById(request.orderId())
-            .orElseThrow(
-                () -> new OrderNotFoundException("Order not found with ID: " + request.orderId()));
-
-    if (!existingOrder.getUserId().equals(request.userId())) {
-      throw new UnauthorizedProductActionException("Unauthorized to cancel this order");
-    }
+            .findById(orderId)
+            .orElseThrow(() -> new OrderNotFoundException("Order not found with ID: " + orderId));
 
     existingOrder.cancel();
 
