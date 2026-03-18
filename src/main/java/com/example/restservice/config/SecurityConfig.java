@@ -18,7 +18,6 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -58,7 +57,7 @@ public class SecurityConfig {
 
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.csrf(Customizer.withDefaults())
+    http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
         .authorizeHttpRequests(
             auth ->
                 auth.requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**")
@@ -67,13 +66,24 @@ public class SecurityConfig {
                     .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**")
                     .permitAll()
                     // pages
-                    .requestMatchers("/", "/signin", "/signup")
+                    .requestMatchers(
+                        "/",
+                        "/signin",
+                        "/signup",
+                        "/products/**",
+                        "/categories/**",
+                        "/review",
+                        "/api/image/**")
                     .permitAll()
                     // auth api
                     .requestMatchers("/api/auth/**")
                     .permitAll()
+                    .requestMatchers("/admin/**")
+                    .hasRole("ADMIN")
                     // other api must auth
-                    .requestMatchers("/api/**")
+                    .requestMatchers("/api/review/*/images")
+                    .permitAll()
+                    .requestMatchers("/api/**", "/products/*/purchase", "/profile", "/topup")
                     .authenticated()
                     .anyRequest()
                     .authenticated())
