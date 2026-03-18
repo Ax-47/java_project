@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(content, scripts)">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard - I BUILD CPU</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Khula:wght@400;600;800&display=swap" rel="stylesheet" />
+    <script>
+      tailwind.config = {
+        theme: { 
+          extend: { 
+            fontFamily: { sans: ["Khula", "sans-serif"] },
+            colors: {
+              brand: "#0175CC"
+            }
+          } 
+        },
+      };
+    </script>
+  </head>
+
+  <body class="bg-gray-50 min-h-screen flex flex-col text-gray-800 antialiased">
+    
+    <nav class="bg-gray-900 border-b border-gray-800 sticky top-0 z-50 shadow-md">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          
+          <a class="flex items-center gap-3 text-xl font-black text-white hover:text-gray-200 transition group" href="/admin">
+            <div class="bg-brand p-1.5 rounded-lg group-hover:scale-105 transition-transform shadow-sm">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path>
+              </svg>
+            </div>
+            Admin Panel
+          </a>
+
+          <div class="hidden md:flex items-center gap-2">
+            <a class="text-gray-300 hover:text-white hover:bg-gray-800 px-3 py-2 rounded-lg text-sm font-semibold transition-colors" href="/admin/orders">Orders</a>
+            <a class="text-gray-300 hover:text-white hover:bg-gray-800 px-3 py-2 rounded-lg text-sm font-semibold transition-colors" href="/admin/products">Products</a>
+            <a class="text-gray-300 hover:text-white hover:bg-gray-800 px-3 py-2 rounded-lg text-sm font-semibold transition-colors" href="/admin/categories">Categories</a>
+            
+            <div class="w-px h-6 bg-gray-700 mx-2"></div> <form th:action="@{/signout}" method="post" class="m-0">
+
+              <button type="submit" class="text-red-400 hover:text-white hover:bg-red-500/20 border border-red-400/30 px-4 py-1.5 rounded-lg text-sm font-bold transition-colors ml-2">
+                Logout
+              </button>
+            </form>
+          </div>
+
+          <button id="mobile-menu-button" class="md:hidden text-gray-400 hover:text-white focus:outline-none p-2 rounded-lg hover:bg-gray-800 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+
+        </div>
+      </div>
+
+      <div id="mobile-menu" class="hidden md:hidden bg-gray-900 border-t border-gray-800 px-4 pt-2 pb-4 shadow-xl">
+        <ul class="flex flex-col space-y-1">
+          <li><a class="block text-gray-300 hover:bg-gray-800 hover:text-white px-3 py-2.5 rounded-lg font-medium transition-colors" href="/admin/orders">Orders</a></li>
+          <li><a class="block text-gray-300 hover:bg-gray-800 hover:text-white px-3 py-2.5 rounded-lg font-medium transition-colors" href="/admin/products">Products</a></li>
+          <li><a class="block text-gray-300 hover:bg-gray-800 hover:text-white px-3 py-2.5 rounded-lg font-medium transition-colors" href="/admin/categories">Categories</a></li>
+          <li class="pt-2 mt-2 border-t border-gray-800">
+            <form th:action="@{/sign_out}" method="post" class="m-0">
+              <button type="submit" class="w-full text-left block text-red-400 hover:bg-red-500/10 hover:text-red-300 px-3 py-2.5 rounded-lg font-medium transition-colors">
+                Logout
+              </button>
+            </form>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <main class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 mb-12 flex-grow">
+      
+      <div th:replace="${content}"></div>
+      
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 mt-auto">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
+        <span class="text-gray-500 text-sm font-medium">© 2024 I BUILD CPU Admin Dashboard.</span>
+        <span class="text-gray-400 text-xs">Version 1.0.0</span>
+      </div>
+    </footer>
+
+    <script>
+      // ระบบกาง/หุบ เมนูมือถือ
+      const btn = document.getElementById("mobile-menu-button");
+      const menu = document.getElementById("mobile-menu");
+      if (btn) {
+        btn.addEventListener("click", () => {
+          menu.classList.toggle("hidden");
+        });
+      }
+    </script>
+
+    <th:block th:replace="${scripts}"></th:block>
+
+  </body>
+</html>

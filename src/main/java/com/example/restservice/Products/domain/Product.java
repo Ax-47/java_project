@@ -2,12 +2,9 @@ package com.example.restservice.Products.domain;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 
-import com.example.restservice.ProductCategories.domain.ProductCategory;
 import com.example.restservice.Products.exceptions.*;
 
 public class Product {
@@ -16,7 +13,6 @@ public class Product {
   private String name;
   private Price price;
   private String description;
-  private final Set<ProductCategory> categories = new HashSet<>();
   private final UUID createdBy;
   private final Instant createdAt;
   private Instant updatedAt;
@@ -83,17 +79,6 @@ public class Product {
     if (description != null && description.length() > 511) {
       throw new InvalidProductDescriptionException("Description too long");
     }
-  }
-
-  public void addCategory(UUID categoryId) {
-    ProductCategory relation = ProductCategory.of(this.id, categoryId);
-    if (!categories.add(relation)) {
-      throw new IllegalStateException("Category already exists");
-    }
-  }
-
-  public void removeCategory(UUID categoryId) {
-    categories.removeIf(pc -> pc.getCategoryId().equals(categoryId));
   }
 
   public UUID getId() {

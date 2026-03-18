@@ -5,30 +5,63 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.example.restservice.Images.domain.DatabaseImageRepository;
+import com.example.restservice.Images.domain.Image;
+import com.example.restservice.Images.domain.ImageResource;
+import com.example.restservice.Images.domain.ImageResourceType;
+import com.example.restservice.Images.domain.ImageSize;
 import com.example.restservice.Reviews.domain.DatabaseReviewRepository;
 import com.example.restservice.Reviews.domain.Review;
-import com.example.restservice.Reviews.dto.ReviewResponseDTO;
+import com.example.restservice.Reviews.dto.ReviewWithUserResponseDTO;
+import com.example.restservice.Users.domain.DatabaseUserRepository;
 import com.example.restservice.common.*;
 
 @Service
 public class FindReveiwByProductUsecase {
 
   private final DatabaseReviewRepository databaseReviewRepository;
+  private final DatabaseUserRepository databaseUserRepository;
+  private final DatabaseImageRepository databaseImageRepository;
 
-  public FindReveiwByProductUsecase(DatabaseReviewRepository databaseReviewRepository) {
-
+  public FindReveiwByProductUsecase(
+      DatabaseReviewRepository databaseReviewRepository,
+      DatabaseUserRepository databaseUserRepository,
+      DatabaseImageRepository databaseImageRepository) {
     this.databaseReviewRepository = databaseReviewRepository;
+    this.databaseUserRepository = databaseUserRepository;
+    this.databaseImageRepository = databaseImageRepository;
   }
 
-  public Page<ReviewResponseDTO> execute(UUID productId, PageQuery query) {
-    Page<Review> usersPage = databaseReviewRepository.findReviewByProductId(productId, query);
-    List<ReviewResponseDTO> content =
-        usersPage.content().stream().map(ReviewResponseDTO::from).toList();
+  public Page<ReviewWithUserResponseDTO> execute(UUID productId, PageQuery query) {
+    Page<Review> reviewsPage = databaseReviewRepository.findReviewByProductId(productId, query);
+
+    List<ReviewWithUserResponseDTO> content =
+        reviewsPage.content().stream()
+            .map(
+                review -> {
+                  String username =
+                      databaseUserRepository
+                          .findUserByUserId(review.getUserId())
+                          .map(user -> user.getUsername())
+                          .orElse("Anonymous");
+                  ImageResource profileResource =
+                      ImageResource.of(review.getUserId(), ImageResourceType.USER_PROFILE);
+                  List<Image> profileList = databaseImageRepository.findByResource(profileResource);
+                  String profileUrl =
+                      profileList.getFirst() != null
+                          ? "/images"
+                              + profileResource.genFilename(
+                                  profileList.getFirst().getId(), ImageSize.MEDIUM)
+                          : "/images/profile-pic.png";
+                  return ReviewWithUserResponseDTO.from(review, username, profileUrl);
+                })
+            .toList();
+
     return new Page<>(
         content,
-        usersPage.totalElements(),
-        usersPage.totalPages(),
-        usersPage.page(),
-        usersPage.size());
+        reviewsPage.totalElements(),
+        reviewsPage.totalPages(),
+        reviewsPage.page(),
+        reviewsPage.size());
   }
 }

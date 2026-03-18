@@ -51,6 +51,11 @@ public class DatabaseProductCategoryRepositoryImpl implements DatabaseProductCat
   }
 
   @Override
+  public void deleteByProductId(UUID productId) {
+    jpaProductCategoryRepository.deleteByIdProductId(productId);
+  }
+
+  @Override
   public List<Category> findCategoriesByProductId(UUID productId) {
 
     return jpaProductCategoryRepository.findByProductId(productId).stream()
@@ -72,6 +77,22 @@ public class DatabaseProductCategoryRepositoryImpl implements DatabaseProductCat
         jpaProductCategoryRepository.findProductsByCategoryId(categoryId, pageable);
     List<Product> users = page.getContent().stream().map(category -> category.toDomain()).toList();
 
+    return new Page<>(
+        users, page.getTotalElements(), page.getTotalPages(), page.getNumber(), page.getSize());
+  }
+
+  @Override
+  public Page<ProductCategory> findByCategoryIds(List<UUID> categoryIds, PageQuery query) {
+
+    Sort sort =
+        query.ascending()
+            ? Sort.by(query.sortBy()).ascending()
+            : Sort.by(query.sortBy()).descending();
+    Pageable pageable = PageRequest.of(query.page(), query.size(), sort);
+    org.springframework.data.domain.Page<ProductCategoryModel> page =
+        jpaProductCategoryRepository.findByCategoryIdIn(categoryIds, pageable);
+    List<ProductCategory> users =
+        page.getContent().stream().map(category -> category.toDomain()).toList();
     return new Page<>(
         users, page.getTotalElements(), page.getTotalPages(), page.getNumber(), page.getSize());
   }

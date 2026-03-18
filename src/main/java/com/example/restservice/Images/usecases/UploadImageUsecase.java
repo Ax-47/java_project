@@ -14,10 +14,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.restservice.Images.domain.DatabaseImageRepository;
 import com.example.restservice.Images.domain.Image;
 import com.example.restservice.Images.domain.ImageProcessingRepository;
-import com.example.restservice.Images.domain.ImageRepository;
 import com.example.restservice.Images.domain.ImageResource;
 import com.example.restservice.Images.domain.ImageResourceType;
 import com.example.restservice.Images.domain.ImageSize;
+import com.example.restservice.Images.domain.ImageStorageRepository;
 import com.example.restservice.Images.dto.UploadImageResponseDTO;
 
 import jakarta.transaction.Transactional;
@@ -25,18 +25,18 @@ import jakarta.transaction.Transactional;
 @Service
 public class UploadImageUsecase {
 
-  private final ImageRepository imageRepository;
+  private final ImageStorageRepository imageStorageRepository;
   private final ImageProcessingRepository imageProcessingRepository;
   private final DatabaseImageRepository databaseImageRepository;
   private final Executor imageExecutor;
 
   public UploadImageUsecase(
-      ImageRepository imageRepository,
+      ImageStorageRepository imageStorageRepository,
       ImageProcessingRepository imageProcessingRepository,
       DatabaseImageRepository databaseImageRepository,
       Executor imageExecutor) {
 
-    this.imageRepository = imageRepository;
+    this.imageStorageRepository = imageStorageRepository;
     this.imageProcessingRepository = imageProcessingRepository;
     this.databaseImageRepository = databaseImageRepository;
     this.imageExecutor = imageExecutor;
@@ -62,8 +62,8 @@ public class UploadImageUsecase {
     return new UploadImageResponseDTO(
         image.getId().toString(),
         uploads.get(ImageSize.THUMBNAIL).join(),
-        uploads.get(ImageSize.MEDIUM).join(),
-        uploads.get(ImageSize.LARGE).join());
+        uploads.get(ImageSize.LARGE).join(),
+        uploads.get(ImageSize.MEDIUM).join());
   }
 
   private CompletableFuture<String> uploadAsync(
@@ -73,7 +73,7 @@ public class UploadImageUsecase {
         () -> {
           String objectKey = resource.genFilename(imageId, size);
 
-          imageRepository.upload(new ByteArrayInputStream(bytes), objectKey, bytes.length);
+          imageStorageRepository.upload(new ByteArrayInputStream(bytes), objectKey, bytes.length);
 
           return objectKey;
         },

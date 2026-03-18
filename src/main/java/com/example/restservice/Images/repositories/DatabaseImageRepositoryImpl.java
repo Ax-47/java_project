@@ -24,6 +24,7 @@ public class DatabaseImageRepositoryImpl implements DatabaseImageRepository {
   public Image save(Image image) {
     ImageModel model = ImageModel.fromDomain(image);
     ImageModel saved = jpaImageRepository.save(model);
+
     return ImageModel.toDomain(saved);
   }
 

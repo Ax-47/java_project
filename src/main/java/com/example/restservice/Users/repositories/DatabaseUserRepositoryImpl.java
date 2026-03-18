@@ -24,6 +24,7 @@ public class DatabaseUserRepositoryImpl implements DatabaseUserRepository {
 
   @Override
   public User save(User user) {
+
     UserModel model = UserModel.fromDomain(user);
     UserModel saved = jpaUserRepository.save(model);
     return saved.toDomain();
@@ -50,14 +51,7 @@ public class DatabaseUserRepositoryImpl implements DatabaseUserRepository {
         jpaUserRepository
             .findByUsername(username)
             .orElseThrow(() -> new UserNotFoundException("User not found"));
-    return User.rehydrate(
-        user.getId(),
-        user.getUsername(),
-        user.getPassword(),
-        user.getCredit(),
-        user.isAdmin(),
-        user.getCreatedAt(),
-        user.getUpdatedAt());
+    return user.toDomain();
   }
 
   @Override
@@ -71,19 +65,7 @@ public class DatabaseUserRepositoryImpl implements DatabaseUserRepository {
     Pageable pageable = PageRequest.of(query.page(), query.size(), sort);
 
     org.springframework.data.domain.Page<UserModel> page = jpaUserRepository.findAll(pageable);
-    List<User> users =
-        page.getContent().stream()
-            .map(
-                user ->
-                    User.rehydrate(
-                        user.getId(),
-                        user.getUsername(),
-                        user.getPassword(),
-                        user.getCredit(),
-                        user.isAdmin(),
-                        user.getCreatedAt(),
-                        user.getUpdatedAt()))
-            .toList();
+    List<User> users = page.getContent().stream().map(user -> user.toDomain()).toList();
 
     return new Page<>(
         users, page.getTotalElements(), page.getTotalPages(), page.getNumber(), page.getSize());

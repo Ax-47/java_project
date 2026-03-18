@@ -15,6 +15,7 @@ import com.example.restservice.Reviews.dto.CreateReviewRequestDTO;
 import com.example.restservice.Reviews.dto.CreateReviewResponseDTO;
 import com.example.restservice.Reviews.dto.ReviewRequestDTO;
 import com.example.restservice.Reviews.dto.ReviewResponseDTO;
+import com.example.restservice.Reviews.dto.ReviewWithUserResponseDTO;
 import com.example.restservice.Reviews.usecases.CreateReviewUsecase;
 import com.example.restservice.Reviews.usecases.DeleteReviewUsecase;
 import com.example.restservice.Reviews.usecases.FindReveiwByProductUsecase;
@@ -146,7 +147,7 @@ public class ReviewController {
   }
 
   @GetMapping("/products/{productId}")
-  public ResponseEntity<PageResponse<ReviewResponseDTO>> findReveiwsByProduct(
+  public ResponseEntity<PageResponse<ReviewWithUserResponseDTO>> findReveiwsByProduct(
       @PathVariable UUID productId,
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size,

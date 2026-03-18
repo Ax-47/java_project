@@ -1,0 +1,341 @@
+<!doctype html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{layout/main :: layout (~{::title}, ~{::section})}"
+>
+  <head>
+    <title>เพิ่มที่อยู่ใหม่ - I BUILD CPU</title>
+  </head>
+  <body>
+    <section class="max-w-4xl mx-auto px-6 py-10 md:py-12">
+      <a
+        th:href="@{/addresses}"
+        class="inline-flex items-center gap-2 text-gray-500 hover:text-[#0175CC] font-bold mb-6 transition-colors"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M10 19l-7-7m0 0l7-7m-7 7h18"
+          />
+        </svg>
+        กลับไปหน้ารายการที่อยู่
+      </a>
+
+      <div
+        class="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-sm border border-gray-100"
+      >
+        <div
+          class="mb-10 pb-6 border-b border-gray-100 flex items-center gap-4"
+        >
+          <div class="p-3 bg-orange-50 rounded-2xl">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-8 w-8 text-[#FF6A00]"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-3xl font-black text-gray-900">
+              เพิ่มที่อยู่จัดส่งใหม่
+            </h1>
+            <p class="text-gray-500 font-medium mt-1">
+              กรุณากรอกข้อมูลให้ครบถ้วนเพื่อความถูกต้องในการจัดส่ง
+            </p>
+          </div>
+        </div>
+
+        <div
+          th:if="${error}"
+          class="mb-8 p-5 bg-red-50 border border-red-200 rounded-2xl flex items-start gap-4"
+        >
+          <div class="p-2 bg-white rounded-full shrink-0">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6 text-red-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+          <div>
+            <h4 class="text-lg font-bold text-red-700">
+              พบข้อผิดพลาดในการกรอกข้อมูล
+            </h4>
+            <p class="text-red-500 font-medium mt-1">
+              กรุณาตรวจสอบข้อความแจ้งเตือนสีแดงในช่องกรอกข้อมูลด้านล่าง
+              แล้วลองบันทึกใหม่อีกครั้ง
+            </p>
+          </div>
+        </div>
+
+        <form
+          method="post"
+          th:action="${isEditMode} ? @{/addresses/{id}/edit(id=${addressDTO.id})} : @{/addresses/create}"
+          th:object="${addressDTO}"
+        >
+          <div>
+            <input type="hidden" th:field="*{id}" />
+            <h3
+              class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2"
+            >
+              <span class="w-2 h-6 bg-[#0175CC] rounded-full"></span>
+              ข้อมูลผู้ติดต่อ
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-bold text-gray-700 mb-2"
+                  >ชื่อ - นามสกุล <span class="text-red-500">*</span></label
+                >
+                <input
+                  type="text"
+                  th:field="*{fullName}"
+                  placeholder="เช่น สมชาย ใจดี"
+                  th:classappend="${#fields.hasErrors('fullName')} ? 'border-red-500 bg-red-50 focus:ring-red-100' : 'border-gray-200 focus:border-[#0175CC] focus:ring-blue-50'"
+                  class="w-full px-5 py-3.5 rounded-xl border outline-none transition-all text-gray-800 font-medium focus:ring-4"
+                />
+                <p
+                  th:if="${#fields.hasErrors('fullName')}"
+                  th:errors="*{fullName}"
+                  class="text-red-500 text-sm font-bold mt-2"
+                ></p>
+              </div>
+
+              <div>
+                <label class="block text-sm font-bold text-gray-700 mb-2"
+                  >เบอร์โทรศัพท์ <span class="text-red-500">*</span></label
+                >
+                <input
+                  type="tel"
+                  th:field="*{phoneNumber}"
+                  placeholder="เช่น 0812345678"
+                  maxlength="10"
+                  th:classappend="${#fields.hasErrors('phoneNumber')} ? 'border-red-500 bg-red-50 focus:ring-red-100' : 'border-gray-200 focus:border-[#0175CC] focus:ring-blue-50'"
+                  class="w-full px-5 py-3.5 rounded-xl border outline-none transition-all text-gray-800 font-medium focus:ring-4"
+                />
+                <p
+                  th:if="${#fields.hasErrors('phoneNumber')}"
+                  th:errors="*{phoneNumber}"
+                  class="text-red-500 text-sm font-bold mt-2"
+                ></p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3
+              class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2 mt-10"
+            >
+              <span class="w-2 h-6 bg-[#0175CC] rounded-full"></span>
+              รายละเอียดที่อยู่
+            </h3>
+            <div class="space-y-6">
+              <div>
+                <label class="block text-sm font-bold text-gray-700 mb-2"
+                  >บ้านเลขที่, ซอย, หมู่, ถนน
+                  <span class="text-red-500">*</span></label
+                >
+                <input
+                  type="text"
+                  th:field="*{addressLine1}"
+                  placeholder="เช่น 123/45 ซ.สุขุมวิท 1"
+                  th:classappend="${#fields.hasErrors('addressLine1')} ? 'border-red-500 bg-red-50 focus:ring-red-100' : 'border-gray-200 focus:border-[#0175CC] focus:ring-blue-50'"
+                  class="w-full px-5 py-3.5 rounded-xl border outline-none transition-all text-gray-800 font-medium focus:ring-4"
+                />
+                <p
+                  th:if="${#fields.hasErrors('addressLine1')}"
+                  th:errors="*{addressLine1}"
+                  class="text-red-500 text-sm font-bold mt-2"
+                ></p>
+              </div>
+
+              <div>
+                <label class="block text-sm font-bold text-gray-700 mb-2"
+                  >รายละเอียดเพิ่มเติม (จุดสังเกต, ชื่อตึก, ชั้น)
+                  <span class="text-gray-400 font-normal ml-1"
+                    >(ไม่บังคับ)</span
+                  ></label
+                >
+                <input
+                  type="text"
+                  th:field="*{addressLine2}"
+                  placeholder="เช่น ตึก A ชั้น 5 หรือ ตรงข้ามเซเว่น"
+                  th:classappend="${#fields.hasErrors('addressLine2')} ? 'border-red-500 bg-red-50 focus:ring-red-100' : 'border-gray-200 focus:border-[#0175CC] focus:ring-blue-50'"
+                  class="w-full px-5 py-3.5 rounded-xl border outline-none transition-all text-gray-800 font-medium focus:ring-4"
+                />
+                <p
+                  th:if="${#fields.hasErrors('addressLine2')}"
+                  th:errors="*{addressLine2}"
+                  class="text-red-500 text-sm font-bold mt-2"
+                ></p>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label class="block text-sm font-bold text-gray-700 mb-2"
+                    >แขวง / ตำบล <span class="text-red-500">*</span></label
+                  >
+                  <input
+                    type="text"
+                    th:field="*{subDistrict}"
+                    th:classappend="${#fields.hasErrors('subDistrict')} ? 'border-red-500 bg-red-50 focus:ring-red-100' : 'border-gray-200 focus:border-[#0175CC] focus:ring-blue-50'"
+                    class="w-full px-5 py-3.5 rounded-xl border outline-none transition-all text-gray-800 font-medium focus:ring-4"
+                  />
+                  <p
+                    th:if="${#fields.hasErrors('subDistrict')}"
+                    th:errors="*{subDistrict}"
+                    class="text-red-500 text-sm font-bold mt-2"
+                  ></p>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-bold text-gray-700 mb-2"
+                    >เขต / อำเภอ <span class="text-red-500">*</span></label
+                  >
+                  <input
+                    type="text"
+                    th:field="*{district}"
+                    th:classappend="${#fields.hasErrors('district')} ? 'border-red-500 bg-red-50 focus:ring-red-100' : 'border-gray-200 focus:border-[#0175CC] focus:ring-blue-50'"
+                    class="w-full px-5 py-3.5 rounded-xl border outline-none transition-all text-gray-800 font-medium focus:ring-4"
+                  />
+                  <p
+                    th:if="${#fields.hasErrors('district')}"
+                    th:errors="*{district}"
+                    class="text-red-500 text-sm font-bold mt-2"
+                  ></p>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-bold text-gray-700 mb-2"
+                    >จังหวัด <span class="text-red-500">*</span></label
+                  >
+                  <input
+                    type="text"
+                    th:field="*{province}"
+                    th:classappend="${#fields.hasErrors('province')} ? 'border-red-500 bg-red-50 focus:ring-red-100' : 'border-gray-200 focus:border-[#0175CC] focus:ring-blue-50'"
+                    class="w-full px-5 py-3.5 rounded-xl border outline-none transition-all text-gray-800 font-medium focus:ring-4"
+                  />
+                  <p
+                    th:if="${#fields.hasErrors('province')}"
+                    th:errors="*{province}"
+                    class="text-red-500 text-sm font-bold mt-2"
+                  ></p>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-bold text-gray-700 mb-2"
+                    >รหัสไปรษณีย์ <span class="text-red-500">*</span></label
+                  >
+                  <input
+                    type="text"
+                    th:field="*{postalCode}"
+                    maxlength="5"
+                    th:classappend="${#fields.hasErrors('postalCode')} ? 'border-red-500 bg-red-50 focus:ring-red-100' : 'border-gray-200 focus:border-[#0175CC] focus:ring-blue-50'"
+                    class="w-full px-5 py-3.5 rounded-xl border outline-none transition-all text-gray-800 font-medium focus:ring-4"
+                  />
+                  <p
+                    th:if="${#fields.hasErrors('postalCode')}"
+                    th:errors="*{postalCode}"
+                    class="text-red-500 text-sm font-bold mt-2"
+                  ></p>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-bold text-gray-700 mb-2"
+                    >ประเทศ <span class="text-red-500">*</span></label
+                  >
+                  <input
+                    type="text"
+                    th:field="*{country}"
+                    placeholder="เช่น ประเทศไทย"
+                    th:classappend="${#fields.hasErrors('country')} ? 'border-red-500 bg-red-50 focus:ring-red-100' : 'border-gray-200 focus:border-[#0175CC] focus:ring-blue-50'"
+                    class="w-full px-5 py-3.5 rounded-xl border outline-none transition-all text-gray-800 font-medium focus:ring-4"
+                  />
+                  <p
+                    th:if="${#fields.hasErrors('country')}"
+                    th:errors="*{country}"
+                    class="text-red-500 text-sm font-bold mt-2"
+                  ></p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 mt-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+              <div>
+                <label class="block text-sm font-bold text-gray-700 mb-2"
+                  >ชื่อเรียกที่อยู่ (Label)</label
+                >
+                <select
+                  th:field="*{label}"
+                  class="w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:border-[#0175CC] focus:ring-4 focus:ring-blue-50 outline-none transition-all text-gray-800 font-bold appearance-none bg-white"
+                >
+                  <option value="บ้าน">บ้าน</option>
+                  <option value="ที่ทำงาน">ที่ทำงาน</option>
+                  <option value="อื่นๆ">อื่นๆ</option>
+                </select>
+              </div>
+
+              <div
+                class="flex items-center justify-between md:justify-end md:mt-6 gap-4"
+              >
+                <span class="text-gray-700 font-bold">ตั้งเป็นที่อยู่หลัก</span>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    th:field="*{isDefault}"
+                    class="sr-only peer"
+                  />
+                  <div
+                    class="w-14 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-100 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#0175CC]"
+                  ></div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="pt-6 border-t border-gray-100 flex flex-col sm:flex-row gap-4 justify-end"
+          >
+            <a
+              th:href="@{/addresses}"
+              class="px-8 py-4 rounded-xl font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors text-center"
+            >
+              ยกเลิก
+            </a>
+            <button
+              type="submit"
+              class="px-10 py-4 rounded-xl font-extrabold text-white bg-[#0175CC] hover:bg-blue-700 hover:shadow-lg transition-all text-center"
+            >
+              บันทึกที่อยู่
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </body>
+</html>

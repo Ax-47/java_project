@@ -46,8 +46,20 @@ public class DatabaseProductRepositoryImpl implements DatabaseProductRepository 
 
     Pageable pageable = PageRequest.of(query.page(), query.size(), sort);
 
-    org.springframework.data.domain.Page<ProductModel> page =
-        jpaProductRepository.findAll(pageable);
+    var page = jpaProductRepository.findAll(pageable);
+    List<Product> products = page.getContent().stream().map(product -> product.toDomain()).toList();
+    return new Page<>(
+        products, page.getTotalElements(), page.getTotalPages(), page.getNumber(), page.getSize());
+  }
+
+  @Override
+  public Page<Product> findByIds(List<UUID> productIds, PageQuery query) {
+    Sort sort =
+        query.ascending()
+            ? Sort.by(query.sortBy()).ascending()
+            : Sort.by(query.sortBy()).descending();
+    Pageable pageable = PageRequest.of(query.page(), query.size(), sort);
+    var page = jpaProductRepository.findByIdIn(productIds, pageable);
     List<Product> products = page.getContent().stream().map(product -> product.toDomain()).toList();
     return new Page<>(
         products, page.getTotalElements(), page.getTotalPages(), page.getNumber(), page.getSize());

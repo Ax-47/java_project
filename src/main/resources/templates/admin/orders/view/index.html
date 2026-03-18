@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{admin/layout :: layout(~{::div#order-detail-content}, ~{})}">
+<body>
+  
+  <div id="order-detail-content">
+    
+    <div class="mb-6">
+      <a th:href="@{/admin/orders}" class="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-[#0175CC] transition-colors bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm hover:shadow">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+        Back to Orders
+      </a>
+    </div>
+
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+      <div>
+        <h1 class="text-2xl md:text-3xl font-black text-gray-900 tracking-tight flex items-center gap-3">
+          Order Details
+          <span th:if="${order.status.name() == 'PENDING'}" class="bg-yellow-100 text-yellow-700 text-sm px-3 py-1 rounded-md font-bold tracking-wide align-middle border border-yellow-200">PENDING</span>
+          <span th:if="${order.status.name() == 'SHIPPED'}" class="bg-blue-100 text-blue-700 text-sm px-3 py-1 rounded-md font-bold tracking-wide align-middle border border-blue-200">SHIPPED</span>
+          <span th:if="${order.status.name() == 'COMPLETED'}" class="bg-green-100 text-green-700 text-sm px-3 py-1 rounded-md font-bold tracking-wide align-middle border border-green-200">COMPLETED</span>
+          <span th:if="${order.status.name() == 'CANCELLED'}" class="bg-red-100 text-red-700 text-sm px-3 py-1 rounded-md font-bold tracking-wide align-middle border border-red-200">CANCELLED</span>
+        </h1>
+        <p class="text-gray-500 font-mono mt-2 text-sm bg-gray-50 inline-block px-3 py-1 rounded-md border border-gray-100">
+          ID: <span class="font-bold text-gray-700" th:text="${order.id}">12345678-abcd...</span>
+        </p>
+      </div>
+      
+      <div class="text-left md:text-right text-sm text-gray-500 bg-gray-50 p-3 rounded-xl border border-gray-100">
+        <p class="mb-1 uppercase tracking-wide text-xs font-bold text-gray-400">Order Placed On</p>
+        <p class="font-bold text-gray-900 text-base" th:text="${#temporals.format(order.createdAt, 'dd MMM yyyy, HH:mm')}">01 Jan 2026, 12:00</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+      
+      <div class="lg:col-span-2 space-y-6 lg:space-y-8">
+        
+        <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+          <h3 class="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2 border-b border-gray-50 pb-4">
+            <svg class="w-5 h-5 text-[#0175CC]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+            Customer Information
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-gray-50/50 p-4 rounded-xl border border-gray-100">
+            <div>
+              <p class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Full Name</p>
+              <p class="font-bold text-gray-900 text-lg" th:text="${order.fullName}">John Doe</p>
+            </div>
+            <div>
+              <p class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Phone Number</p>
+              <p class="font-bold text-gray-900 text-lg" th:text="${order.phoneNumber}">081-234-5678</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+          <h3 class="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2 border-b border-gray-50 pb-4">
+            <svg class="w-5 h-5 text-[#0175CC]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            Shipping Address
+          </h3>
+          <div class="bg-[#0175CC]/5 p-5 rounded-xl border border-[#0175CC]/10 flex gap-4">
+            <div class="mt-1">
+              <svg class="w-6 h-6 text-[#0175CC]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            </div>
+            <div>
+              <p class="font-bold text-gray-900 text-lg mb-1" th:text="${order.fullName}">John Doe</p>
+              <p class="text-gray-600 leading-relaxed text-sm">
+                <span th:text="${order.addressLine1}">123 Main St</span><br/>
+                <span th:if="${order.addressLine2 != null and !order.addressLine2.isEmpty()}" th:text="${order.addressLine2}">Apt 4B</span>
+                <span th:if="${order.addressLine2 != null and !order.addressLine2.isEmpty()}"><br/></span>
+                <span th:text="${order.subDistrict} + ', ' + ${order.district}">Sub, District</span><br/>
+                <span th:text="${order.province} + ' ' + ${order.postalCode}">Bangkok 10000</span><br/>
+                <span class="font-bold text-gray-800" th:text="${order.country}">Thailand</span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="space-y-6 lg:space-y-8">
+        
+        <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+          <h3 class="text-lg font-bold text-gray-900 mb-6 border-b border-gray-50 pb-4">Order Summary</h3>
+          
+          <div class="flex items-center gap-4 border-b border-dashed border-gray-200 pb-6 mb-6">
+            <div class="w-20 h-20 bg-gray-50 rounded-xl border border-gray-100 p-2 shrink-0">
+              <img src="/images/product-mac.png" alt="Product" class="w-full h-full object-contain" />
+            </div>
+            <div>
+              <p class="font-bold text-gray-900 line-clamp-2 leading-tight" th:text="${order.productName}">Product Name</p>
+              <a th:href="@{/products/{id}(id=${order.productId})}" class="text-xs font-bold text-[#0175CC] hover:text-blue-800 hover:underline mt-1.5 inline-block bg-blue-50 px-2 py-0.5 rounded" target="_blank">View in Store &nearr;</a>
+            </div>
+          </div>
+
+          <div class="flex flex-col">
+            <span class="text-gray-400 text-xs font-bold uppercase tracking-wide mb-1">Total Amount</span>
+            <span class="text-3xl font-black text-[#0175CC]" th:text="|$ ${#numbers.formatDecimal(order.productPrice, 1, 'COMMA', 2, 'POINT')}|">$ 0.00</span>
+          </div>
+        </div>
+
+        <div class="bg-gray-900 rounded-2xl p-6 border border-gray-800 shadow-lg relative overflow-hidden">
+          <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-white opacity-5 rounded-full blur-xl pointer-events-none"></div>
+
+          <h3 class="text-lg font-bold text-white mb-2 relative z-10">Admin Actions</h3>
+          <p class="text-xs text-gray-400 mb-6 relative z-10">Change the status of this order.</p>
+
+          <div class="space-y-3 relative z-10">
+            <th:block th:if="${order.status.name() == 'PENDING'}">
+              <form th:action="@{/admin/orders/{id}/ship(id=${order.id})}" method="post" onsubmit="return confirm('ยืนยันการจัดส่งออเดอร์นี้ใช่หรือไม่?');">
+
+                  <input type="hidden" name="_method" value="PATCH" />
+                <button type="submit" class="w-full bg-[#0175CC] hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-[0_0_15px_rgba(1,117,204,0.4)] hover:shadow-[0_0_25px_rgba(1,117,204,0.6)] hover:-translate-y-0.5 flex justify-center items-center gap-2">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
+                  Mark as Shipped
+                </button>
+              </form>
+              <form th:action="@{/admin/orders/{id}/cancel(id=${order.id})}" method="post" onsubmit="return confirm('คุณแน่ใจหรือไม่ที่จะยกเลิกออเดอร์นี้?');">
+                  <input type="hidden" name="_method" value="PATCH" />
+                <button type="submit" class="w-full bg-transparent hover:bg-red-500/10 text-red-400 font-bold py-3 px-4 rounded-xl transition-colors border border-red-500/30 hover:border-red-400">
+                  Cancel Order
+                </button>
+              </form>
+            </th:block>
+
+            <th:block th:if="${order.status.name() == 'SHIPPED'}">
+              <form th:action="@{/admin/orders/{id}/complete(id=${order.id})}" method="post" onsubmit="return confirm('ยืนยันว่าลูกค้ารับสินค้าเรียบร้อยแล้วใช่หรือไม่?');">
+                  <input type="hidden" name="_method" value="PATCH" />
+                <button type="submit" class="w-full bg-green-500 hover:bg-green-400 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-[0_0_15px_rgba(34,197,94,0.4)] hover:shadow-[0_0_25px_rgba(34,197,94,0.6)] hover:-translate-y-0.5 flex justify-center items-center gap-2">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  Mark as Completed
+                </button>
+              </form>
+            </th:block>
+
+            <div th:if="${order.status.name() == 'COMPLETED' || order.status.name() == 'CANCELLED'}" class="bg-gray-800 border border-gray-700 rounded-xl py-4 px-4 text-center text-gray-400 text-sm font-semibold">
+              <svg class="w-6 h-6 mx-auto mb-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              No further actions available.
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

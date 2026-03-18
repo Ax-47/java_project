@@ -31,9 +31,9 @@ public record GetTransactionStatementsByUserResponseDTO(
         statement.getOrderId().orElse(null),
         statement.getAmount().getValue(),
         statement.getType(),
-        statement.getMethod(),
+        statement.getMethod().orElse(null),
         statement.getStatus(),
-        statement.getReferenceId(),
+        statement.getReferenceId().orElse(null),
         statement.getCreatedAt());
   }
 }

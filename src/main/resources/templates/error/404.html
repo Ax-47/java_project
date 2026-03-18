@@ -1,0 +1,23 @@
+<!doctype html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{layout/main :: layout (~{::title}, ~{::section})}"
+>
+  <head>
+    <title>ไม่พบหน้านี้ - I BUILD CPU</title>
+  </head>
+  <section class="max-w-2xl mx-auto px-4 py-20 md:py-32 text-center">
+    
+    <h1 class="text-8xl md:text-9xl font-black text-gray-200 tracking-tighter mb-4">404</h1>
+    <h2 class="text-3xl md:text-4xl font-black text-gray-900 tracking-tight mb-2">ไม่พบหน้าที่คุณต้องการ</h2>
+    
+    <p class="text-lg text-gray-500 font-medium mb-8" th:text="${errorMessage != null ? errorMessage : 'ขออภัย หน้าเว็บที่คุณพยายามเข้าถึงอาจถูกลบไปแล้ว หรือไม่มีอยู่จริงในระบบ'}">
+      ขออภัย หน้าเว็บที่คุณพยายามเข้าถึงอาจถูกลบไปแล้ว หรือไม่มีอยู่จริงในระบบ
+    </p>
+
+    <a th:href="@{/}" class="inline-block bg-[#0175CC] text-white px-8 py-3 rounded-full font-bold hover:bg-blue-600 transition-colors shadow-sm">
+      พากลับไปหน้าแรกที
+    </a>
+
+  </section>
+</html>

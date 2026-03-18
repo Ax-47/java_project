@@ -16,8 +16,8 @@ import com.example.restservice.Images.domain.ImageResourceType;
 import com.example.restservice.Images.dto.*;
 import com.example.restservice.Images.usecases.*;
 import com.example.restservice.ProductCategories.usecases.*;
+import com.example.restservice.Products.domain.ProductSortField;
 import com.example.restservice.Products.dto.*;
-import com.example.restservice.Products.models.ProductSortField;
 import com.example.restservice.Products.usecases.*;
 import com.example.restservice.common.PageQuery;
 import com.example.restservice.common.PageResponse;
@@ -157,7 +157,7 @@ public class ProductController {
   public ResponseEntity<Void> purchase(
       @PathVariable UUID productId, @AuthenticationPrincipal UserPrincipalDTO user) {
 
-    purchaseProductUsecase.execute(user.id(), productId);
+    // purchaseProductUsecase.execute(user.id(), productId);
 
     return ResponseEntity.ok().build();
   }

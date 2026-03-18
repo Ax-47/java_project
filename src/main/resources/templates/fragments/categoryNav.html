@@ -1,0 +1,29 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <div
+      th:fragment="pagination(currentPage, hasMore, categoryId)"
+      class="flex justify-center items-center gap-4 mt-12"
+    >
+      <a
+        th:href="@{'/categories/' + ${categoryId}(page=${currentPage - 1}, sortBy=${sortBy}, asc=${asc})}"
+        th:if="${currentPage > 0}"
+        class="px-6 py-2 bg-white border-2 border-gray-200 rounded-xl font-bold text-gray-600 hover:border-[#0175CC] hover:text-[#0175CC] transition-all"
+      >
+        &larr; ก่อนหน้า
+      </a>
+
+      <div class="bg-gray-100 px-4 py-2 rounded-lg font-bold text-gray-700">
+        หน้า <span th:text="${currentPage + 1}">1</span>
+      </div>
+
+      <a
+        th:href="@{'/categories/' + ${categoryId}(page=${currentPage + 1}, sortBy=${sortBy}, asc=${asc})}"
+        th:if="${hasMore}"
+        class="px-6 py-2 bg-[#0175CC] text-white rounded-xl font-bold shadow-lg hover:bg-blue-700 transition-all"
+      >
+        ถัดไป &rarr;
+      </a>
+    </div>
+  </body>
+</html>

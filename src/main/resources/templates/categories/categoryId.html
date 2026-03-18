@@ -1,0 +1,104 @@
+<!doctype html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{layout/main :: layout (~{::title}, ~{::section})}"
+>
+  <head>
+    <title th:text="${categoryName} + ' - I BUILD CPU'">
+      Category - I BUILD CPU
+    </title>
+  </head>
+
+  <section class="max-w-7xl mx-auto px-6 py-8 md:py-12">
+    <div
+      class="mb-10 border-b border-gray-200 pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4"
+    >
+      <div>
+        <a
+          th:href="@{/}"
+          class="text-sm font-semibold text-gray-500 hover:text-[#0175CC] mb-4 inline-flex items-center gap-1 transition-colors"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            />
+          </svg>
+          กลับไปหน้าแรก
+        </a>
+
+        <div class="flex items-center gap-4">
+          <img
+            th:src="@{/images/category-icon.png}"
+            alt="Icon"
+            class="w-8 h-8 md:w-10 md:h-10 object-contain"
+          />
+          <h1
+            class="text-3xl md:text-5xl font-extrabold text-gray-900"
+            th:text="${categoryName}"
+          >
+            Category Name
+          </h1>
+        </div>
+      </div>
+      <div class="flex justify-end mb-6 gap-2 items-center">
+        <span class="text-sm text-gray-500 font-medium">Sort by:</span>
+        <div class="flex bg-gray-100 p-1 rounded-xl">
+          <a
+            th:href="@{'/categories/' + ${activeCategoryId} + '?sortBy=productName&asc=' + ${!asc}}"
+            th:class="${sortBy == 'productName'} ? 'px-4 py-1.5 bg-white rounded-lg shadow-sm text-sm font-bold text-[#0175CC]' : 'px-4 py-1.5 text-sm text-gray-500 font-medium'"
+          >
+            Name
+            <span
+              th:if="${sortBy == 'productName'}"
+              th:text="${asc ? '↑' : '↓'}"
+            ></span>
+          </a>
+          <a
+            th:href="@{'/categories/' + ${activeCategoryId} + '?sortBy=productPrice&asc=' + ${!asc}}"
+            th:class="${sortBy == 'productPrice'} ? 'px-4 py-1.5 bg-white rounded-lg shadow-sm text-sm font-bold text-[#0175CC]' : 'px-4 py-1.5 text-sm text-gray-500 font-medium'"
+          >
+            Price
+            <span
+              th:if="${sortBy == 'productPrice'}"
+              th:text="${asc ? '↑' : '↓'}"
+            ></span>
+          </a>
+        </div>
+      </div>
+      <p
+        class="text-gray-500 font-medium text-lg bg-gray-100 px-4 py-2 rounded-lg"
+        th:text="${products.size()} + ' สินค้า'"
+      ></p>
+    </div>
+
+    <div
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8"
+    >
+      <th:block th:each="product : ${products}">
+        <div
+          th:replace="~{fragments/productCard :: product-card(${product})}"
+        ></div>
+      </th:block>
+    </div>
+
+    <div
+      th:if="${#lists.isEmpty(products)}"
+      th:replace="~{fragments/notFound :: not-found-product}"
+    ></div>
+
+    <div th:if="${!#lists.isEmpty(products)}">
+      <div
+        th:replace="~{fragments/categoryNav :: pagination(${currentPage}, ${hasMore}, ${activeCategoryId})}"
+      ></div>
+    </div>
+  </section>
+</html>
