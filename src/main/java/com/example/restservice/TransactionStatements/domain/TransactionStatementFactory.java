@@ -8,7 +8,6 @@ import com.example.restservice.TransactionStatements.execeptions.TransactionVali
 import com.example.restservice.Users.domain.Credit;
 
 public class TransactionStatementFactory {
-
   public static TransactionStatement create(
       UUID userId,
       Optional<UUID> orderId,
@@ -24,8 +23,8 @@ public class TransactionStatementFactory {
     return switch (type) {
       case PURCHASE -> {
         if (method.isPresent()) {
-          throw new IllegalStateException(
-              "Corrupted data: TOPUP transaction " + id + " has unexpected orderId");
+          throw new TransactionValidationException(
+              "method", "Method must be null for PURCHASE transactions");
         }
         yield new PurchaseStatement(
             id,
@@ -38,6 +37,7 @@ public class TransactionStatementFactory {
             status,
             now);
       }
+
       case TOPUP -> {
         if (orderId.isPresent()) {
           throw new TransactionValidationException(
@@ -57,6 +57,23 @@ public class TransactionStatementFactory {
                         "referenceId", "referenceId is required for TOPUP")),
             now);
       }
+
+      case REFUND -> {
+        if (method.isPresent()) {
+          throw new TransactionValidationException(
+              "method", "Method must be null for REFUND transactions");
+        }
+        yield new RefundStatement(
+            id,
+            userId,
+            orderId.orElseThrow(
+                () ->
+                    new TransactionValidationException(
+                        "orderId", "Order ID is required for REFUND")),
+            amount,
+            status,
+            now);
+      }
     };
   }
 
@@ -72,15 +89,20 @@ public class TransactionStatementFactory {
       LocalDateTime createdAt) {
 
     return switch (type) {
-      case PURCHASE ->
-          new PurchaseStatement(
-              id,
-              userId,
-              orderId.orElseThrow(
-                  () -> new IllegalStateException("Corrupted data: PURCHASE missing Order ID")),
-              amount,
-              status,
-              createdAt);
+      case PURCHASE -> {
+        if (method.isPresent()) {
+          throw new IllegalStateException(
+              "Corrupted data: PURCHASE transaction " + id + " has unexpected method");
+        }
+        yield new PurchaseStatement(
+            id,
+            userId,
+            orderId.orElseThrow(
+                () -> new IllegalStateException("Corrupted data: PURCHASE missing Order ID")),
+            amount,
+            status,
+            createdAt);
+      }
 
       case TOPUP -> {
         if (orderId.isPresent()) {
@@ -92,12 +114,25 @@ public class TransactionStatementFactory {
             userId,
             amount,
             method.orElseThrow(
-                () -> new TransactionValidationException("method", "method is required for TOPUP")),
+                () -> new IllegalStateException("Corrupted data: TOPUP missing method")),
             status,
             referenceId.orElseThrow(
-                () ->
-                    new TransactionValidationException(
-                        "referenceId", "referenceId is required for TOPUP")),
+                () -> new IllegalStateException("Corrupted data: TOPUP missing referenceId")),
+            createdAt);
+      }
+
+      case REFUND -> {
+        if (method.isPresent()) {
+          throw new IllegalStateException(
+              "Corrupted data: REFUND transaction " + id + " has unexpected method");
+        }
+        yield new RefundStatement(
+            id,
+            userId,
+            orderId.orElseThrow(
+                () -> new IllegalStateException("Corrupted data: REFUND missing Order ID")),
+            amount,
+            status,
             createdAt);
       }
     };

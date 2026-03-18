@@ -8,6 +8,6 @@ public record FindUserProfileResponseDTO(
     UUID id,
     String username,
     BigDecimal credit,
-    LocalDateTime createAt,
+    LocalDateTime createdAt,
     String profileUrl,
     String backgroundUrl) {}

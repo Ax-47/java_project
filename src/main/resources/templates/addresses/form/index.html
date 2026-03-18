@@ -93,10 +93,9 @@
         </div>
 
         <form
-          th:action="@{/addresses}"
           method="post"
+          th:action="${isEditMode} ? @{/addresses/{id}/edit(id=${addressDTO.id})} : @{/addresses/create}"
           th:object="${addressDTO}"
-          class="space-y-8"
         >
           <div>
             <input type="hidden" th:field="*{id}" />
@@ -263,7 +262,7 @@
                     class="text-red-500 text-sm font-bold mt-2"
                   ></p>
                 </div>
-                
+
                 <div>
                   <label class="block text-sm font-bold text-gray-700 mb-2"
                     >ประเทศ <span class="text-red-500">*</span></label
@@ -281,7 +280,6 @@
                     class="text-red-500 text-sm font-bold mt-2"
                   ></p>
                 </div>
-                
               </div>
             </div>
           </div>
