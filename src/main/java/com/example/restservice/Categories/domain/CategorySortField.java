@@ -1,4 +1,4 @@
-package com.example.restservice.Categories.models;
+package com.example.restservice.Categories.domain;
 
 public enum CategorySortField {
   categoryName("categoryName"),
