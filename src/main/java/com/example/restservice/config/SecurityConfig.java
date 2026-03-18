@@ -59,20 +59,18 @@ public class SecurityConfig {
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
         .authorizeHttpRequests(
-            auth -> auth
-                .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
+            auth -> auth.requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
 
                 .requestMatchers("/products/*/purchase", "/profile", "/topup").authenticated()
-                .requestMatchers("/api/review/*/images").permitAll()
                 .requestMatchers("/api/**").authenticated()
 
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/", "/signin", "/signup", "/products/**", "/categories/**", "/review",
-                    "/api/image/**")
-                .permitAll()
 
-                .anyRequest().authenticated())
+                .requestMatchers("/", "/signin", "/signup", "/review", "/api/image/**").permitAll()
+                .requestMatchers("/products/**", "/categories/**").permitAll()
+                .anyRequest()
+                .authenticated())
         .addFilterBefore(authorizeFilter, UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
