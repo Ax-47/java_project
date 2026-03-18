@@ -1,6 +1,6 @@
 ---
 server:
-  port: 9000
+  port: ${SPRING_PORT:9000}
 logging:
   level:
     org.springframework.security: DEBUG
@@ -15,13 +15,13 @@ token:
   # Default: 1 Month
   refresh-token-expired-in-seconds: ${REFRESH_TOKEN_EXP_SEC:2592000}
 minio:
-  url: http://localhost:9100
-  access-key: minioadmin
-  secret-key: minioadmin
-  bucket: my-bucket
+  url: ${MINIO_URL:http://localhost:9100}
+  access-key: ${MINIO_ACCESS_KEY:minioadmin}
+  secret-key: ${MINIO_SECRET_KEY:minioadmin}
+  bucket: ${MINIO_BUCKET:images}
 spring:
   profiles:
-    active: dev
+    active: ${PROFILE:dev}
   datasource:
     url: ${DB_URL:jdbc:postgresql://localhost:5432/restdb}
     username: ${DB_USER:restuser}

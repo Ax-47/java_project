@@ -13,28 +13,21 @@ public abstract class TransactionStatement {
   private final UUID id;
   private final UUID userId;
   private final Credit amount;
-  private final TransactionStatementsMethod method;
   private final TransactionStatementsStatus status;
-  private final String referenceId;
   private final LocalDateTime createdAt;
 
   protected TransactionStatement(
       UUID id,
       UUID userId,
       Credit amount,
-      TransactionStatementsMethod method,
       TransactionStatementsStatus status,
-      String referenceId,
       LocalDateTime createdAt) {
 
     this.id = Objects.requireNonNull(id, "id is required");
     this.userId = Objects.requireNonNull(userId, "userId is required");
     this.amount = Objects.requireNonNull(amount, "amount is required");
-    this.method = Objects.requireNonNull(method, "method is required");
     this.status = Objects.requireNonNull(status, "status is required");
     this.createdAt = Objects.requireNonNull(createdAt, "createdAt is required");
-
-    this.referenceId = requireNonBlank("referenceId", referenceId, "Reference ID is required");
   }
 
   private String requireNonBlank(String field, String value, String message) {
@@ -45,6 +38,10 @@ public abstract class TransactionStatement {
   }
 
   public abstract TransactionStatementsType getType();
+
+  public abstract Optional<TransactionStatementsMethod> getMethod();
+
+  public abstract Optional<String> getReferenceId();
 
   public abstract Optional<UUID> getOrderId();
 
@@ -60,16 +57,8 @@ public abstract class TransactionStatement {
     return amount;
   }
 
-  public TransactionStatementsMethod getMethod() {
-    return method;
-  }
-
   public TransactionStatementsStatus getStatus() {
     return status;
-  }
-
-  public String getReferenceId() {
-    return referenceId;
   }
 
   public LocalDateTime getCreatedAt() {

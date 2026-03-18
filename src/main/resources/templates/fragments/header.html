@@ -1,17 +1,42 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
-    <div th:fragment="navbar" class="bg-[#0175CC] px-12 py-4 flex justify-between items-center text-white">
-        <a th:href="@{/}" class="text-3xl font-extrabold text-white no-underline">I BUILD CPU</a>
-        <div class="flex gap-8 items-center font-semibold text-lg">
-            <a th:href="@{/}" class="text-white hover:text-[#FCF2D9] transition">หน้าแรก</a>
-            <a th:href="@{/order}" class="text-white hover:text-[#FCF2D9] transition">คำสั่งซื้อ</a>
-            <a th:href="@{/profile}" class="text-white hover:text-[#FCF2D9] transition">โปรไฟล์</a>
+    <nav th:fragment="navbar" class="bg-[#0175CC] px-6 md:px-12 py-4 flex justify-between items-center text-white shadow-md sticky top-0 z-50">
+        
+        <a th:href="@{/}" class="text-2xl md:text-3xl font-extrabold text-white no-underline tracking-wide hover:scale-105 transition-transform duration-300">
+            I BUILD CPU
+        </a>
+        
+        <div class="flex gap-4 md:gap-8 items-center font-semibold text-base md:text-lg">
             
-            <a th:href="@{/address}" class="hover:opacity-80 transition flex items-center">
-                <img th:src="@{/images/location-pin.png}" alt="Address" class="w-6 h-6 object-contain">
-            </a>
+            <a th:href="@{/}" class="text-white hover:text-[#FCF2D9] transition-colors duration-300">หน้าแรก</a>
+            
+            <th:block sec:authorize="isAuthenticated()">
+                <a th:href="@{/profile/orders}" class="text-white hover:text-[#FCF2D9] transition-colors duration-300">คำสั่งซื้อ</a>
+                <a th:href="@{/profile}" class="text-white hover:text-[#FCF2D9] transition-colors duration-300">โปรไฟล์</a>
+                
+                <a th:href="@{/addresses}" class="hover:opacity-100 transition duration-300 flex items-center bg-white/10 p-2 rounded-full hover:bg-white/20">
+                    <img th:src="@{/images/location-pin.png}" alt="Address" class="w-5 h-5 md:w-6 md:h-6 object-contain">
+                </a>
+
+                <form th:action="@{/signout}" method="post" class="m-0">
+
+                    <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors duration-300 text-sm md:text-base font-bold">
+                        ออกจากระบบ
+                    </button>
+                </form>
+            </th:block>
+
+            <th:block sec:authorize="isAnonymous()">
+                <a th:href="@{/signin}" class="text-white hover:text-[#FCF2D9] transition-colors duration-300">เข้าสู่ระบบ</a>
+
+                <a th:href="@{/signup}" class="bg-[#FCF2D9] text-[#0175CC] hover:bg-white px-4 py-2 rounded-lg transition-colors duration-300 text-sm md:text-base font-bold shadow-sm">
+                    สมัครสมาชิก
+                </a>
+            </th:block>
+
         </div>
-    </div>
+    </nav>
 </body>
 </html>

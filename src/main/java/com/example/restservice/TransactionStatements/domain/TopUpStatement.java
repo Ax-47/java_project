@@ -8,6 +8,9 @@ import com.example.restservice.Users.domain.Credit;
 
 public class TopUpStatement extends TransactionStatement {
 
+  private final TransactionStatementsMethod method;
+  private final String referenceId;
+
   public TopUpStatement(
       UUID id,
       UUID userId,
@@ -17,7 +20,9 @@ public class TopUpStatement extends TransactionStatement {
       String referenceId,
       LocalDateTime createdAt) {
 
-    super(id, userId, amount, method, status, referenceId, createdAt);
+    super(id, userId, amount, status, createdAt);
+    this.method = method;
+    this.referenceId = referenceId;
   }
 
   @Override
@@ -26,7 +31,17 @@ public class TopUpStatement extends TransactionStatement {
   }
 
   @Override
+  public Optional<TransactionStatementsMethod> getMethod() {
+    return Optional.ofNullable(method);
+  }
+
+  @Override
   public Optional<UUID> getOrderId() {
     return Optional.empty();
+  }
+
+  @Override
+  public Optional<String> getReferenceId() {
+    return Optional.ofNullable(referenceId);
   }
 }

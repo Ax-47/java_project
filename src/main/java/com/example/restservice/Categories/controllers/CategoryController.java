@@ -5,12 +5,12 @@ import java.util.UUID;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.restservice.Categories.domain.CategorySortField;
 import com.example.restservice.Categories.dto.*;
-import com.example.restservice.Categories.models.CategorySortField;
 import com.example.restservice.Categories.usecases.*;
 import com.example.restservice.ProductCategories.usecases.FindProductsByCategoryIdUsecase;
+import com.example.restservice.Products.domain.ProductSortField;
 import com.example.restservice.Products.dto.ProductResponseDTO;
-import com.example.restservice.Products.models.ProductSortField;
 import com.example.restservice.common.*;
 
 import jakarta.validation.Valid;

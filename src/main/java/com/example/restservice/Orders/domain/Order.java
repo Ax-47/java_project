@@ -39,7 +39,7 @@ public class Order {
 
   public static Order create(UUID userId, ProductSnapshot product, OrderAddress shippingAddress) {
     return new Order(
-        null,
+        UUID.randomUUID(),
         userId,
         product,
         shippingAddress,
@@ -61,6 +61,7 @@ public class Order {
   }
 
   public void ship() {
+    ensureStatus(OrderStatus.PENDING);
     this.status = OrderStatus.SHIPPED;
     touch();
   }

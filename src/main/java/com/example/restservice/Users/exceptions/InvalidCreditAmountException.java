@@ -1,6 +1,8 @@
 package com.example.restservice.Users.exceptions;
 
-public class InvalidCreditAmountException extends RuntimeException {
+import com.example.restservice.Exeptions.DomainException;
+
+public class InvalidCreditAmountException extends DomainException {
   public InvalidCreditAmountException() {
     super("Amount must be positive");
   }

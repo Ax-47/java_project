@@ -16,8 +16,8 @@ public class CreateReviewUsecase {
 
   public CreateReviewResponseDTO execute(CreateReviewRequestDTO request) {
     Review newReview =
-        Review.create(request.userId(), request.productId(), request.rating(), request.comment());
+        Review.create(request.productId(), request.userId(), request.rating(), request.comment());
     this.databaseReviewRepository.save(newReview);
-    return new CreateReviewResponseDTO("Review was created");
+    return new CreateReviewResponseDTO(newReview.getId(), "Review was created");
   }
 }

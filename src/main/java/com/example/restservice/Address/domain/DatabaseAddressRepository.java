@@ -20,4 +20,6 @@ public interface DatabaseAddressRepository {
   public void setDefaultAddress(UUID addressId, UUID userId);
 
   Page<Address> findAllAddresses(PageQuery pageable);
+
+  Page<Address> findAllAddressesByUserId(UUID userId, PageQuery pageable);
 }

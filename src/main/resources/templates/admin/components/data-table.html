@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="wrapper(tabId, isHidden, addLink, btnText, headersFrag, rowsFrag, currentPage, totalPages, prevUrl, nextUrl)"
+     th:id="${tabId}" 
+     class="tab-content" 
+     th:classappend="${isHidden ? 'hidden' : 'block'}">
+
+  <div class="mb-4 flex justify-end" th:if="${addLink != null}">
+    <a th:href="${addLink}" th:text="${btnText}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow"></a>
+  </div>
+
+  <div class="bg-white shadow-sm rounded-lg overflow-hidden border border-gray-200">
+    <table class="w-full text-left border-collapse">
+      <thead class="bg-gray-800 text-white">
+        <tr th:replace="${headersFrag}"></tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+        <th:block th:replace="${rowsFrag}"></th:block>
+      </tbody>
+    </table>
+    
+    <div class="px-4 py-3 border-t border-gray-200 bg-gray-50 flex items-center justify-between sm:px-6">
+      <div class="text-sm text-gray-700">
+        Page <span class="font-medium" th:text="${currentPage + 1}">1</span> 
+        of <span class="font-medium" th:text="${totalPages == 0 ? 1 : totalPages}">10</span>
+      </div>
+      
+      <div class="flex space-x-2">
+        <a th:if="${currentPage > 0}" th:href="${prevUrl}" 
+           class="px-3 py-1 bg-white border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 text-sm font-medium transition">
+          Previous
+        </a>
+        <span th:unless="${currentPage > 0}" class="px-3 py-1 bg-gray-100 border border-gray-200 text-gray-400 rounded-md text-sm font-medium cursor-not-allowed">
+          Previous
+        </span>
+
+        <a th:if="${currentPage + 1 < totalPages}" th:href="${nextUrl}" 
+           class="px-3 py-1 bg-white border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 text-sm font-medium transition">
+          Next
+        </a>
+        <span th:unless="${currentPage + 1 < totalPages}" class="px-3 py-1 bg-gray-100 border border-gray-200 text-gray-400 rounded-md text-sm font-medium cursor-not-allowed">
+          Next
+        </span>
+      </div>
+    </div>
+    </div>
+</div>
+
+</body>
+</html>

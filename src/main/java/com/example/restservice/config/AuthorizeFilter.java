@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -119,31 +121,47 @@ public class AuthorizeFilter extends OncePerRequestFilter {
   }
 
   private void setCookies(HttpServletResponse response, TokenResponseDTO tokens) {
+    ResponseCookie accessCookie =
+        ResponseCookie.from("access_token", tokens.access_token())
+            .httpOnly(true)
+            .secure(true)
+            .path("/")
+            .maxAge(accessTokenExpiredInSeconds)
+            .sameSite("Lax")
+            .build();
+    response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
 
-    Cookie access = new Cookie("access_token", tokens.access_token());
-    access.setHttpOnly(true);
-    access.setPath("/");
-    access.setMaxAge((int) accessTokenExpiredInSeconds);
-    response.addCookie(access);
-
-    Cookie refresh = new Cookie("refresh_token", tokens.refresh_token());
-    refresh.setHttpOnly(true);
-    refresh.setPath("/");
-    refresh.setMaxAge((int) refreshTokenExpiredInSeconds);
-    response.addCookie(refresh);
+    ResponseCookie refreshCookie =
+        ResponseCookie.from("refresh_token", tokens.refresh_token())
+            .httpOnly(true)
+            .secure(true)
+            .path("/")
+            .maxAge(refreshTokenExpiredInSeconds)
+            .sameSite("Lax")
+            .build();
+    response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
   }
 
   private void clearCookies(HttpServletResponse response) {
+    ResponseCookie accessCookie =
+        ResponseCookie.from("access_token", "")
+            .httpOnly(true)
+            .secure(true)
+            .path("/")
+            .maxAge(0)
+            .sameSite("Lax")
+            .build();
+    response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
 
-    Cookie access = new Cookie("access_token", null);
-    access.setPath("/");
-    access.setMaxAge(0);
-    response.addCookie(access);
-
-    Cookie refresh = new Cookie("refresh_token", null);
-    refresh.setPath("/");
-    refresh.setMaxAge(0);
-    response.addCookie(refresh);
+    ResponseCookie refreshCookie =
+        ResponseCookie.from("refresh_token", "")
+            .httpOnly(true)
+            .secure(true)
+            .path("/")
+            .maxAge(0)
+            .sameSite("Lax")
+            .build();
+    response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
   }
 
   private Collection<? extends GrantedAuthority> authorities(String role) {

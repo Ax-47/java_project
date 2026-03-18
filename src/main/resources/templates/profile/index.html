@@ -1,0 +1,27 @@
+<!doctype html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{layout/main :: layout (~{::title}, ~{::section})}"
+>
+  <head>
+    <title>ข้อมูลส่วนตัว - I BUILD CPU</title>
+  </head>
+  <body>
+    <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      
+      <input type="hidden" id="current-user-id" th:value="${principal != null ? principal.id : '1'}" />
+
+      <div th:replace="~{profile/components/fragments :: profileHeader(${principal}, ${detail})}"></div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div th:replace="~{profile/components/fragments :: creditCard(${detail})}"></div>
+        <div th:replace="~{profile/components/fragments :: statusCard(${detail})}"></div>
+      </div>
+
+      <div th:replace="~{profile/components/fragments :: menuGrid}"></div>
+
+      <script th:replace="~{profile/components/fragments :: uploadScript}"></script>
+
+    </section>
+  </body>
+</html>

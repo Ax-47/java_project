@@ -1,0 +1,333 @@
+<!doctype html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{admin/layout :: layout(~{::#main-content}, ~{::#custom-scripts})}"
+>
+  <head>
+    <title>Admin Dashboard</title>
+  </head>
+  <body>
+    <div id="main-content">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6">Admin Dashboard</h2>
+
+      <div class="border-b border-gray-200 mb-6">
+        <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+          <a
+            th:href="@{/admin(tab='orders')}"
+            class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors"
+            th:classappend="${activeTab == 'orders'} ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+          >
+            Orders
+          </a>
+
+          <a
+            th:href="@{/admin(tab='products')}"
+            class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors"
+            th:classappend="${activeTab == 'products'} ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+          >
+            Products
+          </a>
+
+          <a
+            th:href="@{/admin(tab='categories')}"
+            class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors"
+            th:classappend="${activeTab == 'categories'} ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+          >
+            Categories
+          </a>
+        </nav>
+      </div>
+
+      <div
+        th:replace="~{admin/components/data-table :: wrapper(
+        'content-orders', ${activeTab != 'orders'}, null, null, 
+        ~{::orderHeaders}, ~{::orderRows},
+        ${orderPage}, ${orderTotal},
+        @{/admin(tab='orders', orderPage=${orderPage - 1}, productPage=${productPage}, categoryPage=${categoryPage}, sortBy=${sortBy}, sortDir=${sortDir})},
+        @{/admin(tab='orders', orderPage=${orderPage + 1}, productPage=${productPage}, categoryPage=${categoryPage}, sortBy=${sortBy}, sortDir=${sortDir})})}"
+      >
+        <tr th:fragment="orderHeaders">
+          <th class="px-4 py-3 text-sm font-semibold uppercase">
+            <a
+              th:href="@{/admin(tab='orders', orderPage=0, productPage=${productPage}, categoryPage=${categoryPage}, sortBy='fullName', sortDir=${sortBy == 'fullName' and sortDir == 'asc' ? 'desc' : 'asc'})}"
+              class="flex items-center gap-1 hover:text-gray-300"
+            >
+              Id
+              <span
+                th:if="${sortBy == 'id'}"
+                th:utext="${sortDir == 'asc' ? '&#9650;' : '&#9660;'}"
+              ></span>
+            </a>
+          </th>
+          <th class="px-4 py-3 text-sm font-semibold uppercase">
+            <a
+              th:href="@{/admin(tab='orders', orderPage=0, productPage=${productPage}, categoryPage=${categoryPage}, sortBy='fullName', sortDir=${sortBy == 'fullName' and sortDir == 'asc' ? 'desc' : 'asc'})}"
+              class="flex items-center gap-1 hover:text-gray-300"
+            >
+              Name
+              <span
+                th:if="${sortBy == 'fullName'}"
+                th:utext="${sortDir == 'asc' ? '&#9650;' : '&#9660;'}"
+              ></span>
+            </a>
+          </th>
+          <th class="px-4 py-3 text-sm font-semibold uppercase">
+            <a
+              th:href="@{/admin(tab='orders', orderPage=0, productPage=${productPage}, categoryPage=${categoryPage}, sortBy='productName', sortDir=${sortBy == 'productName' and sortDir == 'asc' ? 'desc' : 'asc'})}"
+              class="flex items-center gap-1 hover:text-gray-300"
+            >
+              Item
+              <span
+                th:if="${sortBy == 'productName'}"
+                th:utext="${sortDir == 'asc' ? '&#9650;' : '&#9660;'}"
+              ></span>
+            </a>
+          </th>
+          <th class="px-4 py-3 text-sm font-semibold uppercase">
+            <a
+              th:href="@{/admin(tab='orders', orderPage=0, productPage=${productPage}, categoryPage=${categoryPage}, sortBy='status', sortDir=${sortBy == 'status' and sortDir == 'asc' ? 'desc' : 'asc'})}"
+              class="flex items-center gap-1 hover:text-gray-300"
+            >
+              Status
+              <span
+                th:if="${sortBy == 'status'}"
+                th:utext="${sortDir == 'asc' ? '&#9650;' : '&#9660;'}"
+              ></span>
+            </a>
+          </th>
+          <th class="px-4 py-3 text-sm font-semibold uppercase text-center">
+            Actions
+          </th>
+        </tr>
+
+        <th:block th:fragment="orderRows">
+          <tr th:each="order : ${orders}" class="hover:bg-gray-50 transition">
+            <td
+              class="px-4 py-3 text-sm font-mono text-gray-600"
+              th:text="${#strings.substring(order.id, 0, 8)}"
+            ></td>
+            <td class="px-4 py-3 text-sm" th:text="${order.fullName}"></td>
+            <td class="px-4 py-3 text-sm" th:text="${order.productName}"></td>
+            <td class="px-4 py-3 text-sm">
+              <span
+                th:if="${order.status.name() == 'PENDING'}"
+                class="bg-yellow-100 text-yellow-700 text-xs px-2 py-1 rounded font-bold"
+                >PENDING</span
+              >
+              <span
+                th:if="${order.status.name() == 'SHIPPED'}"
+                class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold"
+                >SHIPPED</span
+              >
+              <span
+                th:if="${order.status.name() == 'COMPLETED'}"
+                class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded font-bold"
+                >COMPLETED</span
+              >
+              <span
+                th:if="${order.status.name() == 'CANCELLED'}"
+                class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded font-bold"
+                >CANCELLED</span
+              >
+            </td>
+            <td class="px-4 py-3 text-sm text-center">
+              <div class="flex items-center justify-center gap-3">
+                <a
+                  th:href="@{/admin/orders/{id}/view(id=${order.id})}"
+                  class="text-blue-600 hover:underline font-semibold"
+                  >View</a
+                >
+              </div>
+            </td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(orders)}">
+            <td colspan="5" class="px-4 py-8 text-center text-gray-500">
+              No orders found.
+            </td>
+          </tr>
+        </th:block>
+      </div>
+
+      <div
+        th:replace="~{admin/components/data-table :: wrapper(
+        'content-products', ${activeTab != 'products'}, '/admin/products/create', '+ Add Product', 
+        ~{::productHeaders}, ~{::productRows},
+        ${productPage}, ${productTotal},
+        @{/admin(tab='products', orderPage=${orderPage}, productPage=${productPage - 1}, categoryPage=${categoryPage}, sortBy=${sortBy}, sortDir=${sortDir})},
+        @{/admin(tab='products', orderPage=${orderPage}, productPage=${productPage + 1}, categoryPage=${categoryPage}, sortBy=${sortBy}, sortDir=${sortDir})})}"
+      >
+        <tr th:fragment="productHeaders">
+          <th class="px-4 py-3 text-sm font-semibold uppercase">
+            <a
+              th:href="@{/admin(tab='products', orderPage=${orderPage}, productPage=0, categoryPage=${categoryPage}, sortBy='id', sortDir=${sortBy == 'id' and sortDir == 'asc' ? 'desc' : 'asc'})}"
+              class="flex items-center gap-1 hover:text-gray-300 transition-colors"
+            >
+              Product ID
+              <span
+                th:if="${sortBy == 'id'}"
+                th:utext="${sortDir == 'asc' ? '&#9650;' : '&#9660;'}"
+              ></span>
+            </a>
+          </th>
+          <th class="px-4 py-3 text-sm font-semibold uppercase">
+            <a
+              th:href="@{/admin(tab='products', orderPage=${orderPage}, productPage=0, categoryPage=${categoryPage}, sortBy='productName', sortDir=${sortBy == 'productName' and sortDir == 'asc' ? 'desc' : 'asc'})}"
+              class="flex items-center gap-1 hover:text-gray-300"
+            >
+              Name
+              <span
+                th:if="${sortBy == 'productName'}"
+                th:utext="${sortDir == 'asc' ? '&#9650;' : '&#9660;'}"
+              ></span>
+            </a>
+          </th>
+          <th class="px-4 py-3 text-sm font-semibold uppercase">
+            <a
+              th:href="@{/admin(tab='products', orderPage=${orderPage}, productPage=0, categoryPage=${categoryPage}, sortBy='productPrice', sortDir=${sortBy == 'productPrice' and sortDir == 'asc' ? 'desc' : 'asc'})}"
+              class="flex items-center gap-1 hover:text-gray-300"
+            >
+              Price
+              <span
+                th:if="${sortBy == 'productPrice'}"
+                th:utext="${sortDir == 'asc' ? '&#9650;' : '&#9660;'}"
+              ></span>
+            </a>
+          </th>
+          <th class="px-4 py-3 text-sm font-semibold uppercase text-center">
+            Actions
+          </th>
+        </tr>
+        <th:block th:fragment="productRows">
+          <tr
+            th:each="product : ${products}"
+            class="hover:bg-gray-50 transition"
+          >
+            <td
+              class="px-4 py-3 text-sm font-mono text-gray-600"
+              th:text="${#strings.substring(product.id, 0, 8)}"
+            ></td>
+            <td
+              class="px-4 py-3 text-sm font-medium"
+              th:text="${product.name}"
+            ></td>
+            <td
+              class="px-4 py-3 text-sm"
+              th:text="${product.price.getValue()}"
+            ></td>
+            <td class="px-4 py-3 text-sm text-center space-x-2">
+              <a
+                th:href="@{/admin/products/edit/{id}(id=${product.id},tab='products', orderPage=${orderPage}, productPage=${productPage}, categoryPage=${categoryPage})}"
+                class="text-yellow-600 font-semibold hover:underline"
+                >Edit</a
+              >
+              <form
+                th:action="@{/admin/products/{id}/delete(id=${product.id})}"
+                method="post"
+                class="inline"
+                onsubmit="return confirm('ลบสินค้านี้ใช่หรือไม่?');"
+              >
+
+                  <input type="hidden" name="_method" value="DELETE" />
+                <button
+                  type="submit"
+                  class="text-red-600 font-semibold hover:underline bg-transparent border-0 cursor-pointer p-0"
+                >
+                  Delete
+                </button>
+              </form>
+            </td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(products)}">
+            <td colspan="4" class="px-4 py-8 text-center text-gray-500">
+              No products found.
+            </td>
+          </tr>
+        </th:block>
+      </div>
+
+      <div
+        th:replace="~{admin/components/data-table :: wrapper(
+        'content-categories', ${activeTab != 'categories'}, '/admin/categories/create', '+ Add Category', 
+        ~{::categoryHeaders}, ~{::categoryRows},
+        ${categoryPage}, ${categoryTotal},
+        @{/admin(tab='categories', orderPage=${orderPage}, productPage=${productPage}, categoryPage=${categoryPage - 1}, sortBy=${sortBy}, sortDir=${sortDir})},
+        @{/admin(tab='categories', orderPage=${orderPage}, productPage=${productPage}, categoryPage=${categoryPage + 1}, sortBy=${sortBy}, sortDir=${sortDir})})}"
+      >
+        <tr th:fragment="categoryHeaders">
+          <th class="px-4 py-3 text-sm font-semibold uppercase">
+            <a
+              th:href="@{/admin(tab='categories', orderPage=${orderPage}, productPage=${productPage}, categoryPage=0, sortBy='id', sortDir=${sortBy == 'id' and sortDir == 'asc' ? 'desc' : 'asc'})}"
+              class="flex items-center gap-1 hover:text-gray-300 transition-colors"
+            >
+              Category ID
+              <span
+                th:if="${sortBy == 'id'}"
+                th:utext="${sortDir == 'asc' ? '&#9650;' : '&#9660;'}"
+              ></span>
+            </a>
+          </th>
+          <th class="px-4 py-3 text-sm font-semibold uppercase">
+            <a
+              th:href="@{/admin(tab='categories', orderPage=${orderPage}, productPage=${productPage}, categoryPage=0, sortBy='categoryName', sortDir=${sortBy == 'categoryName' and sortDir == 'asc' ? 'desc' : 'asc'})}"
+              class="flex items-center gap-1 hover:text-gray-300"
+            >
+              Name
+              <span
+                th:if="${sortBy == 'categoryName'}"
+                th:utext="${sortDir == 'asc' ? '&#9650;' : '&#9660;'}"
+              ></span>
+            </a>
+          </th>
+          <th class="px-4 py-3 text-sm font-semibold uppercase text-center">
+            Actions
+          </th>
+        </tr>
+
+        <th:block th:fragment="categoryRows">
+          <tr th:each="cat : ${categories}" class="hover:bg-gray-50 transition">
+            <td
+              class="px-4 py-3 text-sm font-mono text-gray-600"
+              th:text="${#strings.substring(cat.id, 0, 8)}"
+            ></td>
+            <td
+              class="px-4 py-3 text-sm font-medium"
+              th:text="${cat.categoryName}"
+            ></td>
+            <td class="px-4 py-3 text-sm text-center space-x-2">
+              <a
+                th:href="@{/admin/categories/{id}/edit(id=${cat.id})}"
+                class="text-yellow-600 font-semibold hover:underline"
+                >Edit</a
+              >
+              <form
+                th:action="@{/admin/categories/{id}/delete(id=${cat.id})}"
+                method="post"
+                class="inline"
+                onsubmit="return confirm('ลบหมวดหมู่นี้ใช่หรือไม่?');"
+              >
+
+                  <input type="hidden" name="_method" value="DELETE" />
+                <button
+                  type="submit"
+                  class="text-red-600 font-semibold hover:underline bg-transparent border-0 cursor-pointer p-0"
+                >
+                  Delete
+                </button>
+              </form>
+            </td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(categories)}">
+            <td colspan="3" class="px-4 py-8 text-center text-gray-500">
+              No categories found.
+            </td>
+          </tr>
+        </th:block>
+      </div>
+
+      <script th:inline="javascript"></script>
+    </div>
+
+    <th:block id="custom-scripts"></th:block>
+  </body>
+</html>

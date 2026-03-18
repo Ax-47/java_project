@@ -18,7 +18,8 @@ public final class ImageResource {
   }
 
   public String genFilename(UUID imageId, ImageSize size) {
-    return resourceType.name().toLowerCase()
+    return "/"
+        + resourceType.getPath()
         + "/"
         + resourceId
         + "/"

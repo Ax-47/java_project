@@ -1,0 +1,111 @@
+<!doctype html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{layout/main :: layout (~{::title}, ~{::section})}"
+>
+  <head>
+    <title>เติมเงิน - I BUILD CPU</title>
+  </head>
+  <body>
+    <section class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      
+      <div class="mb-8 text-center md:text-left">
+        <h1 class="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">เติมเงินเข้าระบบ</h1>
+        <p class="text-gray-500 font-medium mt-2">เพิ่มยอดเงินของคุณเพื่อใช้บริการ I BUILD CPU</p>
+      </div>
+
+      <div class="bg-white/95 backdrop-blur-xl rounded-3xl p-6 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.08)] ring-1 ring-gray-100">
+        
+        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-6 text-white mb-8 shadow-lg">
+          <p class="text-blue-100 font-medium text-sm md:text-base">ยอดเงินคงเหลือของคุณ</p>
+          <div class="flex items-baseline gap-2 mt-1">
+            <span class="text-2xl font-bold">฿</span>
+            <span class="text-4xl md:text-5xl font-black tracking-tight" th:text="${detail.credit != null ? #numbers.formatDecimal(detail.credit, 1, 'COMMA', 2, 'POINT') : '0.00'}">0.00</span>
+          </div>
+        </div>
+
+        <form th:action="@{/topup}" method="post" id="topup-form" class="space-y-8">
+          
+          <div>
+            <label class="block text-gray-900 font-bold text-lg mb-4">1. เลือกจำนวนเงินที่ต้องการเติม</label>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4" id="amount-options">
+              <button type="button" class="amount-btn border-2 border-gray-200 rounded-xl py-3 text-lg font-bold text-gray-600 hover:border-blue-500 hover:text-blue-600 transition-all focus:outline-none" data-amount="50">฿50</button>
+              <button type="button" class="amount-btn border-2 border-gray-200 rounded-xl py-3 text-lg font-bold text-gray-600 hover:border-blue-500 hover:text-blue-600 transition-all focus:outline-none" data-amount="100">฿100</button>
+              <button type="button" class="amount-btn border-2 border-gray-200 rounded-xl py-3 text-lg font-bold text-gray-600 hover:border-blue-500 hover:text-blue-600 transition-all focus:outline-none" data-amount="300">฿300</button>
+              <button type="button" class="amount-btn border-2 border-gray-200 rounded-xl py-3 text-lg font-bold text-gray-600 hover:border-blue-500 hover:text-blue-600 transition-all focus:outline-none" data-amount="500">฿500</button>
+            </div>
+
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <span class="text-gray-500 font-bold text-lg">฿</span>
+              </div>
+              <input type="number" id="custom-amount" name="amount" min="10" required placeholder="ระบุจำนวนเงินอื่นๆ (ขั้นต่ำ 10 บาท)" class="w-full pl-10 pr-4 py-4 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-900 font-bold text-lg focus:border-blue-500 focus:ring-0 transition-colors outline-none" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-gray-900 font-bold text-lg mb-4">2. เลือกช่องทางชำระเงิน</label>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              
+              <label class="relative flex items-center p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors group">
+                <input type="radio" name="method" value="PROMPT_PAY" class="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500" checked>
+                <div class="ml-4 flex flex-col">
+                  <span class="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">สแกนคิวอาร์โค้ด (PromptPay)</span>
+                  <span class="text-sm text-gray-500">ไม่มีค่าธรรมเนียม ยอดเข้าทันที</span>
+                </div>
+              </label>
+
+              <label class="relative flex items-center p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors group">
+                <input type="radio" name="method" value="CREDIT_CARD" class="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500 "disabled>
+                <div class="ml-4 flex flex-col">
+                  <span class="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">บัตรเครดิต / เดบิต</span>
+                  <span class="text-sm text-gray-500">ค่าธรรมเนียม 3%</span>
+                </div>
+              </label>
+
+            </div>
+          </div>
+
+          <div class="pt-6 border-t border-gray-100 flex flex-col items-center gap-4">
+            <button type="submit" id="submit-btn" class="w-full md:w-auto px-10 py-4 bg-gray-900 hover:bg-blue-600 text-white text-lg font-bold rounded-xl transition-all shadow-lg hover:shadow-blue-500/30 transform hover:-translate-y-1">
+              ยืนยันการเติมเงิน
+            </button>
+            <p th:if="${param.error}" class="text-red-500 font-medium">เกิดข้อผิดพลาด: กรุณาตรวจสอบยอดเงินและลองใหม่อีกครั้ง</p>
+            <p th:if="${param.success}" class="text-green-600 font-bold">ทำรายการเติมเงินสำเร็จ!</p>
+          </div>
+
+        </form>
+      </div>
+
+      <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          const amountBtns = document.querySelectorAll('.amount-btn');
+          const customAmountInput = document.getElementById('custom-amount');
+          
+          amountBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+              
+              amountBtns.forEach(b => {
+                b.classList.remove('border-blue-500', 'text-blue-600', 'bg-blue-50');
+                b.classList.add('border-gray-200', 'text-gray-600');
+              });
+
+              btn.classList.remove('border-gray-200', 'text-gray-600');
+              btn.classList.add('border-blue-500', 'text-blue-600', 'bg-blue-50');
+              
+              customAmountInput.value = btn.getAttribute('data-amount');
+            });
+          });
+
+          customAmountInput.addEventListener('input', () => {
+            amountBtns.forEach(b => {
+              b.classList.remove('border-blue-500', 'text-blue-600', 'bg-blue-50');
+              b.classList.add('border-gray-200', 'text-gray-600');
+            });
+          });
+        });
+      </script>
+    </section>
+  </body>
+</html>
