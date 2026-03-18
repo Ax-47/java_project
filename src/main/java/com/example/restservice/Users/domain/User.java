@@ -89,6 +89,11 @@ public class User {
     this.updatedAt = LocalDateTime.now();
   }
 
+  public void topup(Credit amount) {
+    this.credit = this.credit.add(amount);
+    this.updatedAt = LocalDateTime.now();
+  }
+
   public UUID getId() {
     return id;
   }

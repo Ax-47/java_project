@@ -6,25 +6,11 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
-import com.example.restservice.Address.dto.CreateAddressRequestDTO;
-import com.example.restservice.Address.dto.DeleteAddressRequestDTO;
-import com.example.restservice.Address.dto.FindAddressRequestDTO;
-import com.example.restservice.Address.dto.FindAddressResponseDTO;
-import com.example.restservice.Address.dto.UpdateAddressRequestDTO;
+import com.example.restservice.Address.dto.*;
 import com.example.restservice.Address.models.AddressSortField;
-import com.example.restservice.Address.usecases.CreateAddressUsecase;
-import com.example.restservice.Address.usecases.DeleteAddressUsecase;
-import com.example.restservice.Address.usecases.FindAddressUsecase;
-import com.example.restservice.Address.usecases.FindAddressesByUserIdUsecase;
-import com.example.restservice.Address.usecases.FindAddressesUsecase;
-import com.example.restservice.Address.usecases.UpdateAddressUsecase;
+import com.example.restservice.Address.usecases.*;
 import com.example.restservice.Auth.dto.UserPrincipalDTO;
 import com.example.restservice.Frontend.dto.AddressWebFormDTO;
 import com.example.restservice.common.PageQuery;
@@ -34,8 +20,8 @@ import jakarta.validation.Valid;
 @Controller
 @RequestMapping("/addresses")
 public class AddressViewController {
+
   private final CreateAddressUsecase createAddressUsecase;
-  private final FindAddressesUsecase findAddressesUsecase;
   private final DeleteAddressUsecase deleteAddressUsecase;
   private final UpdateAddressUsecase updateAddressUsecase;
   private final FindAddressUsecase findAddressUsecase;
@@ -43,7 +29,6 @@ public class AddressViewController {
 
   public AddressViewController(
       CreateAddressUsecase createAddressUsecase,
-      FindAddressesUsecase findAddressesUsecase,
       FindAddressUsecase findAddressUsecase,
       DeleteAddressUsecase deleteAddressUsecase,
       UpdateAddressUsecase updateAddressUsecase,
@@ -51,7 +36,6 @@ public class AddressViewController {
     this.createAddressUsecase = createAddressUsecase;
     this.findAddressesByUserIdUsecase = findAddressesByUserIdUsecase;
     this.findAddressUsecase = findAddressUsecase;
-    this.findAddressesUsecase = findAddressesUsecase;
     this.updateAddressUsecase = updateAddressUsecase;
     this.deleteAddressUsecase = deleteAddressUsecase;
   }
@@ -63,28 +47,102 @@ public class AddressViewController {
       @RequestParam(defaultValue = "createdAt") String sortBy,
       @RequestParam(defaultValue = "true") boolean asc,
       Model model) {
+
     model.addAttribute("user", user);
     int pageSize = 20;
     AddressSortField sortField = AddressSortField.fromString(sortBy);
     PageQuery query = new PageQuery(page, pageSize, sortField.getFieldName(), asc);
+
     var addresses = findAddressesByUserIdUsecase.execute(user.id(), query);
     model.addAttribute("addresses", addresses.content());
 
     return "addresses/index";
   }
 
-  @GetMapping("/new")
+  @GetMapping("/create")
   public String showAddAddressForm(Model model) {
     model.addAttribute("addressDTO", new AddressWebFormDTO());
-    return "addresses/new";
+    model.addAttribute("isEditMode", false);
+    return "addresses/form/index";
   }
 
-  @GetMapping("/edit/{id}")
+  @GetMapping("/{id}/edit")
   public String showEditAddressForm(
       @AuthenticationPrincipal UserPrincipalDTO user, @PathVariable("id") UUID id, Model model) {
+
     FindAddressResponseDTO address = findAddressUsecase.execute(new FindAddressRequestDTO(id));
-    AddressWebFormDTO form = new AddressWebFormDTO();
-    form.setId(id)
+    if (!address.userId().equals(user.id())) {
+      return "redirect:/addresses";
+    }
+
+    model.addAttribute("addressDTO", mapToFormDTO(address, id));
+    model.addAttribute("isEditMode", true);
+
+    return "addresses/form/index";
+  }
+
+  @PostMapping("/create")
+  public String createAddress(
+      @AuthenticationPrincipal UserPrincipalDTO user,
+      @Valid @ModelAttribute("addressDTO") AddressWebFormDTO form,
+      BindingResult bindingResult,
+      Model model) {
+
+    if (bindingResult.hasErrors()) {
+      model.addAttribute("error", true);
+      model.addAttribute("isEditMode", false);
+      return "addresses/form/index";
+    }
+
+    try {
+      createAddressUsecase.execute(user.id(), mapToCreateRequest(form));
+      return "redirect:/addresses?success=true";
+    } catch (IllegalArgumentException e) {
+      handleValidationError(e, bindingResult, model);
+      model.addAttribute("isEditMode", false);
+      return "addresses/form/index";
+    }
+  }
+
+  @PostMapping("/{id}/edit")
+  public String updateAddress(
+      @PathVariable("id") UUID id,
+      @AuthenticationPrincipal UserPrincipalDTO user,
+      @Valid @ModelAttribute("addressDTO") AddressWebFormDTO form,
+      BindingResult bindingResult,
+      Model model) {
+
+    if (bindingResult.hasErrors()) {
+      model.addAttribute("error", true);
+      model.addAttribute("isEditMode", true);
+      return "addresses/form/index";
+    }
+
+    try {
+      form.setId(id);
+      updateAddressUsecase.execute(mapToUpdateRequest(form));
+      return "redirect:/addresses?update_success=true";
+    } catch (IllegalArgumentException e) {
+      handleValidationError(e, bindingResult, model);
+      model.addAttribute("isEditMode", true);
+      return "addresses/form/index";
+    }
+  }
+
+  @DeleteMapping("/{id}/delete")
+  public String deleteAddress(
+      @PathVariable("id") UUID id, @AuthenticationPrincipal UserPrincipalDTO user) {
+    try {
+      deleteAddressUsecase.execute(new DeleteAddressRequestDTO(id, user.id()));
+      return "redirect:/addresses?delete_success=true";
+    } catch (Exception e) {
+      return "redirect:/addresses?error_delete=true";
+    }
+  }
+
+  private AddressWebFormDTO mapToFormDTO(FindAddressResponseDTO address, UUID id) {
+    return new AddressWebFormDTO()
+        .setId(id)
         .setFullName(address.fullName())
         .setPhoneNumber(address.phoneNumber())
         .setAddressLine1(address.addressLine1())
@@ -96,81 +154,47 @@ public class AddressViewController {
         .setCountry(address.country())
         .setLabel(address.label())
         .setIsDefault(address.isDefault());
-    model.addAttribute("addressDTO", form);
-    if (!address.userId().equals(user.id())) {
-      return "redirect:/addresses";
-    }
-    return "addresses/new";
   }
 
-  @PostMapping
-  public String createAddress(
-      @AuthenticationPrincipal UserPrincipalDTO user,
-      @Valid @ModelAttribute("addressDTO") AddressWebFormDTO form,
-      BindingResult bindingResult,
-      Model model) {
-
-    if (bindingResult.hasErrors()) {
-      model.addAttribute("error", bindingResult.hasErrors());
-      return "addresses/new";
-    }
-    try {
-      if (form.getId() == null) {
-        CreateAddressRequestDTO requestModel =
-            new CreateAddressRequestDTO(
-                form.getFullName(),
-                form.getPhoneNumber(),
-                form.getAddressLine1(),
-                form.getAddressLine2(),
-                form.getSubDistrict(),
-                form.getDistrict(),
-                form.getProvince(),
-                form.getPostalCode(),
-                form.getLabel(),
-                form.getCountry(),
-                form.getIsDefault());
-
-        createAddressUsecase.execute(user.id(), requestModel);
-      } else {
-        var requestModel =
-            new UpdateAddressRequestDTO(
-                form.getId(),
-                form.getFullName(),
-                form.getPhoneNumber(),
-                form.getAddressLine1(),
-                form.getAddressLine2(),
-                form.getSubDistrict(),
-                form.getDistrict(),
-                form.getProvince(),
-                form.getPostalCode(),
-                form.getLabel(),
-                form.getCountry(),
-                form.getIsDefault());
-        updateAddressUsecase.execute(requestModel);
-      }
-
-      return "redirect:/addresses";
-
-    } catch (IllegalArgumentException e) {
-      model.addAttribute("error", true);
-      if (e.getMessage().contains("phone") || e.getMessage().contains("เบอร์")) {
-        bindingResult.rejectValue("phoneNumber", "invalid.phone", e.getMessage());
-      } else {
-        model.addAttribute("globalErrorMessage", e.getMessage());
-      }
-
-      return "addresses/form";
-    }
+  private CreateAddressRequestDTO mapToCreateRequest(AddressWebFormDTO form) {
+    return new CreateAddressRequestDTO(
+        form.getFullName(),
+        form.getPhoneNumber(),
+        form.getAddressLine1(),
+        form.getAddressLine2(),
+        form.getSubDistrict(),
+        form.getDistrict(),
+        form.getProvince(),
+        form.getPostalCode(),
+        form.getLabel(),
+        form.getCountry(),
+        form.getIsDefault());
   }
 
-  @PostMapping("/delete/{id}")
-  public String deleteAddress(
-      @PathVariable("id") UUID id, @AuthenticationPrincipal UserPrincipalDTO user) {
-    try {
-      deleteAddressUsecase.execute(new DeleteAddressRequestDTO(id, user.id()));
-      return "redirect:/addresses?delete_success";
-    } catch (Exception e) {
-      return "redirect:/addresses?error_delete";
+  private UpdateAddressRequestDTO mapToUpdateRequest(AddressWebFormDTO form) {
+    return new UpdateAddressRequestDTO(
+        form.getId(),
+        form.getFullName(),
+        form.getPhoneNumber(),
+        form.getAddressLine1(),
+        form.getAddressLine2(),
+        form.getSubDistrict(),
+        form.getDistrict(),
+        form.getProvince(),
+        form.getPostalCode(),
+        form.getLabel(),
+        form.getCountry(),
+        form.getIsDefault());
+  }
+
+  private void handleValidationError(
+      IllegalArgumentException e, BindingResult bindingResult, Model model) {
+    model.addAttribute("error", true);
+    if (e.getMessage() != null
+        && (e.getMessage().contains("phone") || e.getMessage().contains("เบอร์"))) {
+      bindingResult.rejectValue("phoneNumber", "invalid.phone", e.getMessage());
+    } else {
+      model.addAttribute("globalErrorMessage", e.getMessage());
     }
   }
 }
