@@ -5,26 +5,72 @@ services:
     container_name: rest-postgres
     restart: always
     environment:
-      POSTGRES_DB: restdb
-      POSTGRES_USER: restuser
-      POSTGRES_PASSWORD: restpass
+      POSTGRES_DB: ${DB_NAME:-restdb}
+      POSTGRES_USER: ${DB_USER:-restuser}
+      POSTGRES_PASSWORD: ${DB_PASS:-restpass}
     ports:
-      - "5432:5432"
+      - "${DB_PORT_EXTERNAL:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-restuser} -d ${DB_NAME:-restdb}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
   minio:
     image: quay.io/minio/minio
     container_name: minio
     command: server /data --console-address ":9001"
     ports:
-      - "9100:9000"
-      - "9101:9001"
+      - "${MINIO_API_PORT_EXTERNAL:-9100}:9000"
+      - "${MINIO_CONSOLE_PORT_EXTERNAL:-9101}:9001"
     environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
+      MINIO_ROOT_USER: ${MINIO_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_PASS:-minioadmin}
     volumes:
       - minio_data:/data
+    networks:
+      - app-network
+
+  app:
+    build: .
+    container_name: springboot-app
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_started
+    environment:
+      - PROFILE=${APP_PROFILE:-prod}
+      - DB_URL=jdbc:postgresql://postgres:5432/${DB_NAME:-restdb}
+      - DB_USER=${DB_USER:-restuser}
+      - DB_PASS=${DB_PASS:-restpass}
+      - MINIO_URL=http://minio:9000
+      - MINIO_ACCESS_KEY=${MINIO_USER:-minioadmin}
+      - MINIO_SECRET_KEY=${MINIO_PASS:-minioadmin}
+      - MINIO_BUCKET=${MINIO_BUCKET:-images}
+      - SPRING_PORT=${APP_PORT:-9000}
+      - SERVER_FORWARD_HEADERS_STRATEGY=framework
+    networks:
+      - app-network
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflare-tunnel
+    restart: always
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
+    depends_on:
+      - app
+    networks:
+      - app-network
 
 volumes:
   minio_data:
   postgres_data:
+
+networks:
+  app-network:
+    driver: bridge
