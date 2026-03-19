@@ -17,7 +17,14 @@ FROM eclipse-temurin:25-jre-jammy
 WORKDIR /app
 # hadolint ignore=DL3008
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends fontconfig libfreetype6 libwebp7 libwebp-dev && \
+    apt-get install -y --no-install-recommends \
+    fontconfig \
+    libfreetype6 \
+    libwebp7 \
+    libwebp-dev \
+    libjpeg-dev \
+    libpng-dev \
+    liblcms2-2 && \
     rm -rf /var/lib/apt/lists/*
 
 # สร้างและสลับไปใช้ non-root user

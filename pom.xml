@@ -73,10 +73,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
-<dependency>
-    <groupId>nz.net.ultraq.thymeleaf</groupId>
-    <artifactId>thymeleaf-layout-dialect</artifactId>
-</dependency>
+		<dependency>
+			<groupId>nz.net.ultraq.thymeleaf</groupId>
+			<artifactId>thymeleaf-layout-dialect</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.thymeleaf.extras</groupId>
 			<artifactId>thymeleaf-extras-springsecurity6</artifactId>
@@ -118,22 +118,38 @@
 			<version>8.5.10</version>
 		</dependency>
 		<dependency>
-			<groupId>net.coobird</groupId>
-			<artifactId>thumbnailator</artifactId>
-			<version>0.4.20</version>
+			<groupId>com.sksamuel.scrimage</groupId>
+			<artifactId>scrimage-core</artifactId>
+			<version>4.3.0</version>
 		</dependency>
-<dependency>
-    <groupId>com.github.gotson</groupId>
-    <artifactId>webp-imageio</artifactId>
-    <version>0.2.1</version>
-</dependency>
+		<dependency>
+			<groupId>com.sksamuel.scrimage</groupId>
+			<artifactId>scrimage-webp</artifactId>
+			<version>4.3.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
 		<plugins>
+			<!-- <plugin> -->
+			<!-- 	<groupId>org.springframework.boot</groupId> -->
+			<!-- 	<artifactId>spring-boot-maven-plugin</artifactId> -->
+			<!-- </plugin> -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<requiresUnpack>
+						<dependency>
+							<groupId>com.sksamuel.scrimage</groupId>
+							<artifactId>scrimage-webp</artifactId>
+						</dependency>
+						<dependency>
+							<groupId>com.sksamuel.scrimage</groupId>
+							<artifactId>scrimage-core</artifactId>
+						</dependency>
+					</requiresUnpack>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>com.diffplug.spotless</groupId>
