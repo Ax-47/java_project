@@ -155,6 +155,8 @@
         const productId = /*[[${product.id}]]*/ "uuid";
         const apiBaseUrl = `/api/products/${productId}/images`;
 
+        const csrfToken = /*[[${_csrf.token}]]*/ "";
+        const csrfHeader = /*[[${_csrf.headerName}]]*/ "X-CSRF-TOKEN";
         async function handleFileUpload(event) {
           const files = event.target.files;
           if (files.length === 0) return;
@@ -167,6 +169,11 @@
               const response = await fetch(`${apiBaseUrl}`, {
                 method: "POST",
                 body: formData,
+
+                
+                headers: {
+                  [csrfHeader]: csrfToken,
+                },
               });
               if (response.ok || response.status === 204) {
                 document.getElementById(`img-card-${imageId}`).remove();
@@ -186,6 +193,10 @@
           try {
             const response = await fetch(`${apiBaseUrl}/${imageId}`, {
               method: "DELETE",
+
+                headers: {
+                  [csrfHeader]: csrfToken,
+                },
             });
             if (response.ok || response.status === 204) {
               document.getElementById(`img-card-${imageId}`).remove();
@@ -207,7 +218,9 @@
           try {
             const response = await fetch(`${apiBaseUrl}/reorder`, {
               method: "PATCH",
-              headers: { "Content-Type": "application/json" },
+              headers: { "Content-Type": "application/json",
+                  [csrfHeader]: csrfToken,
+              },
               body: JSON.stringify(payload),
             });
 

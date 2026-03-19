@@ -183,7 +183,7 @@
               console.error(error);
             }
           }
-          location.reload();
+          // location.reload();
         }
 
         async function deleteImage(imageId) {
@@ -218,8 +218,8 @@
             const response = await fetch(`${apiBaseUrl}/reorder`, {
               method: "PATCH",
               headers: {
-                "Content-Type": "application/json", // ✅ บอกว่าเป็น JSON
-                [csrfHeader]: csrfToken, // ✅ ส่ง CSRF Token
+                "Content-Type": "application/json", 
+                [csrfHeader]: csrfToken, 
               },
               credentials: "include",
               body: JSON.stringify(payload),

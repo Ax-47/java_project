@@ -18,6 +18,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -57,7 +58,9 @@ public class SecurityConfig {
 
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
+    // http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
+
+    http.csrf(Customizer.withDefaults())
         .authorizeHttpRequests(
             auth ->
                 auth.requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**")
@@ -68,7 +71,7 @@ public class SecurityConfig {
                     .permitAll()
 
                     // public API
-                    .requestMatchers("/api/auth/**")
+                    .requestMatchers("/api/auth/signin","/api/auth/signup")
                     .permitAll()
                     .requestMatchers("/api/image/**")
                     .permitAll()
