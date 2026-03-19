@@ -2,6 +2,7 @@ package com.example.restservice.Images.repositories;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.stereotype.Repository;
@@ -36,6 +37,12 @@ public class DatabaseImageRepositoryImpl implements DatabaseImageRepository {
   @Override
   public void delete(UUID imageId) {
     jpaImageRepository.deleteById(imageId);
+  }
+
+  @Override
+  public List<Image> findAllByResources(Set<UUID> userId, ImageResourceType type) {
+    List<ImageModel> models = jpaImageRepository.findAllByResourceIdInAndResourceType(userId, type);
+    return models.stream().map(ImageModel::toDomain).toList();
   }
 
   @Override

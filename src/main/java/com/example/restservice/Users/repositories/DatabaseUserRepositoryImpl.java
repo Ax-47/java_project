@@ -2,6 +2,7 @@ package com.example.restservice.Users.repositories;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.data.domain.PageRequest;
@@ -69,5 +70,12 @@ public class DatabaseUserRepositoryImpl implements DatabaseUserRepository {
 
     return new Page<>(
         users, page.getTotalElements(), page.getTotalPages(), page.getNumber(), page.getSize());
+  }
+
+  @Override
+  public List<User> findAllByUserIds(Set<UUID> userIds) {
+
+    List<UserModel> users = jpaUserRepository.findAllById(userIds);
+    return users.stream().map(UserModel::toDomain).toList();
   }
 }
