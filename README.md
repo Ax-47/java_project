@@ -75,7 +75,7 @@ src/main/java/com/example/restservice
 
 ## ⚙️ Tech Stack
 
-* **Java 21+**
+* **Java 25+**
 * **Spring Boot**
 * **Spring Security**
 * **JWT (RSA Key)**
