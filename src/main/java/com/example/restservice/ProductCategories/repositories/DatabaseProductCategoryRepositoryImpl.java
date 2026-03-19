@@ -51,8 +51,13 @@ public class DatabaseProductCategoryRepositoryImpl implements DatabaseProductCat
   }
 
   @Override
+  public void deleteByCategoryId(UUID categoryId) {
+    jpaProductCategoryRepository.deleteByCategoryId(categoryId);
+  }
+
+  @Override
   public void deleteByProductId(UUID productId) {
-    jpaProductCategoryRepository.deleteByIdProductId(productId);
+    jpaProductCategoryRepository.deleteByProductId(productId);
   }
 
   @Override

@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -19,23 +20,29 @@ public interface JpaProductCategoryRepository
     extends JpaRepository<ProductCategoryModel, ProductCategoryId> {
   List<ProductCategoryModel> findByProductId(UUID productId);
 
-  void deleteByIdProductId(@Param("productId") UUID productId);
+  @Modifying
+  @Query("DELETE FROM ProductCategoryModel pc WHERE pc.category.id = :categoryId")
+  void deleteByCategoryId(@Param("categoryId") UUID categoryId);
+
+  @Modifying
+  @Query("DELETE FROM ProductCategoryModel pc WHERE pc.product.id = :productId")
+  void deleteByProductId(@Param("productId") UUID productId);
 
   @Query(
       """
-      SELECT pc.product
-      FROM ProductCategoryModel pc
-      WHERE pc.category.id = :categoryId
-      """)
+            SELECT pc.product
+            FROM ProductCategoryModel pc
+            WHERE pc.category.id = :categoryId
+            """)
   Page<ProductModel> findProductsByCategoryId(UUID categoryId, Pageable pageable);
 
   @Query(
       """
-      SELECT pc
-      FROM ProductCategoryModel pc
-      JOIN FETCH pc.product
-      WHERE pc.category.id IN :categoryIds
-      """)
+            SELECT pc
+            FROM ProductCategoryModel pc
+            JOIN FETCH pc.product
+            WHERE pc.category.id IN :categoryIds
+            """)
   Page<ProductCategoryModel> findByCategoryIdIn(
       @Param("categoryIds") List<UUID> categoryIds, Pageable pageable);
 }

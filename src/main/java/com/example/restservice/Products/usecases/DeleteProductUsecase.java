@@ -32,7 +32,7 @@ public class DeleteProductUsecase {
             .orElseThrow(() -> new ProductNotFoundException("Product not found"));
 
     databaseProductCategoryRepository.deleteByProductId(request.productId());
-    this.databaseProductRepository.delete(existingProduct);
+    databaseProductRepository.delete(existingProduct);
 
     return new DeleteProductResponseDTO("Product was deleted successfully");
   }
