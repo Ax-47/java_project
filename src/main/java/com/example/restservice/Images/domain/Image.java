@@ -23,8 +23,8 @@ public class Image {
     return new Image(UUID.randomUUID(), resource, sortOrder, Instant.now());
   }
 
-  public String getMediumImage(ImageResource resource) {
-    return "/images" + resource.genFilename(id, ImageSize.MEDIUM);
+  public String getMediumImage() {
+    return "/images" + this.resource.genFilename(id, ImageSize.MEDIUM);
   }
 
   public UUID getId() {
