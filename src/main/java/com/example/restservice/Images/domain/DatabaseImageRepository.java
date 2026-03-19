@@ -2,6 +2,7 @@ package com.example.restservice.Images.domain;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 public interface DatabaseImageRepository {
@@ -12,6 +13,8 @@ public interface DatabaseImageRepository {
   void delete(UUID imageId);
 
   List<Image> findByResource(ImageResource resource);
+
+  public List<Image> findAllByResources(Set<UUID> userId, ImageResourceType type);
 
   public List<Image> findProductImages(List<UUID> productIds);
 }

@@ -8,12 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.restservice.Auth.dto.UserPrincipalDTO;
-import com.example.restservice.Categories.domain.DatabaseCategoryRepository;
 import com.example.restservice.Frontend.dto.CreateProductFormDTO;
-import com.example.restservice.Images.domain.ImageResourceType;
-import com.example.restservice.Images.usecases.FindImageUsecase;
-import com.example.restservice.ProductCategories.domain.DatabaseProductCategoryRepository;
-import com.example.restservice.Products.domain.DatabaseProductRepository;
 import com.example.restservice.Products.dto.DeleteProductRequestDTO;
 import com.example.restservice.Products.dto.UpdateProductRequestDTO;
 import com.example.restservice.Products.usecases.*;
@@ -22,29 +17,23 @@ import com.example.restservice.Products.usecases.*;
 @RequestMapping("/admin/products")
 public class AdminProductController {
 
-  private final DatabaseProductRepository databaseProductRepository;
-  private final DatabaseCategoryRepository databaseCategoryRepository;
-  private final DatabaseProductCategoryRepository databaseProductCategoryRepository;
-  private final FindImageUsecase findImageUsecase;
+  private final FindProductForEditUsecase findProductForEditUsecase;
   private final CreateProductUsecase createProductUsecase;
   private final UpdateProductUsecase updateProductUsecase;
   private final DeleteProductUsecase deleteProductUsecase;
+  private final FindProductForImagesUsecase findProductForImagesUsecase;
 
   public AdminProductController(
-      DatabaseProductRepository databaseProductRepository,
-      DatabaseCategoryRepository databaseCategoryRepository,
-      DatabaseProductCategoryRepository databaseProductCategoryRepository,
-      FindImageUsecase findImageUsecase,
+      FindProductForEditUsecase findProductForEditUsecase,
+      FindProductForImagesUsecase findProductForImagesUsecase,
       CreateProductUsecase createProductUsecase,
       UpdateProductUsecase updateProductUsecase,
       DeleteProductUsecase deleteProductUsecase) {
-    this.databaseProductRepository = databaseProductRepository;
-    this.databaseCategoryRepository = databaseCategoryRepository;
-    this.databaseProductCategoryRepository = databaseProductCategoryRepository;
-    this.findImageUsecase = findImageUsecase;
     this.createProductUsecase = createProductUsecase;
     this.updateProductUsecase = updateProductUsecase;
     this.deleteProductUsecase = deleteProductUsecase;
+    this.findProductForEditUsecase = findProductForEditUsecase;
+    this.findProductForImagesUsecase = findProductForImagesUsecase;
   }
 
   private String redirectToAdmin(int orderPage, int productPage, int categoryPage, String tab) {
@@ -72,18 +61,13 @@ public class AdminProductController {
     return redirectToAdmin(orderPage, productPage, categoryPage, tab);
   }
 
-  @GetMapping("/edit/{productId}")
+  @GetMapping("/{productId}/edit")
   public String editProductView(@PathVariable UUID productId, Model model) {
-    var product = databaseProductRepository.findById(productId).orElseThrow();
-    var allCategories = databaseCategoryRepository.findAll();
-    var productCategories = databaseProductCategoryRepository.findCategoriesByProductId(productId);
-    var images = findImageUsecase.execute(productId, ImageResourceType.PRODUCT);
-
-    model.addAttribute("product", product);
-    model.addAttribute("productCategories", productCategories);
-    model.addAttribute("images", images);
-    model.addAttribute("allCategories", allCategories);
-
+    var response = findProductForEditUsecase.execute(productId);
+    model.addAttribute("product", response.product());
+    model.addAttribute("productCategories", response.productCategories());
+    model.addAttribute("images", response.images());
+    model.addAttribute("allCategories", response.allCategories());
     return "admin/products/edit/index";
   }
 
@@ -115,12 +99,9 @@ public class AdminProductController {
 
   @GetMapping("/{productId}/images")
   public String manageImagesView(@PathVariable UUID productId, Model model) {
-    var product = databaseProductRepository.findById(productId).orElseThrow();
-    var images = findImageUsecase.execute(productId, ImageResourceType.PRODUCT);
-
-    model.addAttribute("product", product);
-    model.addAttribute("images", images);
-
+    var response = findProductForImagesUsecase.execute(productId);
+    model.addAttribute("product", response.product());
+    model.addAttribute("images", response.images());
     return "admin/products/images/index";
   }
 }

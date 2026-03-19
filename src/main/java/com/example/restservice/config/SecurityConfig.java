@@ -58,23 +58,44 @@ public class SecurityConfig {
 
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    // http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
+
     http.csrf(Customizer.withDefaults())
         .authorizeHttpRequests(
             auth ->
-                auth.requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**")
+                auth
+                    // [PUBLIC] Static Resources & Swagger
+                    .requestMatchers(
+                        "/css/**", "/js/**", "/images/**", "/webjars/**", "/favicon.ico")
                     .permitAll()
-                    // static files
-                    .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**")
+                    .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html")
                     .permitAll()
-                    // pages
-                    .requestMatchers("/", "/signin", "/signup")
+                    .requestMatchers("/api/auth/signin", "/api/auth/signup", "/api/auth/refresh")
                     .permitAll()
-                    // auth api
-                    .requestMatchers("/api/auth/**")
+                    .requestMatchers("/api/image/**")
                     .permitAll()
-                    // other api must auth
+
+                    // [PROTECTED] Specific Business Logic (ต้องวางก่อน Wildcard)
+                    .requestMatchers("/products/*/purchase")
+                    .authenticated()
+                    .requestMatchers("/profile/**", "/topup/**")
+                    .authenticated()
+
+                    // [ADMIN] Admin Routes
+                    .requestMatchers("/admin/**")
+                    .hasRole("ADMIN")
+
+                    // [PUBLIC] Public Pages & Read-only Content
+                    .requestMatchers("/", "/signin", "/signup", "/review/**")
+                    .permitAll()
+                    .requestMatchers("/products/**", "/categories/**")
+                    .permitAll()
+
+                    // [PROTECTED] All other APIs
                     .requestMatchers("/api/**")
                     .authenticated()
+
+                    // [FALLBACK]
                     .anyRequest()
                     .authenticated())
         .addFilterBefore(authorizeFilter, UsernamePasswordAuthenticationFilter.class);
