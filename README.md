@@ -1,5 +1,7 @@
 # 🚀 Rest Service - Scalable E-Commerce Backend
 
+## Development of a Maintainable and Scalable E3 Restaurant Ordering and Management System Using Clean Architecture in Modern Web Applications
+## การพัฒนาระบบจัดการร้านอาหารE3ที่สามารถบำรุงรักษาและขยายระบบได้ โดยใช้หลักการ Clean Architecture ในเว็บแอปพลิเคชันสมัยใหม่
 A modern, scalable, and maintainable **Computer Hardware Trading System** built using **Clean Architecture** and **เดา-Driven Design (DDD)** principles.
 
 ---
