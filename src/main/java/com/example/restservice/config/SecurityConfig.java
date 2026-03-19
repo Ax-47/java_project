@@ -71,7 +71,7 @@ public class SecurityConfig {
                     .permitAll()
 
                     // public API
-                    .requestMatchers("/api/auth/signin","/api/auth/signup")
+                    .requestMatchers("/api/auth/signin", "/api/auth/signup")
                     .permitAll()
                     .requestMatchers("/api/image/**")
                     .permitAll()
