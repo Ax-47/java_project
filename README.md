@@ -89,6 +89,7 @@ src/main/java/com/example/restservice
 ## 🐳 Run with Docker
 
 ```bash
+fish scripts/setup.fish
 docker-compose up --build
 ```
 
