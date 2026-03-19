@@ -15,7 +15,9 @@ services:
     networks:
       - app-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-restuser} -d ${DB_NAME:-restdb}"]
+      test:
+        - CMD-SHELL
+        - pg_isready -U ${DB_USER:-restuser} -d ${DB_NAME:-restdb}
       interval: 5s
       timeout: 5s
       retries: 5
